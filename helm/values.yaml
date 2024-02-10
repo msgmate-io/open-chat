@@ -1,0 +1,69 @@
+---
+deployCertManager: false
+useCertManager: false
+deployIngress: false
+rootNamespace: tims-stack-dev
+baseAppUrl: localhost
+registryAuthRequired: false
+githubRegAuthToken: 'token'
+production: true
+development: false
+useRedis: false
+certmanager:
+  deploy: false
+  secretKeyName: letsencrypt-prod
+  email: 'benjamin.tim@gmx.de'
+  apiServer: 'https://acme-v02.api.letsencrypt.org/directory'
+  name: some
+redis:
+  deploy: false
+  port: 6379
+  deploymentName: redis-db
+  serviceName: redis-db-svc
+backend:
+  deploy: false
+  port: 8000
+  replicas: 1
+  serviceName: backend-service
+  imageURL: localhost:32000/backend-image:latest
+  deploymentName: backend-deployment
+  secretName: backend-secret
+  requiresRegistryAuth: false
+  imagePullSecretName: dockerconfigjson-github-com
+  useSockets: false
+  mountCodeRoot: false
+  mount:
+    pvcName: backend-pvc
+    volumeName: backend-dev-volume
+    storage: 5Gi
+  env:
+    DJANGO_DEBUG: 'true'
+    PRODUCTION: 'true'
+    ROOT_URL: 'http://localhost'
+    ROOT_HOST: 't1m.me'
+    EXTRA_TRUSTED_ORIGINS: ''
+    DJANGO_SECRET_KEY: 'SomeSecret'
+    DJANGO_ALLOWED_HOSTS: '*'
+    REDIS_URL: 'redis://redis-db-svc.tims-stack-dev.svc.cluster.local:6379'
+    USE_NEXTJS_PROXY_ROUTES: 'true'
+    NEXTJS_HOST_URL: 'http://frontend-service.tims-stack-dev.svc.cluster.local:3000'
+    BASE_ADMIN_USERNAME: 'admin'
+    BASE_ADMIN_USER_PASSWORD: 'password'
+frontend:
+  useSSR: true
+  deploy: false
+  port: 3000
+  serviceName: frontend-service
+  imageURL: localhost:32000/frontend-image:latest
+  deploymentName: frontend-deployment
+  secretName: frontend-secret
+  requiresRegistryAuth: false
+  imagePullSecretName: dockerconfigjson-github-com
+  mountCodeRoot: false
+  mount:
+    pvcName: frontend-pvc
+    volumeName: frontend-dev-volume
+    storage: 5Gi
+  env:
+    ROOT_URL: 'http://localhost'
+    WEBSOCKET_PROTOCOL: 'ws://'

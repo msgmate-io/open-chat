@@ -1,0 +1,495 @@
+{{- if .Values.backend.deploy }}
+{{- if .Values.production }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.backend.deploymentName }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.deploymentName }}
+    spec:
+      {{- if .Values.backend.mountCodeRoot }}
+      volumes:
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: {{ .Values.backend.mount.pvcName }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.backend.deploymentName }}
+          image: {{ .Values.backend.imageURL }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          {{- if .Values.backend.mountCodeRoot }}
+          volumeMounts:
+            - name: pvc
+              mountPath: /back
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.backend.secretName }}
+      {{- if .Values.backend.requiresRegistryAuth }}
+      imagePullSecrets:
+        - name: {{ .Values.backend.imagePullSecretName }}
+      {{- end }}
+{{- end }}
+{{- if .Values.development }}
+# For local development we spinup only a pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Values.backend.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.backend.deploymentName }}
+spec:
+  {{- if .Values.backend.mountCodeRoot }}
+  volumes:
+    - name: pvc
+      persistentVolumeClaim:
+        claimName: {{ .Values.backend.mount.pvcName }}
+  {{- end }}
+  containers:
+    - name: {{ .Values.backend.deploymentName }}
+      image: {{ .Values.backend.imageURL }}
+      ports:
+        - containerPort: {{ .Values.backend.port }}
+      {{- if .Values.backend.mountCodeRoot }}
+      volumeMounts:
+        - name: pvc
+          mountPath: /back
+      {{- end }}
+      envFrom:
+        - secretRef:
+            name: {{ .Values.backend.secretName }}
+{{- end }}
+{{- end }}{{- if .Values.backend.mountCodeRoot }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.backend.mount.volumeName }}
+spec:
+  capacity:
+    storage: {{ .Values.backend.mount.storage }}
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: microk8s-hostpath
+  hostPath:
+    path: {{ .Values.rootDir }}/back
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.rootNamespace }}
+  name: {{ .Values.backend.mount.pvcName }}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: { requests: { storage: {{ .Values.backend.mount.storage }} } }
+  volumeName: {{ .Values.backend.mount.volumeName }}
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  namespace: {{ .Values.rootNamespace }}
+  name: ssd-hostpath
+provisioner: microk8s.io/hostpath
+reclaimPolicy: Delete
+parameters:
+  pvDir: '{{ .Values.rootDir }}'
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.frontend.mount.volumeName }}
+spec:
+  capacity:
+    storage: {{ .Values.frontend.mount.storage }}
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: microk8s-hostpath
+  hostPath:
+    path: {{ .Values.rootDir }}/front
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.rootNamespace }}
+  name: {{ .Values.frontend.mount.pvcName }}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: { requests: { storage: {{ .Values.frontend.mount.storage }} } }
+  volumeName: {{ .Values.frontend.mount.volumeName }}
+{{- end }}{{- if .Values.backend.deploy }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.backend.secretName }}
+  namespace: {{ .Values.rootNamespace }}
+type: Opaque
+data:
+{{- range $key, $value := .Values.backend.env }}
+  {{ $key }}: {{ $value | b64enc }}
+{{- end }}
+{{- end }}{{- if .Values.backend.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend.serviceName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.backend.deploymentName }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.backend.port }}
+      targetPort: {{ .Values.backend.port }}
+  selector:
+    app: {{ .Values.backend.deploymentName }}
+{{- end}}{{- if .Values.deployIngress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: base-ingress
+  namespace: {{ .Values.rootNamespace }}
+  annotations:
+    {{- if .Values.backend.useSockets }}
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+    nginx.ingress.kubernetes.io/server-snippets: |
+      location /ws/ {
+        proxy_http_version 1.1;
+        proxy_redirect off;
+        proxy_buffering off;
+      } 
+    {{- end }}
+    {{- if .Values.useCertManager }}
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    {{- end }}
+    kubernetes.io/ingress.class: public
+spec:
+  {{- if .Values.useCertManager }}
+  tls:
+    - hosts:
+        - {{ .Values.baseAppUrl }}
+      secretName: prod-ingress-tls-secret
+  {{- end }}
+  rules:
+    {{- if .Values.production }}
+    - host: {{ .Values.baseAppUrl }}
+      http:
+    {{- else}}
+    - http:
+    {{- end }}
+        paths:
+          # nextjs's public folder also directly routes to frontend manager
+          - path: /_next/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.frontend.serviceName }}
+                port:
+                  number: {{ .Values.frontend.port }}
+          - path: /_nstat/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.frontend.serviceName }}
+                port:
+                  number: {{ .Values.frontend.port }}
+          {{- if .Values.frontend.useSSR }}
+          - path: /static/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.backend.serviceName }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.backend.serviceName }}
+                port:
+                  number: {{ .Values.backend.port }}
+          {{- else }}
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.backend.serviceName }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /admin/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.backend.serviceName }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /static/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.backend.serviceName }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /media/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.backend.serviceName }}
+                port:
+                  number: {{ .Values.backend.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.frontend.serviceName }}
+                port:
+                  number: {{ .Values.frontend.port }}
+          {{- end }}
+{{- end}}{{- if .Values.deployCertManager }}
+{{- if .Values.useCertManager }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.certmanager.secretKeyName }}
+  namespace: {{ .Values.rootNamespace }}
+spec:
+  acme:
+    email: {{ .Values.certmanager.email }}
+    server: {{ .Values.certmanager.apiServer }}
+    privateKeySecretRef:
+      name: {{ .Values.certmanager.secretKeyName }}
+    solvers:
+      - http01:
+          ingress:
+            class: public
+{{- end }}
+{{- end }}{{- if .Values.frontend.deploy }}
+{{- if .Values.production }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.frontend.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.frontend.deploymentName }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.frontend.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.frontend.deploymentName }}
+    spec:
+      containers:
+        - name: {{ .Values.frontend.deploymentName }}
+          image: {{ .Values.frontend.imageURL }}
+          ports:
+            - containerPort: {{ .Values.frontend.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.frontend.secretName }}
+      {{- if .Values.frontend.requiresRegistryAuth }}
+      imagePullSecrets:
+        - name: {{ .Values.frontend.imagePullSecretName }}
+      {{- end }}
+{{- end }}
+{{- if .Values.development }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Values.frontend.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.frontend.deploymentName }}
+spec:
+  {{- if .Values.frontend.mountCodeRoot }}
+  volumes:
+    - name: pvc
+      persistentVolumeClaim:
+        claimName: {{ .Values.frontend.mount.pvcName }}
+  {{- end }}
+  containers:
+    - name: {{ .Values.frontend.deploymentName }}
+      image: {{ .Values.frontend.imageURL }}
+      ports:
+        - containerPort: {{ .Values.frontend.port }}
+      {{- if .Values.frontend.mountCodeRoot }}
+      volumeMounts:
+        - name: pvc
+          mountPath: /front
+      {{- end }}
+      envFrom:
+        - secretRef:
+            name: {{ .Values.frontend.secretName }}
+{{- end }}
+{{- end }}{{- if .Values.frontend.deploy }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.frontend.secretName }}
+  namespace: {{ .Values.rootNamespace }}
+type: Opaque
+data:
+{{- range $key, $value := .Values.frontend.env }}
+  {{ $key }}: {{ $value | b64enc }}
+{{- end }}
+{{- end}}{{- if .Values.frontend.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend.serviceName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.frontend.deploymentName }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.frontend.port }}
+      targetPort: {{ .Values.frontend.port }}
+  selector:
+    app: {{ .Values.frontend.deploymentName }}
+{{- end}}{{- if .Values.registryAuthRequired }}
+kind: Secret
+type: kubernetes.io/dockerconfigjson
+apiVersion: v1
+metadata:
+  name: dockerconfigjson-github-com
+  namespace: {{ .Values.rootNamespace }}
+stringData:
+  .dockerconfigjson: >
+    {{
+      (
+        dict "auths"
+        (
+          dict "ghcr.io"
+          (
+            dict "auth" .Values.githubRegAuthToken
+          )
+        )
+      )
+      |
+      toJson
+    }}
+{{- end }}{{/*
+Expand the name of the chart.
+*/}}
+{{- define "helm-chart.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "helm-chart.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "helm-chart.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "helm-chart.labels" -}}
+helm.sh/chart: {{ include "helm-chart.chart" . }}
+{{ include "helm-chart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "helm-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "helm-chart.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "helm-chart.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "helm-chart.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+Tiny django helm notes{{- if .Values.redis.deploy }}
+{{- if .Values.useRedis }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.redis.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.redis.deploymentName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.redis.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redis.deploymentName }}
+    spec:
+      containers:
+        - name: {{ .Values.redis.deploymentName }}
+          image: redis:5
+          ports:
+            - containerPort: {{ .Values.redis.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.redis.serviceName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.redis.deploymentName }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.redis.port }}
+      targetPort: {{ .Values.redis.port }}
+  selector:
+    app: {{ .Values.redis.deploymentName }}
+{{- end }}
+{{- end }}

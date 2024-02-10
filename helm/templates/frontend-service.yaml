@@ -1,0 +1,16 @@
+{{- if .Values.frontend.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend.serviceName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.frontend.deploymentName }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.frontend.port }}
+      targetPort: {{ .Values.frontend.port }}
+  selector:
+    app: {{ .Values.frontend.deploymentName }}
+{{- end}}

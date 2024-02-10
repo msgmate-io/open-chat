@@ -1,0 +1,74 @@
+{{- if .Values.backend.deploy }}
+{{- if .Values.production }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.backend.deploymentName }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.deploymentName }}
+    spec:
+      {{- if .Values.backend.mountCodeRoot }}
+      volumes:
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: {{ .Values.backend.mount.pvcName }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.backend.deploymentName }}
+          image: {{ .Values.backend.imageURL }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          {{- if .Values.backend.mountCodeRoot }}
+          volumeMounts:
+            - name: pvc
+              mountPath: /back
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.backend.secretName }}
+      {{- if .Values.backend.requiresRegistryAuth }}
+      imagePullSecrets:
+        - name: {{ .Values.backend.imagePullSecretName }}
+      {{- end }}
+{{- end }}
+{{- if .Values.development }}
+# For local development we spinup only a pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Values.backend.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.backend.deploymentName }}
+spec:
+  {{- if .Values.backend.mountCodeRoot }}
+  volumes:
+    - name: pvc
+      persistentVolumeClaim:
+        claimName: {{ .Values.backend.mount.pvcName }}
+  {{- end }}
+  containers:
+    - name: {{ .Values.backend.deploymentName }}
+      image: {{ .Values.backend.imageURL }}
+      ports:
+        - containerPort: {{ .Values.backend.port }}
+      {{- if .Values.backend.mountCodeRoot }}
+      volumeMounts:
+        - name: pvc
+          mountPath: /back
+      {{- end }}
+      envFrom:
+        - secretRef:
+            name: {{ .Values.backend.secretName }}
+{{- end }}
+{{- end }}

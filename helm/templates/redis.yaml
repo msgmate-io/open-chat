@@ -1,0 +1,41 @@
+{{- if .Values.redis.deploy }}
+{{- if .Values.useRedis }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.redis.deploymentName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.redis.deploymentName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.redis.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redis.deploymentName }}
+    spec:
+      containers:
+        - name: {{ .Values.redis.deploymentName }}
+          image: redis:5
+          ports:
+            - containerPort: {{ .Values.redis.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.redis.serviceName }}
+  namespace: {{ .Values.rootNamespace }}
+  labels:
+    app: {{ .Values.redis.deploymentName }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.redis.port }}
+      targetPort: {{ .Values.redis.port }}
+  selector:
+    app: {{ .Values.redis.deploymentName }}
+{{- end }}
+{{- end }}

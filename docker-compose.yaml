@@ -1,0 +1,49 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    image: "${IMAGE_PREFIX-}backend"
+    environment:
+      DJANGO_DEBUG: 'true'
+      PRODUCTION: 'true'
+      ROOT_URL: 'http://localhost'
+      ROOT_HOST: 't1m.me'
+      EXTRA_TRUSTED_ORIGINS: ''
+      DJANGO_SECRET_KEY: 'SomeSecret'
+      DJANGO_ALLOWED_HOSTS: '*'
+      REDIS_URL: 'redis://redis:6379'
+      USE_NEXTJS_PROXY_ROUTES: 'true'
+      NEXTJS_HOST_URL: 'http://frontend:3000'
+      BASE_ADMIN_USERNAME: 'admin'
+      BASE_ADMIN_USER_PASSWORD: 'password'
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+      - "24678:24678"
+    volumes:
+      - ./frontend/:/frontend/
+    entrypoint: sh -c "npm install && npm run dev"
+    environment:
+      ROOT_URL: 'http://localhost'
+      WEBSOCKET_PROTOCOL: 'ws://'
+  redis:
+    image: redis:5
+  ingress:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx 
+    depends_on:
+      - backend
+      - frontend
