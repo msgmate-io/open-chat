@@ -5,7 +5,8 @@
     "build": "vite build",
     "server:dev": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0",
+    "generate-api": "npx swagger-typescript-api -p http://localhost/api/schema -o ./api -n api.ts"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
