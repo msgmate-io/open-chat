@@ -10,27 +10,47 @@
  */
 
 export interface Chat {
-  /** @format uuid */
-  uuid: string;
   u1: number;
   u2: number;
   /** @format date-time */
   created: string;
+  /** @format uuid */
+  uuid: string;
+}
+
+export interface ChatsListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
 }
 
 export interface LoginInfo {
-  username: string;
   password: string;
+  username: string;
 }
 
 export interface Message {
-  /** @format uuid */
-  uuid: string;
-  sender: number;
   /** @format date-time */
   created: string;
-  text: string;
   read?: boolean;
+  sender: number;
+  text: string;
+  /** @format uuid */
+  uuid: string;
+}
+
+export interface MessagesList2Params {
+  chatUuid: string;
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
+}
+
+export interface MessagesListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface PaginatedMessageList {
@@ -67,16 +87,16 @@ export interface PaginatedPaginatedResponseList {
 
 export interface PaginatedResponse {
   count: number;
+  first_page: number;
+  last_page: number;
   /** @format uri */
   next: string;
+  next_page: number | null;
+  page_size: number;
   /** @format uri */
   previous: string;
-  results: Chat[];
-  page_size: number;
-  next_page: number | null;
   previous_page: number | null;
-  last_page: number;
-  first_page: number;
+  results: Chat[];
 }
 
 export interface PaginatedUserProfileList {
@@ -96,31 +116,31 @@ export interface PaginatedUserProfileList {
 }
 
 export interface PatchedChat {
-  /** @format uuid */
-  uuid?: string;
   u1?: number;
   u2?: number;
   /** @format date-time */
   created?: string;
+  /** @format uuid */
+  uuid?: string;
 }
 
 export interface PatchedMessage {
-  /** @format uuid */
-  uuid?: string;
-  sender?: number;
   /** @format date-time */
   created?: string;
-  text?: string;
   read?: boolean;
+  sender?: number;
+  text?: string;
+  /** @format uuid */
+  uuid?: string;
 }
 
 export interface PatchedUserProfile {
   /** @maxLength 50 */
   first_name?: string;
-  /** @maxLength 50 */
-  second_name?: string;
   /** @format date-time */
   last_updated?: string;
+  /** @maxLength 50 */
+  second_name?: string;
 }
 
 export interface Person {
@@ -128,6 +148,13 @@ export interface Person {
   email: string;
   password: string;
   password_confirm: string;
+}
+
+export interface ProfilesListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface RegisterResponseSuccess {
@@ -142,10 +169,10 @@ export interface SendMessage {
 export interface UserProfile {
   /** @maxLength 50 */
   first_name: string;
-  /** @maxLength 50 */
-  second_name: string;
   /** @format date-time */
   last_updated: string;
+  /** @maxLength 50 */
+  second_name: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -308,7 +335,7 @@ export class HttpClient<SecurityDataType = unknown> {
     baseUrl,
     cancelToken,
     ...params
-  }: FullRequestParams): Promise<HttpResponse<T, E>> => {
+  }: FullRequestParams): Promise<T> => {
     const secureParams =
       ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
@@ -353,7 +380,7 @@ export class HttpClient<SecurityDataType = unknown> {
       }
 
       if (!response.ok) throw data;
-      return data;
+      return data.data;
     });
   };
 }
@@ -374,18 +401,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/chats/
      * @secure
      */
-    chatsList: (
-      query?: {
-        /** A page number within the paginated result set. */
-        page?: number;
-      },
-      params: RequestParams = {},
-    ) =>
+    chatsList: (query: ChatsListParams, params: RequestParams = {}) =>
       this.request<PaginatedPaginatedResponseList, any>({
         path: `/api/chats/`,
         method: "GET",
         query: query,
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset for modifying user profiles
+     *
+     * @tags chats
+     * @name ChatsPartialUpdate
+     * @request PATCH:/api/chats/{id}/
+     * @secure
+     */
+    chatsPartialUpdate: (id: string, data: PatchedChat, params: RequestParams = {}) =>
+      this.request<Chat, any>({
+        path: `/api/chats/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -427,25 +467,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags chats
-     * @name ChatsPartialUpdate
-     * @request PATCH:/api/chats/{id}/
-     * @secure
-     */
-    chatsPartialUpdate: (id: string, data: PatchedChat, params: RequestParams = {}) =>
-      this.request<Chat, any>({
-        path: `/api/chats/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * No description
      *
      * @tags login
@@ -471,15 +492,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/messages/
      * @secure
      */
-    messagesList: (
-      query?: {
-        /** A page number within the paginated result set. */
-        page?: number;
-        /** Number of results to return per page. */
-        page_size?: number;
-      },
-      params: RequestParams = {},
-    ) =>
+    messagesList: (query: MessagesListParams, params: RequestParams = {}) =>
       this.request<PaginatedMessageList, any>({
         path: `/api/messages/`,
         method: "GET",
@@ -497,76 +510,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/messages/{chat_uuid}/
      * @secure
      */
-    messagesList2: (
-      chatUuid: string,
-      query?: {
-        /** A page number within the paginated result set. */
-        page?: number;
-        /** Number of results to return per page. */
-        page_size?: number;
-      },
-      params: RequestParams = {},
-    ) =>
+    messagesList2: ({ chatUuid, ...query }: MessagesList2Params, params: RequestParams = {}) =>
       this.request<PaginatedMessageList, any>({
         path: `/api/messages/${chatUuid}/`,
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
-     * @name MessagesSendCreate
-     * @request POST:/api/messages/{chat_uuid}/send/
-     * @secure
-     */
-    messagesSendCreate: (chatUuid: string, data: SendMessage, params: RequestParams = {}) =>
-      this.request<Message, any>({
-        path: `/api/messages/${chatUuid}/send/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
-     * @name MessagesRetrieve
-     * @request GET:/api/messages/{id}/
-     * @secure
-     */
-    messagesRetrieve: (id: string, params: RequestParams = {}) =>
-      this.request<Message, any>({
-        path: `/api/messages/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
-     * @name MessagesUpdate
-     * @request PUT:/api/messages/{id}/
-     * @secure
-     */
-    messagesUpdate: (id: string, data: Message, params: RequestParams = {}) =>
-      this.request<Message, any>({
-        path: `/api/messages/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -610,16 +559,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
+     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
      *
-     * @tags profile
-     * @name ProfileRetrieve
-     * @request GET:/api/profile
+     * @tags messages
+     * @name MessagesRetrieve
+     * @request GET:/api/messages/{id}/
      * @secure
      */
-    profileRetrieve: (params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profile`,
+    messagesRetrieve: (id: string, params: RequestParams = {}) =>
+      this.request<Message, any>({
+        path: `/api/messages/${id}/`,
         method: "GET",
         secure: true,
         format: "json",
@@ -627,16 +576,35 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
+     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
      *
-     * @tags profile
-     * @name ProfileUpdate
-     * @request PUT:/api/profile
+     * @tags messages
+     * @name MessagesSendCreate
+     * @request POST:/api/messages/{chat_uuid}/send/
      * @secure
      */
-    profileUpdate: (data: UserProfile, params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profile`,
+    messagesSendCreate: (chatUuid: string, data: SendMessage, params: RequestParams = {}) =>
+      this.request<Message, any>({
+        path: `/api/messages/${chatUuid}/send/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
+     *
+     * @tags messages
+     * @name MessagesUpdate
+     * @request PUT:/api/messages/{id}/
+     * @secure
+     */
+    messagesUpdate: (id: string, data: Message, params: RequestParams = {}) =>
+      this.request<Message, any>({
+        path: `/api/messages/${id}/`,
         method: "PUT",
         body: data,
         secure: true,
@@ -667,25 +635,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * @description Simple Viewset for modifying user profiles
      *
+     * @tags profile
+     * @name ProfileRetrieve
+     * @request GET:/api/profile
+     * @secure
+     */
+    profileRetrieve: (params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset for modifying user profiles
+     *
      * @tags profiles
      * @name ProfilesList
      * @request GET:/api/profiles/
      * @secure
      */
-    profilesList: (
-      query?: {
-        /** A page number within the paginated result set. */
-        page?: number;
-        /** Number of results to return per page. */
-        page_size?: number;
-      },
-      params: RequestParams = {},
-    ) =>
+    profilesList: (query: ProfilesListParams, params: RequestParams = {}) =>
       this.request<PaginatedUserProfileList, any>({
         path: `/api/profiles/`,
         method: "GET",
         query: query,
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset for modifying user profiles
+     *
+     * @tags profiles
+     * @name ProfilesPartialUpdate
+     * @request PATCH:/api/profiles/{id}/
+     * @secure
+     */
+    profilesPartialUpdate: (id: string, data: PatchedUserProfile, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profiles/${id}/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -729,15 +725,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * @description Simple Viewset for modifying user profiles
      *
-     * @tags profiles
-     * @name ProfilesPartialUpdate
-     * @request PATCH:/api/profiles/{id}/
+     * @tags profile
+     * @name ProfileUpdate
+     * @request PUT:/api/profile
      * @secure
      */
-    profilesPartialUpdate: (id: string, data: PatchedUserProfile, params: RequestParams = {}) =>
+    profileUpdate: (data: UserProfile, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/profiles/${id}/`,
-        method: "PATCH",
+        path: `/api/profile`,
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
