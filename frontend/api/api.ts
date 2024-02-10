@@ -33,22 +33,6 @@ export interface Message {
   read?: boolean;
 }
 
-export interface PaginatedChatList {
-  /** @example 123 */
-  count?: number;
-  /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=4"
-   */
-  next?: string | null;
-  /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=2"
-   */
-  previous?: string | null;
-  results?: Chat[];
-}
-
 export interface PaginatedMessageList {
   /** @example 123 */
   count?: number;
@@ -63,6 +47,36 @@ export interface PaginatedMessageList {
    */
   previous?: string | null;
   results?: Message[];
+}
+
+export interface PaginatedPaginatedResponseList {
+  /** @example 123 */
+  count?: number;
+  /**
+   * @format uri
+   * @example "http://api.example.org/accounts/?page=4"
+   */
+  next?: string | null;
+  /**
+   * @format uri
+   * @example "http://api.example.org/accounts/?page=2"
+   */
+  previous?: string | null;
+  results?: PaginatedResponse[];
+}
+
+export interface PaginatedResponse {
+  count: number;
+  /** @format uri */
+  next: string;
+  /** @format uri */
+  previous: string;
+  results: Chat[];
+  page_size: number;
+  next_page: number | null;
+  previous_page: number | null;
+  last_page: number;
+  first_page: number;
 }
 
 export interface PaginatedUserProfileList {
@@ -367,7 +381,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<PaginatedChatList, any>({
+      this.request<PaginatedPaginatedResponseList, any>({
         path: `/api/chats/`,
         method: "GET",
         query: query,
