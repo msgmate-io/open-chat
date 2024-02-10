@@ -37,6 +37,7 @@
     "remark-gfm": "^4.0.0",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "sirv": "^2.0.3",
+    "swagger-typescript-api": "^13.0.3",
     "vike": "^0.4.147",
     "vike-react": "^0.4.4",
     "vite": "^4.4.9"
