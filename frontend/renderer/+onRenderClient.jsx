@@ -17,7 +17,7 @@ const queryClient = new QueryClient();
 
 let root;
 let globalStore = null;
-console.log("GLOB STORE", globalStore);
+
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;
 

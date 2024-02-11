@@ -21,6 +21,8 @@ export interface Chat {
 export interface ChatsListParams {
   /** A page number within the paginated result set. */
   page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface LoginInfo {
@@ -53,6 +55,22 @@ export interface MessagesListParams {
   page_size?: number;
 }
 
+export interface PaginatedChatList {
+  /** @example 123 */
+  count?: number;
+  /**
+   * @format uri
+   * @example "http://api.example.org/accounts/?page=4"
+   */
+  next?: string | null;
+  /**
+   * @format uri
+   * @example "http://api.example.org/accounts/?page=2"
+   */
+  previous?: string | null;
+  results?: Chat[];
+}
+
 export interface PaginatedMessageList {
   /** @example 123 */
   count?: number;
@@ -67,36 +85,6 @@ export interface PaginatedMessageList {
    */
   previous?: string | null;
   results?: Message[];
-}
-
-export interface PaginatedPaginatedResponseList {
-  /** @example 123 */
-  count?: number;
-  /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=4"
-   */
-  next?: string | null;
-  /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=2"
-   */
-  previous?: string | null;
-  results?: PaginatedResponse[];
-}
-
-export interface PaginatedResponse {
-  count: number;
-  first_page: number;
-  last_page: number;
-  /** @format uri */
-  next: string;
-  next_page: number | null;
-  page_size: number;
-  /** @format uri */
-  previous: string;
-  previous_page: number | null;
-  results: Chat[];
 }
 
 export interface PaginatedUserProfileList {
@@ -402,7 +390,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     chatsList: (query: ChatsListParams, params: RequestParams = {}) =>
-      this.request<PaginatedPaginatedResponseList, any>({
+      this.request<PaginatedChatList, any>({
         path: `/api/chats/`,
         method: "GET",
         query: query,
