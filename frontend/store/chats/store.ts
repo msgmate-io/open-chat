@@ -1,23 +1,20 @@
-export const initialState: MessagesState = {
-  status: StatusOptions.EMPTY,
+import { ChatsActionTypes, ChatsState, ChatsStatusAction } from "./types";
+import { StatusTypes } from "../types";
+
+export const initialState: ChatsState = {
+  status: StatusTypes.EMPTY,
   errors: null,
   results: [],
-  previous: null,
-  next: null,
 };
 
-interface UpdateStatusAction {
-  type: MessagesActionTypes.UPDATE_STATUS;
-  payload: StatusOptions;
-}
+type Action = ChatsStatusAction;
 
-type Action = UpdateStatusAction;
 export function chatsReducer(
-  state: MessagesState = initialState,
+  state: ChatsState = initialState,
   action: Action
-): MessagesState {
+): ChatsState {
   switch (action.type) {
-    case MessagesActionTypes.UPDATE_STATUS:
+    case ChatsActionTypes.UPDATE_STATUS:
       return {
         ...state,
         status: action.payload,

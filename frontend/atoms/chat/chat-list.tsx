@@ -3,11 +3,16 @@ import { navigate } from "vike/client/router";
 import { redirect } from "vike/abort";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import { StatusTypes } from "../../store/types";
+import { RootState } from "../../store/reducer";
+import { ChatResult } from "../../api/api";
 
-export function ChatListItem({ chat, isSelected }) {
+export function ChatListItem({ chat }: { chat: ChatResult }) {
+  const isSelected = false;
+
   return (
     <li
-      key={chat?.uuid}
+      key={chat.uuid}
       className={`bg-base-100 border rounded-xl mb-2 active:-translate-y-1 ${
         isSelected ? "text-base-content shadow-inner border-2" : "shadow-md"
       }`}
@@ -33,7 +38,7 @@ export function ChatListItem({ chat, isSelected }) {
 
 function ThemeSelector() {
   const dispatch = useDispatch();
-  const theme = useSelector((state) => state.localSettings?.theme);
+  const theme = useSelector((state: RootState) => state.localSettings?.theme);
 
   useEffect(() => {
     const currentDocumentTheme =
@@ -65,25 +70,33 @@ function ThemeSelector() {
   );
 }
 
-export function ChatList({ chat, chats, chatSelected }) {
+export function ChatList() {
+  const chats = useSelector((state: RootState) => state.chats);
+
+  if (chats.status === StatusTypes.EMPTY) {
+    return <h1>Empty</h1>;
+  }
+
+  if (chats.status === StatusTypes.ERROR) {
+    return <h1>Error</h1>;
+  }
+
+  if (chats.status === StatusTypes.LOADING) {
+    return <h1>Loading ...</h1>;
+  }
+
   return (
     <ul
       className={`menu bg-base-200 w-full sm:max-w-md min-w-md rounded-box ${
-        chatSelected ? "hidden lg:block" : ""
+        false ? "hidden lg:block" : ""
       }`}
     >
-      {chats?.results?.map((_chat, i) => {
-        return (
-          <ChatListItem
-            key={_chat.uuid}
-            chat={_chat}
-            isSelected={chat?.uuid == _chat.uuid}
-          />
-        );
+      {chats.results?.map((_chat, i) => {
+        return <ChatListItem key={_chat.uuid} chat={_chat} />;
       })}
       <li className="" key={0}></li>
       <li className="bg-base-200" key={1}>
-        {chats.count} chats, on {chats.last_page} pages
+        {chats.items_total} chats, on {chats.pages_total} pages
       </li>
       <li className="" key={2}></li>
       <li className="relative w-full" key={3}>

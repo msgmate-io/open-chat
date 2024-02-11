@@ -30,8 +30,6 @@ async function onBeforeRender(pageContext) {
 
   const data = await res.json();
 
-  console.log("CONTEXT", pageContext.PRELOADED_STATE);
-
   const baseReduxState = {
     ...pageContext.PRELOADED_STATE,
     chats: data.chats,

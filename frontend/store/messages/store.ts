@@ -1,17 +1,15 @@
-import { StatusOptions, MessagesState, MessagesActionTypes } from "./types";
+import {
+  UpdateStatusAction,
+  MessagesState,
+  MessagesActionTypes,
+} from "./types";
+import { StatusTypes } from "../types";
 
 export const initialState: MessagesState = {
-  status: StatusOptions.EMPTY,
+  status: StatusTypes.EMPTY,
   errors: null,
-  results: [],
-  previous: null,
-  next: null,
+  chat: {},
 };
-
-interface UpdateStatusAction {
-  type: MessagesActionTypes.UPDATE_STATUS;
-  payload: StatusOptions;
-}
 
 type Action = UpdateStatusAction;
 export function messagesReducer(

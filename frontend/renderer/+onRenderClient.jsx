@@ -2,12 +2,13 @@ export default render;
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { PageShell } from "./PageShell";
-import { getStore } from "./store/store";
+import { getStore } from "../store/reducer";
 import { useState, useEffect } from "react";
 import { Provider } from "react-redux";
 import WebsocketBridge from "../atoms/websocket-bridge";
 import { number } from "prop-types";
 import Cookies from "js-cookie";
+import { PageContextProvider } from "./usePageContext";
 
 import "./index.css";
 
@@ -21,13 +22,6 @@ let globalStore = null;
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;
 
-  console.log(
-    "GLOBAL STORE",
-    globalStore,
-    pageContext.PRELOADED_STATE,
-    pageContext.INJECT_REDUX_STATE
-  );
-
   let store = globalStore;
   if (!store) {
     if (pageContext.PRELOADED_STATE)
@@ -36,12 +30,24 @@ async function render(pageContext) {
     globalStore = store;
   }
 
-  if (pageContext.INJECT_REDUX_STATE) {
+  let PRELOADED_STATE = pageContext.PRELOADED_STATE
+    ? pageContext.PRELOADED_STATE
+    : {};
+  let INJECTED_REDUX = pageContext.INJECT_REDUX_STATE
+    ? pageContext.INJECT_REDUX_STATE
+    : {};
+
+  console.log("PRELOADED_STATE", pageContext.PRELOADED_STATE);
+
+  if (pageContext.PRELOADED_STATE || pageContext.INJECT_REDUX_STATE) {
     const themeCookie = Cookies.get("localSettings_Theme");
     const INJECT_REDUX_STATE = {
-      ...pageContext.INJECT_REDUX_STATE,
+      ...INJECTED_REDUX,
+      ...PRELOADED_STATE,
       localSettings: themeCookie ? { theme: themeCookie } : "light",
     };
+
+    console.log("INJECT_REDUX_STATE", INJECT_REDUX_STATE);
 
     const currentDocumentTheme =
       document.documentElement.getAttribute("data-theme");
@@ -56,12 +62,10 @@ async function render(pageContext) {
 
   const page = (
     <PageShell pageContext={pageContext}>
-      <QueryClientProvider client={queryClient} contextSharing={true}>
-        <Provider store={store}>
-          <WebsocketBridge />
-          <Page {...pageProps} />
-        </Provider>
-      </QueryClientProvider>
+      <Provider store={store}>
+        <WebsocketBridge />
+        <Page {...pageProps} />
+      </Provider>
     </PageShell>
   );
   const container = document.getElementById("react-root");

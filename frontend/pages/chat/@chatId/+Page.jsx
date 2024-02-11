@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { ChatView } from "../../../atoms/chat/chat-view";
 import { ChatList } from "../../../atoms/chat/chat-list";
+import { ChatView } from "../../../atoms/chat/chat-view";
 import { ChatBox } from "../../../atoms/chat/base";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { ChatSplit } from "../../../atoms/chat-split";
-import Cookies from "js-cookie";
+import { useApi } from "../../api/client";
 
 export default Page;
 
 function Page() {
-  const dispatch = useDispatch();
+  const api = useApi();
+  const chats = useSelector((state) => state.chats);
 
-  return <ChatBox>Hello</ChatBox>;
+  console.log();
+
+  return (
+    <ChatBox>
+      <ChatList />
+      <ChatView />
+    </ChatBox>
+  );
 }

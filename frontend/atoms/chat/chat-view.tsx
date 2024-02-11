@@ -1,9 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import Markdown from "react-markdown";
+import { useSelector } from "react-redux";
 import rehypeHighlight from "rehype-highlight";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { CopyBlock, dracula } from "react-code-blocks";
 import atomdark from "react-syntax-highlighter/dist/cjs/styles/prism/atom-dark";
+import { RootState } from "../../store/reducer";
 
 import remarkGfm from "remark-gfm";
 
@@ -132,7 +134,7 @@ function ChatInput({}) {
   );
 }
 
-function ChatBase({ chat, messages, user, chatSelected }) {
+function ChatBase({ messages, user, chatSelected }) {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -177,21 +179,43 @@ export function ChatInfo({ chat, chatSelected }) {
   );
 }
 
-export function ChatView({ chat, messages, user, chatSelected }) {
+export function ChatView() {
+  const user = useSelector((state: RootState) => state.user);
+
+  const selectedChatId = useSelector(
+    (state: RootState) => state.messages.selectedChatId
+  );
+
+  const chatMessages = useSelector((state: RootState) => state.messages.chat);
+
+  const selectedChatMessages = selectedChatId
+    ? chatMessages[selectedChatId]
+    : null;
+
+  const selectedChat = useSelector(
+    (state: RootState) =>
+      state.chats.results?.find((chat) => chat.uuid == selectedChatId)
+  );
+
+  console.log("CHAT", selectedChat, selectedChatMessages);
+
   return (
     <div
       id="chatView"
       className={`w-full h-full bg-base-100 rounded-xl p-1 relative ${
-        chatSelected ? "" : "hidden md:block"
+        selectedChatId ? "" : "hidden md:block"
       }  transition-all [&.page-is-transitioning]:skew-x-1 [&.page-is-transitioning]:skew-y-1 duration-500 [&.page-is-transitioning]:duration-0 ease-in-out`}
     >
       <div className="flex flex-col h-full relative">
-        <ChatNav chat={chat} chatSelected={chatSelected} infoOpen={false} />
+        <ChatNav
+          chat={selectedChat}
+          chatSelected={selectedChatId}
+          infoOpen={false}
+        />
         <ChatBase
-          chat={chat}
-          messages={messages}
           user={user}
-          chatSelected={chatSelected}
+          messages={selectedChatMessages}
+          chatSelected={selectedChatId}
         />
       </div>
     </div>

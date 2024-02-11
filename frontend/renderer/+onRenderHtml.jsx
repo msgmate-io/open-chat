@@ -1,13 +1,15 @@
 export default onRenderHtml;
 // See https://vike.dev/data-fetching
 import ReactDOMServer from "react-dom/server";
+import { renderToString } from "react-dom/server";
 
 import React from "react";
 import { PageShell } from "./PageShell";
 import { escapeInject, dangerouslySkipEscape } from "vike/server";
 import logoUrl from "./logo.svg";
-import { getStore } from "./store/store";
+import { getStore } from "../store/reducer";
 import { Provider } from "react-redux";
+import { PageContextProvider } from "./usePageContext";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
@@ -24,17 +26,23 @@ async function onRenderHtml(pageContext) {
     PRELOADED_STATE = pageContext.INJECT_REDUX_STATE;
   }
 
+  PRELOADED_STATE = {
+    ...PRELOADED_STATE,
+    pageContext: {
+      cookie: pageContext.requestHeaders.cookie.toString(),
+      xcsrfToken: pageContext.xcsrfToken.toString(),
+    },
+  };
+
   // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA
   if (!Page)
     throw new Error("My render() hook expects pageContext.Page to be defined");
 
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell pageContext={pageContext}>
-      <QueryClientProvider client={queryClient} contextSharing={true}>
-        <Provider store={store}>
-          <Page {...pageProps} />
-        </Provider>
-      </QueryClientProvider>
+      <Provider store={store}>
+        <Page {...pageProps} />
+      </Provider>
     </PageShell>
   );
 
@@ -44,7 +52,6 @@ async function onRenderHtml(pageContext) {
   const desc =
     (documentProps && documentProps.description) || "App using Vite + Vike";
 
-  console.log("STATE STORE", store.getState(), pageContext.INJECT_REDUX_STATE);
   const theme = store.getState().localSettings.theme
     ? store.getState().localSettings.theme
     : "light";
@@ -63,7 +70,10 @@ async function onRenderHtml(pageContext) {
       </body>
     </html>`;
 
-  PRELOADED_STATE = store.getState();
+  PRELOADED_STATE = getStore({
+    ...store.getState(),
+    ...PRELOADED_STATE,
+  }).getState();
 
   return {
     documentHtml,

@@ -1,9 +1,18 @@
 import { PaginatedMessageList, Api } from "../../api/api";
 import { StatusTypes } from "../types";
 
-export interface MessagesState extends PaginatedMessageList {
+export interface MessagesState {
   status: StatusTypes;
   errors: string[] | string | null;
+  selectedChatId: string | null;
+  chat: {
+    [chatId: string]: PaginatedMessageList;
+  };
+}
+
+export interface UpdateStatusAction {
+  type: MessagesActionTypes.UPDATE_STATUS;
+  payload: StatusTypes;
 }
 
 export enum MessagesActionTypes {
