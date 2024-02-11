@@ -92,8 +92,6 @@ class ChatSerializer(serializers.ModelSerializer):
 
             representation['unread_count'] = instance.get_unread_count(user)
             representation['newest_message'] = MessageSerializer(instance.get_newest_message()).data
-            del representation['u1']
-            del representation['u2']
         else:
             representation['u1'] = str(instance.u1.uuid)
             representation['u2'] = str(instance.u2.uuid)

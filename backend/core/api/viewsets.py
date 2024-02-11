@@ -33,6 +33,8 @@ class UserStaffRestricedModelViewsetMixin:
         obj.request = request
         obj.format_kwarg = None
         
+        cls.kwargs = kwargs
+        
         def pop_data(function) -> dict:
             def wrapper(*args, **kwargs):
                 kwargs['request'] = request
@@ -45,7 +47,7 @@ class UserStaffRestricedModelViewsetMixin:
                 setattr(obj, func, pop_data(getattr(obj, func)))
         return obj
         
-
+    
     def check_unallowed_args(self, kwargs):
         res = []
         for item in self.not_user_editable:

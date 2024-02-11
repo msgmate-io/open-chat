@@ -2,25 +2,96 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import response
 from rest_framework.pagination import PageNumberPagination
+from dataclasses import dataclass
 from typing import OrderedDict
+from rest_framework import serializers
+from drf_spectacular.utils import extend_schema
+from rest_framework_dataclasses.serializers import DataclassSerializer
+from dataclasses import field
 
+
+@dataclass
+class PaginatedResponseDataBase:
+    page_size: int = 40
+    pages_total: int = 1
+    items_total: int = 1
+    next_page: int = None
+    previous_page: int = None
+    first_page: int = 1
+
+@dataclass
+class PaginatedResponseData(PaginatedResponseDataBase):
+    results:list = field(default_factory=list) 
+    
+    def dict(self):
+        return self.__dict__.copy()
+    
+class PaginatedResponseSerializer(DataclassSerializer):
+    class Meta:
+        dataclass = PaginatedResponseData
 
 class AugmentedPagination(PageNumberPagination):
     page_size = 40
+    page_query_param = 'page'
+    page_size_query_param = 'page_size'
     max_page_size = 40
     
-    def get_paginated_response(self, data):
-        return response.Response(OrderedDict([
-            ('count', self.page.paginator.count),
-            ('next', self.get_next_link()),
-            ('previous', self.get_previous_link()),
-            ('results', data), # The  following are extras added by me:
-            ('page_size', self.page_size),
-            ('next_page', self.page.next_page_number() if self.page.has_next() else None),
-            ('previous_page', self.page.previous_page_number() if self.page.has_previous() else None),
-            ('last_page', self.page.paginator.num_pages),
-            ('first_page', 1),
-        ]))
+    def get_paginated_response(self, data, **kwargs):
+        return response.Response(PaginatedResponseData(
+            page_size=self.page_size,
+            pages_total=self.page.paginator.num_pages,
+            items_total=self.page.paginator.count,
+            first_page=1,
+            results=data,
+            next_page=self.page.next_page_number() if self.page.has_next() else None,
+            previous_page=self.page.previous_page_number() if self.page.has_previous() else None,
+        ).dict())
+        
+    
+    def get_paginated_response_schema(self, schema):
+
+        return {
+            'type': 'object',
+            'properties': {
+                'page_size': {
+                    'type': 'integer',
+                    'example': '40',
+                    'description': 'The number of items per page',
+                    'format': 'int32'
+                },
+                'pages_total': {
+                    'type': 'integer',
+                    'example': '1',
+                    'description': 'The total number of pages',
+                    'format': 'int32'
+                },
+                'items_total': {
+                    'type': 'integer',
+                    'example': '1',
+                    'description': 'The total number of items',
+                    'format': 'int32'
+                },
+                'next_page': {
+                    'type': 'integer',
+                    'example': '2',
+                    'description': 'The next page number',
+                    'format': 'int32'
+                },
+                'previous_page': {
+                    'type': 'integer',
+                    'example': '1',
+                    'description': 'The previous page number',
+                    'format': 'int32'
+                },
+                'first_page': {
+                    'type': 'integer',
+                    'example': '1',
+                    'description': 'The first page number',
+                    'format': 'int32'
+                },
+                'results': schema,
+            },
+        }
 
 class DetailedPaginationMixin(AugmentedPagination):
     pass
@@ -33,6 +104,8 @@ class UserStaffRestricedModelViewsetMixin:
         obj.request = request
         obj.format_kwarg = None
         
+        cls.kwargs = {**cls.kwargs, **kwargs}
+        
         def pop_data(function) -> dict:
             def wrapper(*args, **kwargs):
                 kwargs['request'] = request
@@ -44,8 +117,7 @@ class UserStaffRestricedModelViewsetMixin:
             if hasattr(obj, func):
                 setattr(obj, func, pop_data(getattr(obj, func)))
         return obj
-        
-
+    
     def check_unallowed_args(self, kwargs):
         res = []
         for item in self.not_user_editable:

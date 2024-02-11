@@ -7,6 +7,22 @@ from core.models.user import User
 from chat.models import Chat, Message
 from core.random_init import MESSAGES
 
+
+def maybe_populate_db():
+    
+    has_base_admin = False
+    try:
+        has_base_admin = base_admin_exists()
+    except Exception as e:
+        print("Error w", str(e), flush=True)
+    
+    if not has_base_admin:
+        from django.core.management import call_command
+        call_command('migrate', interactive=False)
+
+        get_or_create_base_admin()
+        get_or_create_test_users_and_chats()
+
 def base_admin_exists():
     return User.objects.filter(username=settings.BASE_ADMIN_USERNAME).exists()
 

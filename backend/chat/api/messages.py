@@ -88,8 +88,6 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         )
         
         serialized_message = self.serializer_class(message).data
-
-        InParti
         
         #TODO: re-integrate callbacks
         #callbacks.message_incoming(request.user, message)

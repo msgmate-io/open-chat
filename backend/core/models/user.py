@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from core.models.profile import UserProfile
 from core.models.settings import UserSetting
+from rest_framework import serializers
 
 class UserManager(BaseUserManager):
     def create(self, password, **kwargs):
@@ -25,7 +26,7 @@ class UserManager(BaseUserManager):
 
         user = self.create(password, **kwargs)
         return user
-
+    
 
 class User(AbstractUser):
     objects = UserManager()
@@ -38,3 +39,13 @@ class User(AbstractUser):
         'UserProfile', on_delete=models.CASCADE, related_name="user_profile", null=True)
     settings = models.OneToOneField(
         'UserSetting', on_delete=models.CASCADE, related_name="user_settings", null=True)
+    
+class UserSelfSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'uuid', 'email',  'is_staff', 'is_superuser', 'date_joined', 'last_login', 'automated']
+
+class UserFieldsSeralizer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'uuid', 'email', 'first_name', 'last_name', 'is_staff', 'is_superuser', 'date_joined', 'last_login', 'automated']
