@@ -15,7 +15,9 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const dispatch = useDispatch();
-  const [socketUrl, setSocketUrl] = useState(CORE_WS_SHEME + window.location.host + CORE_WS_PATH);
+  const [socketUrl, setSocketUrl] = useState(
+    CORE_WS_SHEME + window.location.host + CORE_WS_PATH
+  );
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
@@ -25,7 +27,7 @@ const WebsocketBridge = () => {
       const message = JSON.parse(lastMessage.data);
       console.log("CORE SOCKET:", message);
       if (message.event === "reduction") {
-          // TODO:
+        // TODO:
       }
     }
   }, [lastMessage, setMessageHistory]);
@@ -43,4 +45,3 @@ const WebsocketBridge = () => {
 };
 
 export default WebsocketBridge;
-

@@ -7,6 +7,7 @@ import { StatusTypes } from "../types";
 
 export const initialState: MessagesState = {
   status: StatusTypes.EMPTY,
+  selectedChatId: null,
   errors: null,
   chat: {},
 };

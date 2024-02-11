@@ -1,22 +1,15 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { ChatList } from "../../../atoms/chat/chat-list";
-import { ChatView } from "../../../atoms/chat/chat-view";
-import { ChatBox } from "../../../atoms/chat/base";
-import { useApi } from "../../api/client";
+import React from "react";
+import ChatLayout from "../../../ui/chat/ChatLayout";
+import ChatList from "../../../ui/chat/ChatList";
+import ChatView from "../../../ui/chat/ChatView";
 
 export default Page;
 
 function Page() {
-  const api = useApi();
-  const chats = useSelector((state) => state.chats);
-
-  console.log();
-
   return (
-    <ChatBox>
+    <ChatLayout>
       <ChatList />
       <ChatView />
-    </ChatBox>
+    </ChatLayout>
   );
 }

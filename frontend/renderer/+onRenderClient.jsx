@@ -5,7 +5,7 @@ import { PageShell } from "./PageShell";
 import { getStore } from "../store/reducer";
 import { useState, useEffect } from "react";
 import { Provider } from "react-redux";
-import WebsocketBridge from "../atoms/websocket-bridge";
+import WebsocketBridge from "../WebsocketBridge";
 import { number } from "prop-types";
 import Cookies from "js-cookie";
 import { PageContextProvider } from "./usePageContext";
