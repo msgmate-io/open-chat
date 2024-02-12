@@ -23,6 +23,7 @@ async function onBeforeRender(pageContext) {
 
   const initChatState: ChatsState = {
     ...chatsList,
+    selectedChat: null,
     status: StatusTypes.LOADED,
     errors: null,
   };

@@ -1,6 +1,8 @@
 export default ChatListItem;
 
+import { useDispatch } from "react-redux";
 import { ChatResult } from "../../api/api";
+import { selectChat } from "../../store/chats/api";
 import React from "react";
 
 function ChatListItem({
@@ -10,6 +12,8 @@ function ChatListItem({
   chat: ChatResult;
   isSelected: boolean;
 }) {
+  const dispatch = useDispatch();
+
   return (
     <li
       key={chat.uuid}
@@ -17,7 +21,11 @@ function ChatListItem({
         isSelected ? "text-base-content shadow-inner border-2" : "shadow-md"
       }`}
     >
-      <a href={`/chat/${chat.uuid}/`}>
+      <a
+        onClick={() => {
+          selectChat(chat, dispatch);
+        }}
+      >
         <div className="flex flex-row justify-center content-center items-center">
           <div className="avatar">
             <div className="w-10 rounded-xl">

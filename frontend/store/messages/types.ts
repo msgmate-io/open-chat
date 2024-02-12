@@ -4,7 +4,7 @@ import { StatusTypes } from "../types";
 export interface MessagesState {
   status: StatusTypes;
   errors: string[] | string | null;
-  selectedChatId: string | null;
+  messages: PaginatedMessageList | null;
   chat: {
     [chatId: string]: PaginatedMessageList;
   };

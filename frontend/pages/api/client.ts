@@ -29,7 +29,6 @@ export function getApiServer(pageContext: any) {
 
 export function useApi() {
   const pageContext = useSelector((state: any) => state.pageContext);
-  console.log("PAGE CONTEXT", pageContext);
 
   return getApi({
     cookie: pageContext.cookie,

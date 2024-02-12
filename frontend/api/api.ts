@@ -9,15 +9,6 @@
  * ---------------------------------------------------------------
  */
 
-export interface Chat {
-  u1: number;
-  u2: number;
-  /** @format date-time */
-  created: string;
-  /** @format uuid */
-  uuid: string;
-}
-
 export interface ChatResult {
   /** @format date-time */
   created: string;
@@ -105,18 +96,42 @@ export interface PaginatedChatResultList {
 }
 
 export interface PaginatedMessageList {
-  /** @example 123 */
-  count?: number;
   /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=4"
+   * The first page number
+   * @format int32
+   * @example "1"
    */
-  next?: string | null;
+  first_page?: number;
   /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=2"
+   * The total number of items
+   * @format int32
+   * @example "1"
    */
-  previous?: string | null;
+  items_total?: number;
+  /**
+   * The next page number
+   * @format int32
+   * @example "2"
+   */
+  next_page?: number;
+  /**
+   * The number of items per page
+   * @format int32
+   * @example "40"
+   */
+  page_size?: number;
+  /**
+   * The total number of pages
+   * @format int32
+   * @example "1"
+   */
+  pages_total?: number;
+  /**
+   * The previous page number
+   * @format int32
+   * @example "1"
+   */
+  previous_page?: number;
   results?: Message[];
 }
 
@@ -150,15 +165,6 @@ export interface PaginatedUserSelfList {
    */
   previous?: string | null;
   results?: UserSelf[];
-}
-
-export interface PatchedChat {
-  u1?: number;
-  u2?: number;
-  /** @format date-time */
-  created?: string;
-  /** @format uuid */
-  uuid?: string;
 }
 
 export interface PatchedMessage {
@@ -203,12 +209,6 @@ export interface PatchedUserSelf {
   is_superuser?: boolean;
   /** @format date-time */
   last_login?: string | null;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @maxLength 150
-   * @pattern ^[\w.@+-]+$
-   */
-  username?: string;
   /** @format uuid */
   uuid?: string;
 }
@@ -268,12 +268,6 @@ export interface UserSelf {
   is_superuser?: boolean;
   /** @format date-time */
   last_login?: string | null;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @maxLength 150
-   * @pattern ^[\w.@+-]+$
-   */
-  username: string;
   /** @format uuid */
   uuid: string;
 }
@@ -523,53 +517,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Simple Viewset for modifying user profiles
      *
      * @tags chats
-     * @name ChatsPartialUpdate
-     * @request PATCH:/api/chats/{id}/
-     * @secure
-     */
-    chatsPartialUpdate: (id: string, data: PatchedChat, params: RequestParams = {}) =>
-      this.request<Chat, any>({
-        path: `/api/chats/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags chats
      * @name ChatsRetrieve
-     * @request GET:/api/chats/{id}/
+     * @request GET:/api/chats/{chat_uuid}/
      * @secure
      */
-    chatsRetrieve: (id: string, params: RequestParams = {}) =>
-      this.request<Chat, any>({
-        path: `/api/chats/${id}/`,
+    chatsRetrieve: (chatUuid: string, params: RequestParams = {}) =>
+      this.request<ChatResult, any>({
+        path: `/api/chats/${chatUuid}/`,
         method: "GET",
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags chats
-     * @name ChatsUpdate
-     * @request PUT:/api/chats/{id}/
-     * @secure
-     */
-    chatsUpdate: (id: string, data: Chat, params: RequestParams = {}) =>
-      this.request<Chat, any>({
-        path: `/api/chats/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

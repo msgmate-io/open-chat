@@ -8,16 +8,11 @@ import { UserState } from "../../../store/user/types";
 export default onBeforeRender;
 
 async function onBeforeRender(pageContext) {
+  console.log("pageContext", pageContext);
   const api = getApiServer(pageContext);
   const chatsList = await api.chatsList({
     page: 1,
   });
-
-  const initChatState: ChatsState = {
-    ...chatsList,
-    status: StatusTypes.LOADED,
-    errors: null,
-  };
 
   const user = await api.userRetrieve();
 
@@ -28,20 +23,41 @@ async function onBeforeRender(pageContext) {
   };
 
   const chatId = pageContext.routeParams.chatId;
-  const chat = chatId ? await api.messagesList2({ chatUuid: chatId }) : null;
+  const chatMessages = chatId
+    ? await api.messagesList2({ chatUuid: chatId })
+    : null;
 
   // Todo: correctly handle errors
 
   const initMessagesState: MessagesState = {
     status: StatusTypes.LOADED,
-    selectedChatId: chatId,
+    messages: chatMessages,
     errors: null,
     chat:
-      chatId && chat
+      chatId && chatMessages
         ? {
-            [chatId]: chat,
+            [chatId]: chatMessages,
           }
         : {},
+  };
+
+  // if currently selected chat is not in the list we need to also fetch it
+  const selectedChatFetched = chatsList.results?.find(
+    (chat) => chat.uuid === chatId
+  );
+
+  let selectedChat = selectedChatFetched ? selectedChatFetched[0] : null;
+
+  if (!selectedChat && chatId) {
+    selectedChat = await api.chatsRetrieve(chatId);
+    console.log("selectedChat", selectedChat);
+  }
+
+  const initChatState: ChatsState = {
+    ...chatsList,
+    selectedChat,
+    status: StatusTypes.LOADED,
+    errors: null,
   };
 
   return {
