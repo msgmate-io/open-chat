@@ -23,6 +23,14 @@ chat_api_user_list = api.chats.ChatsModelViewSet.as_view({
     'get': 'list',
 })
 
+chat_api_user_get = api.chats.ChatsModelViewSet.as_view({
+    'get': 'retrieve',
+})
+
+chat_api_user_get2 = api.chats.ChatsModelViewSet.as_view({
+    'get': 'get_by_uuid',
+})
+
 
 chat_api_user = api.chats.ChatsModelViewSet.as_view({
     'get': 'retrieve',
@@ -33,7 +41,7 @@ chat_api_user = api.chats.ChatsModelViewSet.as_view({
 
 urlpatterns = [
     path("api/chats/", chat_api_user_list),
-    path("api/chats/<str:pk>/", chat_api_user),
+    path("api/chats/<str:chat_uuid>/", chat_api_user_get2),
 
     path("api/messages/", messages_api_user_list),
     path("api/messages/<str:chat_uuid>/send/", messages_api_user_send),

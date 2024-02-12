@@ -6,7 +6,7 @@ from typing import OrderedDict
 
 
 class AugmentedPagination(PageNumberPagination):
-    page_size = 40
+    page_size = 5
     max_page_size = 40
     
     def get_paginated_response(self, data):

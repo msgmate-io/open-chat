@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from chat.models import Message, MessageSerializer, Chat
 from rest_framework.pagination import PageNumberPagination
-from chat.api.viewsets import UserStaffRestricedModelViewsetMixin
+from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, DetailedPaginationMixin
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from chat.consumers.messages import InPartialMessage
@@ -26,7 +26,7 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
     not_user_editable = MessageSerializer.Meta.fields # For users all fields are ready only on this one!
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = StandardResultsSetPagination
+    pagination_class = DetailedPaginationMixin
     queryset = Message.objects.all().order_by("-created")
     resp_chat_403 = Response({'error': 'Chat doesn\'t exist or you have no permission to interact with it!'}, status=403)
     

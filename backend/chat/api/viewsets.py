@@ -12,7 +12,7 @@ from dataclasses import field
 
 @dataclass
 class PaginatedResponseDataBase:
-    page_size: int = 40
+    page_size: int = 5
     pages_total: int = 1
     items_total: int = 1
     next_page: int = None
@@ -31,7 +31,7 @@ class PaginatedResponseSerializer(DataclassSerializer):
         dataclass = PaginatedResponseData
 
 class AugmentedPagination(PageNumberPagination):
-    page_size = 40
+    page_size = 5
     page_query_param = 'page'
     page_size_query_param = 'page_size'
     max_page_size = 40
@@ -120,8 +120,8 @@ class UserStaffRestricedModelViewsetMixin:
     
     def check_unallowed_args(self, kwargs):
         res = []
-        for item in self.not_user_editable:
-            if item in kwargs:
+        for item in kwargs:
+            if not item in self.user_editable:
                 res.append(item)
         return res
     
@@ -142,6 +142,8 @@ class UserStaffRestricedModelViewsetMixin:
             return super().get_queryset().get(uuid=self.kwargs["pk"])
 
     def update(self, request, *args, **kwargs):
+        
+        print("CALLING UPDATE", request.data)
         if not request.user.is_staff:
             unallowed_args = self.check_unallowed_args(request.data)
             if len(unallowed_args) > 0:
