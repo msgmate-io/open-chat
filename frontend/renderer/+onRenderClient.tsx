@@ -32,17 +32,53 @@ export function mergeReduxState(state: RootState, newState: RootState) {
     .concat(prevChatRes);
 
   // If a check is selected we may try to merge the messages.chat[chatId].results
-  const currentMessageResults = state.messages.messages?.results || [];
-  const newMessageResults = newState.messages.messages?.results || [];
-  const mergedMessageResults = currentMessageResults
-    .filter((message) => {
-      return !newMessageResults.some(
-        (newMessage) => newMessage.uuid === message.uuid
-      );
-    })
-    .concat(newMessageResults);
+  let mergedMessageRes: any = null;
+  let prevMessages: any = null;
+  let prevPagination: any = null;
+  const newSelectedChat = newState.chats.selectedChat;
+  if (newSelectedChat) {
+    prevPagination = state.messages.chat[newSelectedChat?.uuid];
+    prevMessages = prevPagination?.results;
+    if (prevMessages) {
+      console.log("PREV MESSAGES", prevMessages);
+      const newMessages =
+        newState.messages.chat[newSelectedChat?.uuid]?.results || [];
 
-  // now re-order them as the ssr results might come in a different order
+      mergedMessageRes = newMessages.concat(
+        prevMessages.filter((message) => {
+          return !newMessages.some(
+            (newMessage) => newMessage.uuid === message.uuid
+          );
+        })
+      );
+
+      // new messages always concatinated to the start as we per default alsways load page=1
+    }
+  }
+
+  let mergedMessages = {
+    ...state.messages,
+    ...newState.messages,
+    chat: {
+      ...state.messages.chat,
+      ...newState.messages.chat,
+    },
+    messages: {
+      ...state.messages.messages,
+      ...newState.messages.messages,
+    },
+  };
+
+  if (mergedMessageRes) {
+    console.log("STATE merged Pagination", prevPagination);
+    const updatedChatMessages = {
+      ...prevPagination, // if an old state exists it contains the current pagination
+      results: mergedMessageRes,
+    };
+
+    mergedMessages.chat[newSelectedChat?.uuid] = updatedChatMessages;
+    mergedMessages.messages = updatedChatMessages;
+  }
 
   return {
     ...state,
@@ -52,15 +88,7 @@ export function mergeReduxState(state: RootState, newState: RootState) {
       selectedChat: newState.chats.selectedChat,
       results: mergeChatRes,
     },
-    messages: {
-      ...state.messages,
-      ...newState.messages,
-      messages: {
-        ...state.messages.messages,
-        ...newState.messages.messages,
-        results: mergedMessageResults,
-      },
-    },
+    messages: mergedMessages,
   };
 }
 
@@ -100,6 +128,10 @@ async function render(pageContext) {
     // normal client side rendering
     const state = store.getState();
     const newState = mergeReduxState(state, pageContext.INJECT_REDUX_STATE);
+    console.log("STATE MERGE AFTER FRONTEND NAVIGATION ===== ");
+    console.log("STATE OLD", state);
+    console.log("STATE NEW", pageContext.INJECT_REDUX_STATE);
+    console.log("STATE MERGED", newState);
     store = getStore(newState);
     globalStore = store;
   }
