@@ -17,11 +17,14 @@ export async function fetchMessages(
   chat: ChatResult,
   messages: MessagesState
 ) {
-  if (messages.status === StatusTypes.LOADING) {
+  if (
+    messages.status === StatusTypes.LOADING ||
+    messages.status === StatusTypes.LOADING_MORE
+  ) {
     console.warn("'fetchMessages' is already running");
     return;
   }
-  await dispatch(updateStatus(StatusTypes.LOADING));
+  await dispatch(updateStatus(StatusTypes.LOADING_MORE));
   const pagesTotal = messages.messages?.pages_total || 1;
   const currentPage = messages.messages?.next_page
     ? messages.messages?.next_page - 1

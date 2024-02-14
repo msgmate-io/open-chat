@@ -9,7 +9,7 @@ export interface ChatsState extends PaginatedChatResultList {
 }
 
 export interface ChatsStatusAction {
-  type: ChatsActionTypes.UPDATE_STATUS;
+  type: ChatsActionTypes.UPDATE_STATUS_CHATS;
   payload: StatusTypes;
 }
 
@@ -24,7 +24,7 @@ export interface ChatsSelectAction {
 }
 
 export enum ChatsActionTypes {
-  UPDATE_STATUS = "UPDATE_STATUS",
+  UPDATE_STATUS_CHATS = "UPDATE_STATUS_CHATS",
   SELECT_CHAT = "SELECT_CHAT",
   FETCH_CHATS = "FETCH_CHATS",
 }

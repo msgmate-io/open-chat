@@ -6,17 +6,20 @@ import { selectChat } from "../../store/chats/api";
 import { RootState } from "../../store/reducer";
 import React from "react";
 
-function ChatListItem({
-  chat,
-  isSelected,
-}: {
-  chat: ChatResult;
-  isSelected: boolean;
-}) {
+function ChatListItem({ chatUuid }: { chatUuid: string }) {
   const dispatch = useDispatch();
+  const chat = useSelector((state: RootState) => {
+    return state.chats.results?.find((chat) => chat.uuid === chatUuid);
+  });
   const selectedChat = useSelector(
     (state: RootState) => state.chats.selectedChat
   );
+
+  const isSelected = chat?.uuid === selectedChat?.uuid;
+
+  if (!chat) {
+    return <h1>No chat to display</h1>;
+  }
 
   return (
     <li

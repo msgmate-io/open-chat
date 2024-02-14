@@ -1,11 +1,18 @@
 import { THEMES, ChangeThemeAction, LocalSettingsActionTypes } from "./types";
 
-interface LocalSettingsState {
+export enum ChatListViews {
+  LIST = "list",
+  PROFILE = "profile",
+}
+
+export interface LocalSettingsState {
   theme: THEMES;
+  selectedChatListView: ChatListViews;
 }
 
 const initialState: LocalSettingsState = {
   theme: THEMES.DARK,
+  selectedChatListView: ChatListViews.LIST,
 };
 
 type Action = ChangeThemeAction;

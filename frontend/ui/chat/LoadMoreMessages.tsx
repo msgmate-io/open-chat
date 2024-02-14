@@ -6,12 +6,18 @@ import { fetchChats } from "../../store/chats/api";
 import { useApi } from "../../pages/api/client";
 import { RootState } from "../../store/reducer";
 import { fetchMessages } from "../../store/messages/api";
+import { StatusTypes } from "../../store/types";
 
 function LoadMoreMessages() {
   const messages = useSelector((state: RootState) => state.messages);
   const selectedChat = useSelector(
     (state: RootState) => state.chats.selectedChat
   );
+
+  const messagesStatus = useSelector(
+    (state: RootState) => state.messages.status
+  );
+
   const api = useApi();
   const dispatch = useDispatch();
 
@@ -29,7 +35,7 @@ function LoadMoreMessages() {
       <button
         className={`btn btn-sm btn-neutral w-full p-2 ${
           moreMessagesToLoad ? "" : "btn-disabled"
-        }`}
+        } ${messagesStatus === StatusTypes.LOADING_MORE ? "btn-disabled" : ""}`}
         disabled={!moreMessagesToLoad}
         onClick={() => {
           fetchMessages(api, dispatch, selectedChat!, messages!);

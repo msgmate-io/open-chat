@@ -8,7 +8,7 @@ import { MessagesActionTypes } from "../messages/types";
 
 export async function updateStatus(status: StatusTypes, dispatch: any) {
   dispatch({
-    type: ChatsActionTypes.UPDATE_STATUS,
+    type: ChatsActionTypes.UPDATE_STATUS_CHATS,
     payload: status,
   });
 }
@@ -19,12 +19,16 @@ export async function selectChat(
   dispatch: any
 ) {
   await updateStatus(StatusTypes.LOADING, dispatch);
+  await dispatch({
+    type: MessagesActionTypes.UPDATE_STATUS,
+    payload: StatusTypes.LOADING,
+  });
   if (curSelectedChat?.uuid === chat.uuid) {
     await dispatch({
       type: ChatsActionTypes.SELECT_CHAT,
       payload: null,
     });
-    navigate(`/chat/`);
+    navigate(`/chat`);
   } else {
     await dispatch({
       type: ChatsActionTypes.SELECT_CHAT,
@@ -32,6 +36,10 @@ export async function selectChat(
     });
     navigate(`/chat/${chat.uuid}`);
   }
+  await dispatch({
+    type: MessagesActionTypes.UPDATE_STATUS,
+    payload: StatusTypes.LOADED,
+  });
   await updateStatus(StatusTypes.LOADED, dispatch);
 }
 
@@ -40,7 +48,7 @@ export async function fetchChats(
   dispatch: any,
   query: ChatsListParams
 ) {
-  await updateStatus(StatusTypes.LOADING, dispatch);
+  await updateStatus(StatusTypes.LOADING_MORE, dispatch);
   const res = await api.chatsList(query);
   await dispatch({
     type: ChatsActionTypes.FETCH_CHATS,

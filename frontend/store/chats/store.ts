@@ -21,7 +21,7 @@ export function chatsReducer(
   action: Action
 ): ChatsState {
   switch (action.type) {
-    case ChatsActionTypes.UPDATE_STATUS:
+    case ChatsActionTypes.UPDATE_STATUS_CHATS:
       return {
         ...state,
         status: action.payload,

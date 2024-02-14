@@ -33,6 +33,7 @@ async function onBeforeRender(pageContext) {
       INJECT_REDUX_STATE: {
         chats: initChatState,
         user: initialUserState,
+        messages: initialState, // we don't have any messages selected!
       },
     },
   };
