@@ -28,7 +28,6 @@ async function onBeforeRender(pageContext) {
     : null;
 
   // Todo: correctly handle errors
-
   const initMessagesState: MessagesState = {
     status: StatusTypes.LOADED,
     messages: chatMessages,
@@ -46,11 +45,12 @@ async function onBeforeRender(pageContext) {
     (chat) => chat.uuid === chatId
   );
 
-  let selectedChat = selectedChatFetched ? selectedChatFetched[0] : null;
-
+  let selectedChat = selectedChatFetched ? selectedChatFetched : null;
+  let injectSelectedChat: any[] = [];
   if (!selectedChat && chatId) {
     try {
       selectedChat = await api.chatsRetrieve(chatId);
+      injectSelectedChat.push(selectedChat);
     } catch (e) {
       console.error("Error fetching selected chat", e);
     }
@@ -58,6 +58,7 @@ async function onBeforeRender(pageContext) {
 
   const initChatState: ChatsState = {
     ...chatsList,
+    results: [...(chatsList.results || []), ...injectSelectedChat],
     selectedChat,
     status: StatusTypes.LOADED,
     errors: null,

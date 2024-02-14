@@ -5,3 +5,12 @@ export interface UserState extends UserSelf {
   status: StatusTypes;
   errors: string[] | string | null;
 }
+
+export enum UserActionTypes {
+  UPDATE_USER = "UPDATE_USER",
+}
+
+export interface UpdateUserAction {
+  type: UserActionTypes.UPDATE_USER;
+  payload: UserSelf;
+}

@@ -1,8 +1,9 @@
 export default ChatListItem;
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ChatResult } from "../../api/api";
 import { selectChat } from "../../store/chats/api";
+import { RootState } from "../../store/reducer";
 import React from "react";
 
 function ChatListItem({
@@ -13,6 +14,9 @@ function ChatListItem({
   isSelected: boolean;
 }) {
   const dispatch = useDispatch();
+  const selectedChat = useSelector(
+    (state: RootState) => state.chats.selectedChat
+  );
 
   return (
     <li
@@ -23,7 +27,7 @@ function ChatListItem({
     >
       <a
         onClick={() => {
-          selectChat(chat, dispatch);
+          selectChat(chat, selectedChat, dispatch);
         }}
       >
         <div className="flex flex-row justify-center content-center items-center">

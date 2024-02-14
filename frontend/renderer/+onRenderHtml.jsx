@@ -29,8 +29,18 @@ async function onRenderHtml(pageContext) {
   PRELOADED_STATE = {
     ...PRELOADED_STATE,
     pageContext: {
-      cookie: pageContext.requestHeaders.cookie.toString(),
-      xcsrfToken: pageContext.xcsrfToken.toString(),
+      cookie: pageContext.requestHeaders.cookie
+        ? pageContext.requestHeaders.cookie.toString()
+        : "",
+      xcsrfToken: pageContext.xcsrfToken
+        ? pageContext.xcsrfToken.toString()
+        : "",
+      themeCookie: pageContext.themeCookie
+        ? pageContext.themeCookie.toString()
+        : "light",
+      urlPathname: pageContext.urlPathname
+        ? pageContext.urlPathname.toString()
+        : "",
     },
   };
 
@@ -52,9 +62,13 @@ async function onRenderHtml(pageContext) {
   const desc =
     (documentProps && documentProps.description) || "App using Vite + Vike";
 
-  const theme = store.getState().localSettings.theme
-    ? store.getState().localSettings.theme
-    : "light";
+  // We might also be able to already extract the theme from cookie heder:
+  console.log(
+    pageContext.requestHeaders.cookie,
+    pageContext.themeCookie,
+    "COOK"
+  );
+  const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en" data-theme="${theme}">

@@ -66,7 +66,6 @@ async function render(pageContext) {
   const page = (
     <PageShell pageContext={pageContext}>
       <Provider store={store}>
-        <WebsocketBridge />
         <Page {...pageProps} />
       </Provider>
     </PageShell>

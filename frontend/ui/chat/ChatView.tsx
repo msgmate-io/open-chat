@@ -18,7 +18,7 @@ export function ChatView() {
       id="chatView"
       className={`w-full h-full bg-base-100 rounded-xl p-1 relative ${
         selectedChat ? "" : "hidden md:block"
-      }  transition-all [&.page-is-transitioning]:scale-50 [&.page-is-transitioning]:blur-sm duration-500 [&.page-is-transitioning]:duration-0 ease-in-out`}
+      }  transition-all [&.page-is-transitioning]:scale-95 [&.page-is-transitioning]:blur-xl`}
     >
       <div className="flex flex-col h-full relative">
         <ChatViewNav />

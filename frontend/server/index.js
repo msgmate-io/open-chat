@@ -55,11 +55,13 @@ async function startServer() {
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.all("*", async (req, res, next) => {
+    console.log("Request received", req.cookies);
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       requestBody: req.body,
       requestHeaders: req.headers,
       cookies: req.headers.cookie,
+      themeCookie: req.cookies["localSettings_Theme"] || null,
       xcsrfToken: req.cookies["csrftoken"],
       sessionId: req.cookies["sessionid"] || null,
     };
