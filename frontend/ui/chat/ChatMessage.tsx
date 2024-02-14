@@ -30,7 +30,6 @@ function ChatMessage({ message, isSelf }) {
                 code(props) {
                   const { children, className, node, ...rest } = props;
                   const match = /language-(\w+)/.exec(className || "");
-                  console.log("CODE", match);
                   return (
                     <SyntaxHighlighter
                       language={match ? match[1] : null}

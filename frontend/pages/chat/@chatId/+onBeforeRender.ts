@@ -24,7 +24,7 @@ async function onBeforeRender(pageContext) {
 
   const chatId = pageContext.routeParams.chatId;
   const chatMessages = chatId
-    ? await api.messagesList2({ chatUuid: chatId })
+    ? await api.messagesList2({ chatUuid: chatId, page_size: 20 })
     : null;
 
   // Todo: correctly handle errors
@@ -49,8 +49,11 @@ async function onBeforeRender(pageContext) {
   let selectedChat = selectedChatFetched ? selectedChatFetched[0] : null;
 
   if (!selectedChat && chatId) {
-    selectedChat = await api.chatsRetrieve(chatId);
-    console.log("selectedChat", selectedChat);
+    try {
+      selectedChat = await api.chatsRetrieve(chatId);
+    } catch (e) {
+      console.error("Error fetching selected chat", e);
+    }
   }
 
   const initChatState: ChatsState = {

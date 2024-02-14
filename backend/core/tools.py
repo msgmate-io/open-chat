@@ -41,7 +41,7 @@ first_names = ["John", "Emma", "Jake", "Sophia", "Alexander", "Olivia", "George"
 last_names = ["Smith", "Johnson", "Wilson", "Brown", "Jones", "Davis", "Miller", "Thomas", "Garcia", "Rodriguez", "Martin", "Thompson", "Taylor", "Harris", "Jackson", "White", "Young", "Turner", "Perez", "Morris"]
 
 test_users = [{"first_name": f, "second_name": l} for f, l in zip(first_names, last_names)]
-#test_users = test_users[:5]
+# test_users = test_users
 
 base_user_name = "testUser"
 
@@ -78,7 +78,7 @@ def get_or_create_test_users_and_chats():
         u2 = users[uid2]
         example_chat = Chat.get_or_create_chat(u1, u2)
         if(example_chat.get_messages().count() == 0):
-            amnt_messages = randint(5, 15)
+            amnt_messages = randint(20, 60)
             for i in range(amnt_messages):
                 sender = ([u1, u2])[randint(0, 1)]
                 receiver = u2 if sender == u1 else u1
@@ -86,7 +86,7 @@ def get_or_create_test_users_and_chats():
                 names_sender = [sender.profile.first_name , sender.profile.second_name]
                 names_receiver = [receiver.profile.first_name , receiver.profile.second_name]
                 try:
-                    text = text.format(first_name=names_sender[randint(0,1)], second_name=names_receiver[randint(0,1)])
+                    text = f"MSG:{i}" + text.format(first_name=names_sender[randint(0,1)], second_name=names_receiver[randint(0,1)])
                 except:
                     pass
                 message = Message.objects.create(

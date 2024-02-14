@@ -6,37 +6,7 @@ import { RootState } from "../../store/reducer";
 import { StatusTypes } from "../../store/types";
 import ThemeSelector from "../atoms/ThemeSelector";
 import ChatListItem from "./ChatListItem";
-import { fetchChats } from "../../store/chats/api";
-import { PaginatedChatResultList } from "../../api/api";
-import { useApi } from "../../pages/api/client";
-
-function LoadMoreChats() {
-  const chats = useSelector((state: RootState) => state.chats);
-  const api = useApi();
-  const dispatch = useDispatch();
-
-  const pagesTotal = chats.pages_total || 1;
-  const currentPage = chats.next_page ? chats.next_page - 1 : pagesTotal;
-  const pagesLeft = pagesTotal - currentPage;
-
-  const moreMessagesToLoad = chats.next_page !== null;
-
-  return (
-    <div className="w-full flex flex-row px-5">
-      <button
-        className={`btn btn-sm btn-neutral w-full p-2 ${
-          moreMessagesToLoad ? "" : "btn-disabled"
-        }`}
-        disabled={!moreMessagesToLoad}
-        onClick={() => {
-          fetchChats(api, dispatch, { page: currentPage + 1 });
-        }}
-      >
-        Load more ( {pagesLeft} pages left )
-      </button>
-    </div>
-  );
-}
+import LoadMoreChats from "./LoadMoreChats";
 
 function ChatList() {
   const chats = useSelector((state: RootState) => state.chats);

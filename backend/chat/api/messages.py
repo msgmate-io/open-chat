@@ -27,7 +27,7 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = DetailedPaginationMixin
-    queryset = Message.objects.all().order_by("-created")
+    queryset = Message.objects.all().order_by("created")
     resp_chat_403 = Response({'error': 'Chat doesn\'t exist or you have no permission to interact with it!'}, status=403)
     
     def filter_queryset(self, queryset):
@@ -43,7 +43,7 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
     
     def get_queryset(self):
         if not self.request.user.is_staff:
-            return Message.objects.filter(chat__in=Chat.get_chats(self.request.user)).order_by("-created")
+            return Message.objects.filter(chat__in=Chat.get_chats(self.request.user)).order_by("created")
         else:
             return self.queryset
         

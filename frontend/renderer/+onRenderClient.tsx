@@ -30,6 +30,20 @@ export function mergeReduxState(state: RootState, newState: RootState) {
       return !prevChatRes.some((prevChat) => prevChat.uuid === chat.uuid);
     })
     .concat(prevChatRes);
+
+  // If a check is selected we may try to merge the messages.chat[chatId].results
+  const currentMessageResults = state.messages.messages?.results || [];
+  const newMessageResults = newState.messages.messages?.results || [];
+  const mergedMessageResults = currentMessageResults
+    .filter((message) => {
+      return !newMessageResults.some(
+        (newMessage) => newMessage.uuid === message.uuid
+      );
+    })
+    .concat(newMessageResults);
+
+  // now re-order them as the ssr results might come in a different order
+
   return {
     ...state,
     ...newState,
@@ -37,6 +51,15 @@ export function mergeReduxState(state: RootState, newState: RootState) {
       ...state.chats, // we keep the old chat pagination
       selectedChat: newState.chats.selectedChat,
       results: mergeChatRes,
+    },
+    messages: {
+      ...state.messages,
+      ...newState.messages,
+      messages: {
+        ...state.messages.messages,
+        ...newState.messages.messages,
+        results: mergedMessageResults,
+      },
     },
   };
 }
