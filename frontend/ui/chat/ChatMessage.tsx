@@ -6,9 +6,9 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import atomdark from "react-syntax-highlighter/dist/cjs/styles/prism/atom-dark";
 import MessageOptions from "./MessageOptions";
 
-function ChatMessage({ message, isSelf }) {
+function ChatMessage({ message, isSelf, isTmpMessage = false }) {
   return (
-    <div className={`max-w-full relative`}>
+    <div className={`relative`}>
       <div className="flex flex-col relative">
         <div
           className={`flex flex-row content-center items-center pt-1 relative ${
@@ -16,8 +16,8 @@ function ChatMessage({ message, isSelf }) {
           }`}
         >
           <div
-            className={`w-fit bg-base-300 p-1 px-2 rounded-xl relative group hover:bg-secondary-content max-w-full shadow-md ${
-              message.read ? "" : "border border-primary"
+            className={`w-fit bg-base-300 p-1 px-2 rounded-xl relative group hover:bg-base-200 max-w-screen-lg shadow-md ${
+              message.read ? "" : ""
             }`}
           >
             <MessageOptions message={message} />
@@ -43,7 +43,13 @@ function ChatMessage({ message, isSelf }) {
             >
               {message.text}
             </Markdown>
-            <div className="flex flex-row justify-end text-xs">
+            <div className="flex flex-row justify-end text-xs gap-2">
+              {!message?.read && (
+                <div className="badge badge-outline badge-info">unread</div>
+              )}
+              {isTmpMessage && (
+                <div className="badge badge-outline badge-info">sending</div>
+              )}
               {new Date(message.created)
                 .toISOString()
                 .slice(0, 19)

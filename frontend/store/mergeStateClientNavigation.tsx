@@ -1,4 +1,5 @@
 import { RootState } from "./reducer";
+import { StatusTypes } from "./types";
 
 export function mergeReduxState(state: RootState, newState: RootState) {
   const prevChatRes = state.chats.results ? state.chats.results : [];
@@ -59,14 +60,26 @@ export function mergeReduxState(state: RootState, newState: RootState) {
     mergedMessages.messages = updatedChatMessages;
   }
 
+  let mergedChat = {
+    ...state.chats,
+    ...newState.chats,
+    results: mergeChatRes,
+  };
+
+  if (state.chats.status === StatusTypes.LOADED) {
+    mergedChat = {
+      ...newState.chats,
+      ...state.chats,
+      selectedChat: newState.chats.selectedChat,
+      status: StatusTypes.LOADED,
+      results: mergeChatRes,
+    };
+  }
+
   return {
     ...state,
     ...newState,
-    chats: {
-      ...state.chats, // we keep the old chat pagination
-      selectedChat: newState.chats.selectedChat,
-      results: mergeChatRes,
-    },
+    chats: mergedChat,
     messages: mergedMessages,
   };
 }

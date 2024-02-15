@@ -4,6 +4,7 @@ import { chatsReducer } from "./chats/store";
 import { pageContextReducer } from "./pageContext/store";
 import { combineReducers } from "redux";
 import { userReducer } from "./user/store";
+import { tmpMessagesReducer } from "./tmpMessages/store";
 import * as toolkitRaw from "@reduxjs/toolkit";
 const { configureStore } = toolkitRaw.default ?? toolkitRaw;
 
@@ -11,6 +12,7 @@ export const rootReducer = combineReducers({
   messages: messagesReducer,
   chats: chatsReducer,
   user: userReducer,
+  tmpMessages: tmpMessagesReducer,
   localSettings: localSettingsReducer,
   pageContext: pageContextReducer,
 });

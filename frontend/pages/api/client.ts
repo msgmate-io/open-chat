@@ -21,6 +21,7 @@ export function getApi(props: GetApiParamTypes): typeof Api.prototype.api {
 }
 
 export function getApiServer(pageContext: any) {
+  console.log("pageContext", pageContext);
   return getApi({
     cookie: pageContext.requestHeaders.cookie,
     xcsrfToken: pageContext.xcsrfToken,

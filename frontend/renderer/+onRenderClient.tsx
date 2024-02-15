@@ -59,6 +59,11 @@ async function render(pageContext) {
     const state = store.getState();
     const newState = mergeReduxState(state, pageContext.INJECT_REDUX_STATE);
 
+    console.log("CLIENT SIDE NAVIGATION, old state: ", state);
+    console.log(
+      "CLIENT SIDE NAVIGATION, new state: ",
+      pageContext.INJECT_REDUX_STATE
+    );
     console.log("CLIENT SIDE NAVIGATION, meged state: ", newState);
     store = getStore(newState);
     globalStore = store;

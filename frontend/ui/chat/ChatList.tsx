@@ -8,6 +8,7 @@ import ThemeSelector from "../atoms/ThemeSelector";
 import ChatListItem from "./ChatListItem";
 import LoadMoreChats from "./LoadMoreChats";
 import ChatListNavigation from "./ChatListNavigation";
+import ChatSearch from "../atoms/ChatSearch";
 
 function ChatList() {
   const chats = useSelector((state: RootState) => state.chats);
@@ -23,8 +24,9 @@ function ChatList() {
     <div
       className={`menu bg-base-200 w-full sm:max-w-md min-w-md rounded-box h-full relative block`}
     >
-      <ChatListNavigation />
       <div className="flex flex-col w-full h-full max-h-full relative">
+        <ChatListNavigation />
+        <ChatSearch />
         <div className="overflow-y-auto relative">
           <ul>
             {chats.results?.map((_chat, i) => {

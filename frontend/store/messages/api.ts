@@ -1,8 +1,10 @@
 import { MessagesActionTypes } from "./types";
 import { StatusTypes } from "../types";
-import { Api } from "../../api/api";
+import { Api, SendMessage, Message } from "../../api/api";
 import { ChatResult, PaginatedMessageList } from "../../api/api";
 import { MessagesState } from "./types";
+import { TmpMessagesActionTypes } from "../tmpMessages/types";
+import { UserState } from "../user/types";
 
 export const updateStatus = (status: StatusTypes) => async (dispatch: any) => {
   dispatch({
@@ -10,6 +12,46 @@ export const updateStatus = (status: StatusTypes) => async (dispatch: any) => {
     payload: status,
   });
 };
+
+export async function sendMessage(
+  api: typeof Api.prototype.api,
+  dispatch: any,
+  user: UserState,
+  chat: ChatResult,
+  message: SendMessage
+) {
+  // 1 - create a temp message object
+  const tmpMessage: Message = {
+    uuid: "tmp-" + Math.random(),
+    created: new Date().toISOString(),
+    sender: user.uuid,
+    text: message.text,
+  };
+  await dispatch({
+    type: TmpMessagesActionTypes.ADD_OUTGOING_MESSAGE,
+    payload: {
+      chatId: chat.uuid,
+      message: tmpMessage,
+    },
+  });
+
+  const serverMessage = await api.messagesSendCreate(chat.uuid, message);
+  //TODO: do attomic dispatch
+  await dispatch({
+    type: TmpMessagesActionTypes.REMOVE_OUTGOING_MESSAGE,
+    payload: {
+      chatId: chat.uuid,
+      messageId: tmpMessage.uuid,
+    },
+  });
+  await dispatch({
+    type: MessagesActionTypes.SERVER_SAVE_MESSAGE,
+    payload: {
+      chatId: chat.uuid,
+      message: serverMessage,
+    },
+  });
+}
 
 export async function fetchMessages(
   api: typeof Api.prototype.api,

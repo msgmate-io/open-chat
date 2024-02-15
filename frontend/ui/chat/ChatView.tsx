@@ -15,8 +15,6 @@ function transition(status: StatusTypes) {
 }
 
 export function ChatView() {
-  const user = useSelector((state: RootState) => state.user);
-  const messages = useSelector((state: RootState) => state.messages.messages);
   const messagesStatus = useSelector(
     (state: RootState) => state.messages.status
   );
@@ -33,11 +31,7 @@ export function ChatView() {
     >
       <div className="flex flex-col h-full relative">
         <ChatViewNav />
-        <ChatViewBase
-          user={user}
-          messages={messages}
-          chatSelected={selectedChat}
-        />
+        <ChatViewBase />
       </div>
     </div>
   );

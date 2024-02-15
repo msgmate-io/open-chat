@@ -4,6 +4,7 @@ import {
   FetchMessagesAction,
   MessagesActionTypes,
   SelectMessagesAction,
+  ServerSaveMessageAction,
 } from "./types";
 import { StatusTypes } from "../types";
 
@@ -14,7 +15,12 @@ export const initialState: MessagesState = {
   chat: {},
 };
 
-type Action = UpdateStatusAction | FetchMessagesAction | SelectMessagesAction;
+type Action =
+  | UpdateStatusAction
+  | FetchMessagesAction
+  | SelectMessagesAction
+  | ServerSaveMessageAction;
+
 export function messagesReducer(
   state: MessagesState = initialState,
   action: Action
@@ -43,6 +49,24 @@ export function messagesReducer(
           [action.payload.chat.uuid]: mergedMessages,
         },
         messages: mergedMessages,
+      };
+    case MessagesActionTypes.SERVER_SAVE_MESSAGE:
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          results: [action.payload.message, ...(state.messages?.results || [])],
+        },
+        chat: {
+          ...state.chat,
+          [action.payload.chatId]: {
+            ...state.chat[action.payload.chatId],
+            results: [
+              action.payload.message,
+              ...(state.chat[action.payload.chatId]?.results || []),
+            ],
+          },
+        },
       };
     case MessagesActionTypes.SELECT_MESSAGES:
       return {

@@ -9,10 +9,6 @@ export default onBeforeRender;
 async function onBeforeRender(pageContext) {
   const api = getApiServer(pageContext);
 
-  const chatsList = await api.chatsList({
-    page: 1,
-  });
-
   const user = await api.userRetrieve();
 
   const initialUserState: UserState = {
@@ -21,6 +17,9 @@ async function onBeforeRender(pageContext) {
     errors: null,
   };
 
+  const chatsList = await api.chatsList({
+    page: 1,
+  });
   const initChatState: ChatsState = {
     ...chatsList,
     selectedChat: null,

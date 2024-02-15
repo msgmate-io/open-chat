@@ -1,4 +1,4 @@
-import { PaginatedMessageList, Api, ChatResult } from "../../api/api";
+import { PaginatedMessageList, Api, ChatResult, Message } from "../../api/api";
 import { StatusTypes } from "../types";
 
 export interface MessagesState {
@@ -23,6 +23,14 @@ export interface FetchMessagesAction {
   };
 }
 
+export interface ServerSaveMessageAction {
+  type: MessagesActionTypes.SERVER_SAVE_MESSAGE;
+  payload: {
+    chatId: string;
+    message: Message;
+  };
+}
+
 export interface SelectMessagesAction {
   type: MessagesActionTypes.SELECT_MESSAGES;
   payload: PaginatedMessageList | null;
@@ -32,4 +40,5 @@ export enum MessagesActionTypes {
   UPDATE_STATUS = "UPDATE_STATUS",
   FETCH_MESSAGES = "FETCH_MESSAGES",
   SELECT_MESSAGES = "SELECT_MESSAGES",
+  SERVER_SAVE_MESSAGE = "SERVER_SAVE_MESSAGE",
 }

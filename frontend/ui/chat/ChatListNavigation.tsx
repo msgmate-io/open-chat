@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import { RootState } from "../../store/reducer";
 import { ChatListViews } from "../../store/localSettings/store";
+import ChatSearch from "../atoms/ChatSearch";
 
 function ChatListNavigation() {
   const chats = useSelector((state: RootState) => state.chats);
@@ -28,7 +29,7 @@ function ChatListNavigation() {
         >
           <div
             className={`w-12 rounded-xl ${
-              viewActive == "profile" ? "border-2 border-error" : "border2"
+              viewActive == "profile" ? "border-2 border-error" : "border-2"
             }`}
           >
             <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
