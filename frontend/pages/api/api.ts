@@ -34,7 +34,8 @@ export interface Message {
   /** @format date-time */
   created: string;
   read?: boolean;
-  sender: number;
+  /** @format uuid */
+  sender: string;
   text: string;
   /** @format uuid */
   uuid: string;
@@ -151,27 +152,12 @@ export interface PaginatedUserProfileList {
   results?: UserProfile[];
 }
 
-export interface PaginatedUserSelfList {
-  /** @example 123 */
-  count?: number;
-  /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=4"
-   */
-  next?: string | null;
-  /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=2"
-   */
-  previous?: string | null;
-  results?: UserSelf[];
-}
-
 export interface PatchedMessage {
   /** @format date-time */
   created?: string;
   read?: boolean;
-  sender?: number;
+  /** @format uuid */
+  sender?: string;
   text?: string;
   /** @format uuid */
   uuid?: string;
@@ -184,33 +170,6 @@ export interface PatchedUserProfile {
   last_updated?: string;
   /** @maxLength 50 */
   second_name?: string;
-}
-
-export interface PatchedUserSelf {
-  automated?: boolean;
-  /** @format date-time */
-  date_joined?: string;
-  /**
-   * Email address
-   * @format email
-   * @maxLength 254
-   */
-  email?: string;
-  id?: number;
-  /**
-   * Staff status
-   * Designates whether the user can log into this admin site.
-   */
-  is_staff?: boolean;
-  /**
-   * Superuser status
-   * Designates that this user has all permissions without explicitly assigning them.
-   */
-  is_superuser?: boolean;
-  /** @format date-time */
-  last_login?: string | null;
-  /** @format uuid */
-  uuid?: string;
 }
 
 export interface Person {
@@ -270,11 +229,6 @@ export interface UserSelf {
   last_login?: string | null;
   /** @format uuid */
   uuid: string;
-}
-
-export interface UsersListParams {
-  /** A page number within the paginated result set. */
-  page?: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -837,79 +791,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/user`,
         method: "GET",
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags users
-     * @name UsersList
-     * @request GET:/api/users/
-     * @secure
-     */
-    usersList: (query: UsersListParams, params: RequestParams = {}) =>
-      this.request<PaginatedUserSelfList, any>({
-        path: `/api/users/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags users
-     * @name UsersPartialUpdate
-     * @request PATCH:/api/users/{id}/
-     * @secure
-     */
-    usersPartialUpdate: (id: string, data: PatchedUserSelf, params: RequestParams = {}) =>
-      this.request<UserSelf, any>({
-        path: `/api/users/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags users
-     * @name UsersRetrieve
-     * @request GET:/api/users/{id}/
-     * @secure
-     */
-    usersRetrieve: (id: string, params: RequestParams = {}) =>
-      this.request<UserSelf, any>({
-        path: `/api/users/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags users
-     * @name UsersUpdate
-     * @request PUT:/api/users/{id}/
-     * @secure
-     */
-    usersUpdate: (id: string, data: UserSelf, params: RequestParams = {}) =>
-      this.request<UserSelf, any>({
-        path: `/api/users/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
