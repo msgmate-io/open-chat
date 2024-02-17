@@ -8,6 +8,9 @@ import UsernameInput from "../atoms/UsernameInput";
 import { useApi } from "../../pages/api/client";
 import { RootState } from "../../store/reducer";
 import { loginUsername } from "../../store/user/api";
+import { StatusTypes } from "../../store/types";
+import FormSubmitButton from "../atoms/FormSubmitButton";
+import FieldErrorDisplay from "../atoms/FieldErrorDisplay";
 
 function LoginLogo() {
   return <div className="w-80 h-80 bg-primary rounded-full"></div>;
@@ -25,30 +28,40 @@ function LoginInputsEmail() {
 }
 
 function LoginInputsUsername() {
+  const userStatus = useSelector((state: RootState) => state.user.status);
+  const userErrors = useSelector((state: RootState) => state.user.errors);
+  const pageContext = useSelector((state: RootState) => state.pageContext);
   const passwordRef = useRef(null);
   const usernameRef = useRef(null);
   const dispatch = useDispatch();
-  const pageContext = useSelector((state: RootState) => state.pageContext);
   const api = useApi();
+
+  const onLogin = () => {
+    loginUsername(
+      api,
+      dispatch,
+      pageContext,
+      usernameRef.current.value,
+      passwordRef.current.value
+    );
+  };
 
   return (
     <>
-      <UsernameInput inputRef={usernameRef} />
-      <PasswordInput inputRef={passwordRef} />
-      <button
-        className="btn btn-primary w-full"
-        onClick={(e) => {
-          loginUsername(
-            api,
-            dispatch,
-            pageContext,
-            usernameRef.current.value,
-            passwordRef.current.value
-          );
-        }}
-      >
+      <UsernameInput
+        status={userStatus}
+        errors={userErrors}
+        inputRef={usernameRef}
+      />
+      <PasswordInput
+        status={userStatus}
+        errors={userErrors}
+        inputRef={passwordRef}
+      />
+      <FormSubmitButton status={userStatus} onClick={onLogin}>
         Login
-      </button>
+      </FormSubmitButton>
+      <FieldErrorDisplay errors={userErrors} status={userStatus} />
     </>
   );
 }
@@ -56,7 +69,7 @@ function LoginInputsUsername() {
 type loginOptions = "email" | "username";
 
 function LoginForm() {
-  const [loginOption, setLoginOption] = useState<loginOptions>("email");
+  const [loginOption, setLoginOption] = useState<loginOptions>("username");
 
   return (
     <div className="flex flex-col gap-2">
@@ -65,15 +78,6 @@ function LoginForm() {
       </h1>
       <span className="text-neutral-content text-center">
         Login via{" "}
-        <button
-          className={`btn ${
-            loginOption == "email" ? "btn-primary" : "btn-outline"
-          } btn-xs`}
-          onClick={() => setLoginOption("email")}
-        >
-          email
-        </button>{" "}
-        or{" "}
         <button
           className={`btn ${
             loginOption == "username" ? "btn-primary" : "btn-outline"
@@ -98,10 +102,10 @@ function LoginHero() {
     <div className="h-screen w-screen relative">
       <div className="h-full w-full p-20 relative">
         <div className="w-full h-full relative flex flex-col lg:flex-row items-center content-center justify-center gap-2">
-          <div className="border h-full flex flex-grow items-center content-center justify-center">
+          <div className="h-full flex flex-grow items-center content-center justify-center">
             <LoginLogo />
           </div>
-          <div className="border h-full flex flex-grow items-center content-center justify-center">
+          <div className="h-full flex flex-grow items-center content-center justify-center">
             <LoginForm />
           </div>
         </div>

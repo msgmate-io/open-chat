@@ -5,19 +5,20 @@ import { ChatResult } from "../../api/api";
 import { selectChat } from "../../store/chats/api";
 import { RootState } from "../../store/reducer";
 import React from "react";
+import { useApi } from "../../pages/api/client";
 
 function OnlineIndicator() {
   return <div className="flex flex-grow bg-info">he</div>;
 }
 
-function ChatListItem({ chatUuid }: { chatUuid: string }) {
+function ChatListItem({ chat }: { chat: ChatResult }) {
   const dispatch = useDispatch();
-  const chat = useSelector((state: RootState) => {
-    return state.chats.results?.find((chat) => chat.uuid === chatUuid);
-  });
+  const api = useApi();
   const selectedChat = useSelector(
     (state: RootState) => state.chats.selectedChat
   );
+
+  const messages = useSelector((state: RootState) => state.messages);
 
   const isSelected = chat?.uuid === selectedChat?.uuid;
 
@@ -35,7 +36,7 @@ function ChatListItem({ chatUuid }: { chatUuid: string }) {
       <a
         className="flex relative w-full"
         onClick={() => {
-          selectChat(chat, selectedChat, dispatch);
+          selectChat(api, chat, selectedChat, dispatch, messages);
         }}
       >
         <div className="flex flex-row w-full justify-center content-center items-center relative">

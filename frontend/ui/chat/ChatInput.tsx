@@ -23,10 +23,6 @@ function ChatInput({
     return state.chats.results?.find((chat) => chat.uuid === chatUuid);
   });
 
-  if (!chat) {
-    return <h1>No chat to display</h1>;
-  }
-
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       console.log("KEY", event);
@@ -45,6 +41,10 @@ function ChatInput({
       window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
+
+  if (!chat) {
+    return <h1>No chat to display</h1>;
+  }
 
   return (
     <div className="bg-base-200 h-fit flex flex-row w-full rounded-xl mt-2 p-2 gap-2">

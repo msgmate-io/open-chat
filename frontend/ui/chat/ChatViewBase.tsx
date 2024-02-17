@@ -1,10 +1,11 @@
 export default ChatViewBase;
 import React, { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import LoadMoreMessages from "./LoadMoreMessages";
 import { RootState } from "../../store/reducer";
+import { useApi } from "../../pages/api/client";
 
 function ScrollManager({ scrollContainer }) {
   const [displayJumpToBottom, setDisplayJumpToBottom] = useState(false);
@@ -62,18 +63,48 @@ function ScrollManager({ scrollContainer }) {
   );
 }
 
+function PreRenderedMessages() {
+  const chatsMessages = useSelector((state: RootState) => state.messages.chat);
+  const user = useSelector((state: RootState) => state.user);
+  const selectedChat = useSelector(
+    (state: RootState) => state.chats.selectedChat
+  );
+
+  return Object.keys(chatsMessages).map((chatUuid) => {
+    return chatsMessages[chatUuid].results?.map((_message, i) => {
+      return (
+        <div
+          className={`flex w-full h-full relative ${
+            selectedChat?.uuid === chatUuid ? "" : "hidden"
+          }`}
+        >
+          <ChatMessage
+            message={_message}
+            isSelf={_message.sender == user.uuid}
+            key={i}
+          />
+        </div>
+      );
+    });
+  });
+}
+
 function ChatViewBase() {
   const scrollContainer = useRef(null);
+  const api = useApi();
+  const dispatch = useDispatch();
 
-  const messages = useSelector((state: RootState) => state.messages.messages);
+  const chatMessages = useSelector(
+    (state: RootState) => state.messages.messages
+  );
   const user = useSelector((state: RootState) => state.user);
   const selectedChat = useSelector(
     (state: RootState) => state.chats.selectedChat
   );
   const outgoingMessages = useSelector(
-    (state: RootState) =>
-      state.tmpMessages.outgoing[selectedChat?.uuid || ""] || []
+    (state: RootState) => state.tmpMessages.outgoing
   );
+  const outgoingChat = outgoingMessages[selectedChat?.uuid || ""] || [];
 
   const scrollToBottom = () => {
     console.log("scrolling to bottom");
@@ -89,7 +120,7 @@ function ChatViewBase() {
         className="w-full overflow-y-scroll px-2 relative"
       >
         <LoadMoreMessages />
-        {messages?.results?.toReversed().map((_message, i) => {
+        {chatMessages?.results?.toReversed().map((_message, i) => {
           return (
             <ChatMessage
               message={_message}
@@ -98,7 +129,7 @@ function ChatViewBase() {
             />
           );
         })}
-        {outgoingMessages?.map((_message, i) => {
+        {outgoingChat?.map((_message, i) => {
           return (
             <ChatMessage
               isTmpMessage={true}
