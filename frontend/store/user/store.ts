@@ -1,6 +1,11 @@
 import { Api, UserSelf } from "../../api/api";
 import { StatusTypes } from "../types";
-import { UserState, UpdateUserAction, UserActionTypes } from "./types";
+import {
+  UserState,
+  UpdateUserAction,
+  UserActionTypes,
+  UpdateStatusUserAction,
+} from "./types";
 
 const initialState: UserState = {
   status: StatusTypes.EMPTY,
@@ -10,7 +15,7 @@ const initialState: UserState = {
   id: 0,
 };
 
-type Action = UpdateUserAction;
+type Action = UpdateUserAction | UpdateStatusUserAction;
 
 export function userReducer(
   state: UserState = initialState,
@@ -21,7 +26,11 @@ export function userReducer(
       return {
         ...state,
         ...action.payload,
-        status: StatusTypes.LOADED,
+      };
+    case UserActionTypes.UPDATE_STATUS_USER:
+      return {
+        ...state,
+        status: action.payload,
       };
     default:
       return state;

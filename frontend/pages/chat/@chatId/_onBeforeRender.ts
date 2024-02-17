@@ -8,7 +8,6 @@ import { UserState } from "../../../store/user/types";
 export default onBeforeRender;
 
 async function onBeforeRender(pageContext) {
-  console.log("pageContext", pageContext);
   const api = getApiServer(pageContext);
   const chatsList = await api.chatsList({
     page: 1,

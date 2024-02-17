@@ -4,7 +4,8 @@ import { navigate } from "vike/client/router";
 import { getApi } from "../../api/client";
 import { Api, ChatsListParams } from "../../api/api";
 import { ChatResult } from "../../api/api";
-import { MessagesActionTypes } from "../messages/types";
+import { MessagesActionTypes, MessagesState } from "../messages/types";
+import { fetchMessages } from "../messages/api";
 
 export async function updateStatus(status: StatusTypes, dispatch: any) {
   dispatch({
@@ -14,9 +15,11 @@ export async function updateStatus(status: StatusTypes, dispatch: any) {
 }
 
 export async function selectChat(
+  api: typeof Api.prototype.api,
   chat: ChatResult,
   curSelectedChat: ChatResult | null,
-  dispatch: any
+  dispatch: any,
+  messages: MessagesState
 ) {
   await updateStatus(StatusTypes.LOADING, dispatch);
   await dispatch({
@@ -30,6 +33,24 @@ export async function selectChat(
     });
     navigate(`/chat`);
   } else {
+    if (!messages.chat[chat.uuid]) {
+      await fetchMessages(
+        api,
+        dispatch,
+        chat,
+        {
+          page: 1,
+          page_size: 20,
+          chatUuid: chat?.uuid,
+        },
+        messages
+      );
+    } else {
+      await dispatch({
+        type: MessagesActionTypes.SELECT_MESSAGES,
+        payload: messages.chat[chat.uuid],
+      });
+    }
     await dispatch({
       type: ChatsActionTypes.SELECT_CHAT,
       payload: chat,

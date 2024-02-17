@@ -11,10 +11,7 @@ import { getStore } from "../store/reducer";
 import { Provider } from "react-redux";
 import { PageContextProvider } from "./usePageContext";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
-
-const queryClient = new QueryClient();
 
 async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext;
@@ -45,16 +42,18 @@ async function onRenderHtml(pageContext) {
   };
 
   // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA
-  if (!Page)
-    throw new Error("My render() hook expects pageContext.Page to be defined");
-
-  const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
-      <Provider store={store}>
-        <Page {...pageProps} />
-      </Provider>
-    </PageShell>
-  );
+  let pageHtml = "";
+  if (!Page) {
+    // SPA mode
+  } else {
+    pageHtml = ReactDOMServer.renderToString(
+      <PageShell pageContext={pageContext}>
+        <Provider store={store}>
+          <Page {...pageProps} />
+        </Provider>
+      </PageShell>
+    );
+  }
 
   // See https://vike.dev/head
   const { documentProps } = pageContext.exports;
@@ -63,11 +62,6 @@ async function onRenderHtml(pageContext) {
     (documentProps && documentProps.description) || "App using Vite + Vike";
 
   // We might also be able to already extract the theme from cookie heder:
-  console.log(
-    pageContext.requestHeaders.cookie,
-    pageContext.themeCookie,
-    "COOK"
-  );
   const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -83,11 +77,6 @@ async function onRenderHtml(pageContext) {
         <div id="react-root">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
-
-  PRELOADED_STATE = getStore({
-    ...store.getState(),
-    ...PRELOADED_STATE,
-  }).getState();
 
   return {
     documentHtml,

@@ -1,6 +1,6 @@
 import { MessagesActionTypes } from "./types";
 import { StatusTypes } from "../types";
-import { Api, SendMessage, Message } from "../../api/api";
+import { Api, SendMessage, Message, MessagesList2Params } from "../../api/api";
 import { ChatResult, PaginatedMessageList } from "../../api/api";
 import { MessagesState } from "./types";
 import { TmpMessagesActionTypes } from "../tmpMessages/types";
@@ -54,6 +54,34 @@ export async function sendMessage(
 }
 
 export async function fetchMessages(
+  api: typeof Api.prototype.api,
+  dispatch: any,
+  chat: ChatResult,
+  params: MessagesList2Params,
+  messages: MessagesState
+) {
+  if (
+    messages.status === StatusTypes.LOADING ||
+    messages.status === StatusTypes.LOADING_MORE
+  ) {
+    console.warn("'fetchMessages' is already running");
+    return;
+  }
+  await dispatch(updateStatus(StatusTypes.LOADING_MORE));
+  const fetchedMessages = await api.messagesList2({
+    ...params,
+  });
+  await dispatch({
+    type: MessagesActionTypes.FETCH_MESSAGES,
+    payload: {
+      chat,
+      messages: fetchedMessages,
+    },
+  });
+  await dispatch(updateStatus(StatusTypes.LOADED));
+}
+
+export async function fetchMoreMessages(
   api: typeof Api.prototype.api,
   dispatch: any,
   chat: ChatResult,

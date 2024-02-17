@@ -10,8 +10,6 @@ import { number } from "prop-types";
 import Cookies from "js-cookie";
 import { PageContextProvider } from "./usePageContext";
 import { RootState } from "../store/reducer";
-import { mergeReduxState } from "../store/mergeStateClientNavigation";
-
 import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -31,14 +29,11 @@ async function render(pageContext) {
     let PRELOADED_STATE = pageContext.PRELOADED_STATE
       ? pageContext.PRELOADED_STATE
       : {};
-    let INJECTED_REDUX = pageContext.INJECT_REDUX_STATE
-      ? pageContext.INJECT_REDUX_STATE
-      : {};
 
-    if (pageContext.PRELOADED_STATE || pageContext.INJECT_REDUX_STATE) {
+    if (pageContext.PRELOADED_STATE) {
       const themeCookie = Cookies.get("localSettings_Theme");
+      // TODO: set default inital theme cookie
       const INJECT_REDUX_STATE = {
-        ...INJECTED_REDUX,
         ...PRELOADED_STATE,
         localSettings: themeCookie ? { theme: themeCookie } : "light",
       };
@@ -54,20 +49,8 @@ async function render(pageContext) {
       store = getStore(INJECT_REDUX_STATE);
       globalStore = store;
     }
-  } else if (pageContext.INJECT_REDUX_STATE) {
-    // normal client side rendering
-    const state = store.getState();
-    const newState = mergeReduxState(state, pageContext.INJECT_REDUX_STATE);
-
-    console.log("CLIENT SIDE NAVIGATION, old state: ", state);
-    console.log(
-      "CLIENT SIDE NAVIGATION, new state: ",
-      pageContext.INJECT_REDUX_STATE
-    );
-    console.log("CLIENT SIDE NAVIGATION, meged state: ", newState);
-    store = getStore(newState);
-    globalStore = store;
   }
+
   const page = (
     <PageShell pageContext={pageContext}>
       <Provider store={store}>
