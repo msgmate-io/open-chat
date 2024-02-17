@@ -7,8 +7,23 @@ import { RootState } from "../../store/reducer";
 import React from "react";
 import { useApi } from "../../pages/api/client";
 
+function OnlineState({ isOnline = false }) {
+  return (
+    <div
+      className={`badge gap-1 ${isOnline ? "badge-success" : "badge-error"}`}
+    >
+      {isOnline ? "online" : "offline"}
+    </div>
+  );
+}
+
 function OnlineIndicator() {
-  return <div className="flex flex-grow bg-info">he</div>;
+  return (
+    <div className="flex flex-grow items-center justify-end content-end gap-2">
+      <div className="badge badge-accent badge-outline">unreads</div>
+      <OnlineState />
+    </div>
+  );
 }
 
 function ChatListItem({ chat }: { chat: ChatResult }) {
@@ -47,7 +62,7 @@ function ChatListItem({ chat }: { chat: ChatResult }) {
           </div>
           <div className="flex w-full flex-col px-4 relative">
             <div className="flex flex-row w-full relative">
-              <h1 className="text-xl">
+              <h1 className="text-xl whitespace-nowrap max-w-xs overflow-hidden">
                 {chat.partner.first_name} {chat.partner.second_name}
               </h1>
               <OnlineIndicator />
