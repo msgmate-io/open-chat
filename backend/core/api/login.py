@@ -41,7 +41,9 @@ def login_user(request):
     user = authenticate(username=data.username, password=data.password)
 
     if user is None:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response({
+            'non_field_errors': ['Invalid username or password. Please try again.']
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     login(request, user)
 

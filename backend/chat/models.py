@@ -113,9 +113,12 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
     
     created = models.DateTimeField(auto_now_add=True)
-    
+
+
     
 class MessageSerializer(serializers.ModelSerializer):
+    
+    sender = serializers.UUIDField()
     
     class Meta:
         model = Message
