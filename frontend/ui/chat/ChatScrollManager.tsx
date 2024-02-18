@@ -1,12 +1,29 @@
 export default ChatScrollManager;
 
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/reducer";
+import { useApi } from "../../pages/api/client";
+import { useDispatch } from "react-redux";
+import { StatusTypes } from "../../store/types";
+import { fetchMoreMessages } from "../../store/messages/api";
 
 const HIDE_SCROLL_DOWN_THRESHOLD = 100;
 const FETCH_MESSAGES_TOP_THRESHOLD = 100;
 
 function ChatScrollManager({ scrollContainer, selectedChat }) {
   const [displayJumpToBottom, setDisplayJumpToBottom] = useState(false);
+  const [isLodingMore, setIsLoadingMore] = useState(false);
+  const api = useApi();
+  const dispatch = useDispatch();
+
+  const messages = useSelector(
+    (state: RootState) => state.selectedChat.messages
+  );
+
+  const messagesStatus = useSelector(
+    (state: RootState) => state.messages.status
+  );
 
   const scrollToBottom = () => {
     console.log("scrolling to bottom");
@@ -29,7 +46,16 @@ function ChatScrollManager({ scrollContainer, selectedChat }) {
       //console.log("scrolling", top, bottom, new Date(), displayJumpToBottom);
 
       if (scrollContainer.current?.scrollTop < FETCH_MESSAGES_TOP_THRESHOLD) {
-        console.log("Almost at the top! Fetch more messages!", new Date());
+        if (selectedChat && !isLodingMore) {
+          setIsLoadingMore(true);
+          fetchMoreMessages(api, dispatch, selectedChat!, messages!)
+            .then(() => {
+              setIsLoadingMore(false);
+            })
+            .catch(() => {
+              setIsLoadingMore(false);
+            });
+        }
       }
 
       if (bottom > HIDE_SCROLL_DOWN_THRESHOLD && !displayJumpToBottom) {
@@ -43,7 +69,13 @@ function ChatScrollManager({ scrollContainer, selectedChat }) {
     return () => {
       scrollContainer.current?.removeEventListener("scroll", checkTopScroll);
     };
-  }, [scrollContainer, displayJumpToBottom]);
+  }, [
+    scrollContainer,
+    displayJumpToBottom,
+    selectedChat,
+    isLodingMore,
+    messages,
+  ]);
 
   return displayJumpToBottom ? (
     <div className="relative">

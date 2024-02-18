@@ -47,7 +47,7 @@ function ChatListItem({ chat }: { chat: ChatResult }) {
   return (
     <li
       key={chat.uuid}
-      className={`bg-base-100 border rounded-xl mb-2 active:-translate-y-1 w-full relative ${
+      className={`bg-base-100 rounded-xl mb-2 active:-translate-y-1 w-full relative ${
         isSelected ? "text-base-content shadow-inner border-2" : "shadow-md"
       }`}
     >

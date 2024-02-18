@@ -19,7 +19,7 @@ function ChatList() {
 
   return (
     <div
-      className={`menu bg-base-200 w-full sm:max-w-md min-w-md rounded-box h-full relative block`}
+      className={`menu bg-base-300 w-full sm:max-w-md min-w-md rounded-box h-full relative block`}
     >
       <div className="flex flex-col w-full h-full max-h-full relative">
         <ChatListNavigation />

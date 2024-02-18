@@ -10,14 +10,14 @@ function ChatViewNav() {
 
   if (!selectedChat) {
     return (
-      <div className="flex flex-row bg-base-200 border rounded-xl justify-left items-center p-2 md:p-3 shadow-md">
+      <div className="flex flex-row bg-base-300 rounded-xl justify-left items-center p-2 md:p-3 shadow-md">
         No chat selected
       </div>
     );
   }
 
   return (
-    <div className="flex flex-row bg-base-200 border rounded-xl justify-left items-center p-2 md:p-3 shadow-md">
+    <div className="flex flex-row bg-base-300 rounded-xl justify-left items-center p-2 md:p-3 shadow-md">
       <a href="/chat/">
         <kbd
           className={`kbd h-10 w-10 xl:h-12 xl:w-12 ${
