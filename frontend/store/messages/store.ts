@@ -4,6 +4,7 @@ import {
   FetchMessagesAction,
   MessagesActionTypes,
   ServerSaveMessageAction,
+  MarkChatsMessagesAsReadAction,
 } from "./types";
 import { StatusTypes } from "../types";
 
@@ -16,13 +17,32 @@ export const initialState: MessagesState = {
 type Action =
   | UpdateStatusAction
   | FetchMessagesAction
-  | ServerSaveMessageAction;
+  | ServerSaveMessageAction
+  | MarkChatsMessagesAsReadAction;
 
 export function messagesReducer(
   state: MessagesState = initialState,
   action: Action
 ): MessagesState {
   switch (action.type) {
+    case MessagesActionTypes.MARK_CHATS_MESSAGES_AS_READ:
+      return {
+        ...state,
+        chat: {
+          ...state.chat,
+          [action.payload.chatId]: {
+            ...state.chat[action.payload.chatId],
+            results: (state.chat[action.payload.chatId]?.results || []).map(
+              (message) => {
+                return {
+                  ...message,
+                  read: true,
+                };
+              }
+            ),
+          },
+        },
+      };
     case MessagesActionTypes.FETCH_MESSAGES:
       const oldMessages = state.chat[action.payload.chat.uuid]?.results || [];
       const newMessages = action.payload.messages.results || [];

@@ -18,7 +18,13 @@ export interface ChatsFetchAction {
   payload: PaginatedChatResultList;
 }
 
+export interface ChatsUpdateUnreadCountAction {
+  type: ChatsActionTypes.UPDATE_UNREAD_COUNT;
+  payload: { chatId: string; unreadCount: number };
+}
+
 export enum ChatsActionTypes {
   UPDATE_STATUS_CHATS = "UPDATE_STATUS_CHATS",
   FETCH_CHATS = "FETCH_CHATS",
+  UPDATE_UNREAD_COUNT = "UPDATE_UNREAD_COUNT",
 }

@@ -5,6 +5,7 @@ import {
   SelectMessagesAction,
   SaveMessageSelectedChatAction,
   FetchMessagesSelectedChatAction,
+  MarkSelectedChatMessagesAsReadAction,
 } from "./types";
 import { ChatResult, PaginatedMessageList } from "../../api/api";
 import { mergeMessageResults } from "../messages/api";
@@ -18,13 +19,27 @@ type Action =
   | SelectMessagesAction
   | SelectChatAction
   | SaveMessageSelectedChatAction
-  | FetchMessagesSelectedChatAction;
+  | FetchMessagesSelectedChatAction
+  | MarkSelectedChatMessagesAsReadAction;
 
 export function selectedChatReducer(
   state: SelectedChatState = initialState,
   action: Action
 ): SelectedChatState {
   switch (action.type) {
+    case SelectedChatActionTypes.MARK_SELECTED_CHAT_MESSAGES_AS_READ:
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          results: (state.messages?.results || []).map((message) => {
+            return {
+              ...message,
+              read: true,
+            };
+          }),
+        },
+      };
     case SelectedChatActionTypes.FETCH_MESSAGES_SELECTED_CHAT:
       return {
         ...state,

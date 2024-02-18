@@ -6,6 +6,7 @@ import { MessagesState } from "./types";
 import { TmpMessagesActionTypes } from "../tmpMessages/types";
 import { UserState } from "../user/types";
 import { SelectedChatActionTypes } from "../selectedChat/types";
+import { MarkChatsMessagesAsReadAction } from "./types";
 
 export const updateStatus = (status: StatusTypes) => async (dispatch: any) => {
   dispatch({
@@ -37,7 +38,7 @@ export async function sendMessage(
   chat: ChatResult,
   message: SendMessage
 ) {
-  // 1 - create a temp message object
+  // sends a message, first in tmpMessages and if send is successful, then in messages
   const tmpMessage: Message = {
     uuid: "tmp-" + Math.random(),
     created: new Date().toISOString(),
@@ -112,6 +113,7 @@ export async function fetchMoreMessages(
   chat: ChatResult,
   messages: PaginatedMessageList
 ) {
+  // Fetches more messages (pages) of a chat
   await dispatch(updateStatus(StatusTypes.LOADING_MORE));
   const pagesTotal = messages?.pages_total || 1;
   const currentPage = messages?.next_page
@@ -129,10 +131,25 @@ export async function fetchMoreMessages(
       messages: fetchedMessages,
     },
   });
-  await dispatch(updateStatus(StatusTypes.LOADED));
   await dispatch({
-    type: SelectedChatActionTypes.SELECT_MESSAGES,
+    type: SelectedChatActionTypes.FETCH_MESSAGES_SELECTED_CHAT,
     payload: fetchedMessages,
   });
+  await dispatch(updateStatus(StatusTypes.LOADED));
   console.log("fetchedMessages", fetchedMessages);
+}
+
+export async function markMessagesAsRead(
+  api: typeof Api.prototype.api,
+  dispatch: any,
+  chat: ChatResult
+) {
+  // Marks all messages of a chat as 'read'
+  const messageReadPayload: MarkChatsMessagesAsReadAction = {
+    type: MessagesActionTypes.MARK_CHATS_MESSAGES_AS_READ,
+    payload: {
+      chatId: chat.uuid,
+    },
+  };
+  dispatch(messageReadPayload);
 }

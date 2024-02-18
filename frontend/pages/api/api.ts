@@ -507,6 +507,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
      *
      * @tags messages
+     * @name MessagesAllReadCreate
+     * @request POST:/api/messages/{chat_uuid}/all_read/
+     * @secure
+     */
+    messagesAllReadCreate: (chatUuid: string, params: RequestParams = {}) =>
+      this.request<Message, any>({
+        path: `/api/messages/${chatUuid}/all_read/`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
+     *
+     * @tags messages
      * @name MessagesList
      * @request GET:/api/messages/
      * @secure

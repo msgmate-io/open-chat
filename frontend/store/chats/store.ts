@@ -3,6 +3,7 @@ import {
   ChatsState,
   ChatsStatusAction,
   ChatsFetchAction,
+  ChatsUpdateUnreadCountAction,
 } from "./types";
 import { StatusTypes } from "../types";
 
@@ -13,13 +14,29 @@ export const initialState: ChatsState = {
   results: [],
 };
 
-type Action = ChatsStatusAction | ChatsFetchAction;
+type Action =
+  | ChatsStatusAction
+  | ChatsFetchAction
+  | ChatsUpdateUnreadCountAction;
 
 export function chatsReducer(
   state: ChatsState = initialState,
   action: Action
 ): ChatsState {
   switch (action.type) {
+    case ChatsActionTypes.UPDATE_UNREAD_COUNT:
+      return {
+        ...state,
+        results: (state.results || []).map((chat) => {
+          if (chat.uuid === action.payload.chatId) {
+            return {
+              ...chat,
+              unread_count: action.payload.unreadCount,
+            };
+          }
+          return chat;
+        }),
+      };
     case ChatsActionTypes.UPDATE_STATUS_CHATS:
       return {
         ...state,

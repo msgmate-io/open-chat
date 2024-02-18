@@ -15,6 +15,7 @@ export enum SelectedChatActionTypes {
   SAVE_MESSAGE_SELECTED_CHAT = "SAVE_MESSAGE_SELECTED_CHAT",
   SELECT_CHAT = "SELECT_CHAT",
   FETCH_MESSAGES_SELECTED_CHAT = "FETCH_MESSAGES_SELECTED_CHAT",
+  MARK_SELECTED_CHAT_MESSAGES_AS_READ = "MARK_SELECTED_CHAT_MESSAGES_AS_READ",
 }
 
 export interface SaveMessageSelectedChatAction {
@@ -35,4 +36,8 @@ export interface SelectChatAction {
 export interface FetchMessagesSelectedChatAction {
   type: SelectedChatActionTypes.FETCH_MESSAGES_SELECTED_CHAT;
   payload: PaginatedMessageList;
+}
+
+export interface MarkSelectedChatMessagesAsReadAction {
+  type: SelectedChatActionTypes.MARK_SELECTED_CHAT_MESSAGES_AS_READ;
 }

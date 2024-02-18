@@ -30,8 +30,16 @@ export interface ServerSaveMessageAction {
   };
 }
 
+export interface MarkChatsMessagesAsReadAction {
+  type: MessagesActionTypes.MARK_CHATS_MESSAGES_AS_READ;
+  payload: {
+    chatId: string;
+  };
+}
+
 export enum MessagesActionTypes {
   UPDATE_STATUS = "UPDATE_STATUS",
   FETCH_MESSAGES = "FETCH_MESSAGES",
   SERVER_SAVE_MESSAGE = "SERVER_SAVE_MESSAGE",
+  MARK_CHATS_MESSAGES_AS_READ = "MARK_CHATS_MESSAGES_AS_READ",
 }
