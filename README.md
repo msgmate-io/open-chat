@@ -15,12 +15,12 @@ Visit `localhost`, live reload & dev mode enabled by default.
 
 This is a hyper-simplified overview of the repos feature / progress.
 
-- [o] user management and authorization
-- [o] live frontend updated via websocket callbacks
-- [o] chats & messages db model
-- [o] CRUD operations for chat & message model
-- [o] SSR then -> SPA render stategy for maximum speed
-- [o] redux integrated & offline view mode possible
+- [x] user management and authorization
+- [x] live frontend updated via websocket callbacks
+- [x] chats & messages db model
+- [x] CRUD operations for chat & message model
+- [x] SSR then -> SPA render stategy for maximum speed
+- [x] redux integrated & offline view mode possible
 - [ ] build android & ios app using capacitor
 - [ ] complete websocket integrations:
   - [ ] partial message streaming (AI prompts)
@@ -28,12 +28,12 @@ This is a hyper-simplified overview of the repos feature / progress.
   - [ ] typing indicator
   - [ ] message read callback
 - [ ] interactive dynamic chat interface using tailwind & daisyui
-  - [o] Chat List View
-  - [o] Login Page
-  - [o] Message List View
+  - [x] Chat List View
+  - [x] Login Page
+  - [x] Message List View
   - [ ] Profile Settings View
 - [ ] Deployment & CI
-  - [o] Helm Chart for k8s deployment
+  - [x] Helm Chart for k8s deployment
   - [ ] Github Actions Build & Tests
   - [ ] Github Actions Deployment Workflow & Empherial Envs
 
