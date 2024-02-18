@@ -1,7 +1,5 @@
 import { ChatsActionTypes } from "./types";
 import { StatusTypes } from "../types";
-import { navigate } from "vike/client/router";
-import { getApi } from "../../api/client";
 import { Api, ChatsListParams } from "../../api/api";
 import { ChatResult } from "../../api/api";
 import { MessagesActionTypes, MessagesState } from "../messages/types";
@@ -32,6 +30,7 @@ export async function selectChat(
   chat: ChatResult,
   curSelectedChat: ChatResult | null,
   dispatch: any,
+  navigate: any,
   messages: MessagesState
 ) {
   await updateStatus(StatusTypes.LOADING, dispatch);

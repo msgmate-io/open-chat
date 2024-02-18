@@ -14,6 +14,8 @@ const FETCH_MESSAGES_TOP_THRESHOLD = 100;
 function ChatScrollManager({ scrollContainer, selectedChat }) {
   const [displayJumpToBottom, setDisplayJumpToBottom] = useState(false);
   const [isLodingMore, setIsLoadingMore] = useState(false);
+  const [isInLoadRegion, setIsInLoadRegion] = useState(false);
+  const [scrolledDownOnce, setScrolledDownOnce] = useState(false);
   const api = useApi();
   const dispatch = useDispatch();
 
@@ -29,11 +31,34 @@ function ChatScrollManager({ scrollContainer, selectedChat }) {
     console.log("scrolling to bottom");
     if (scrollContainer.current)
       scrollContainer.current.scrollTop = scrollContainer.current.scrollHeight;
+    if (!scrolledDownOnce) setScrolledDownOnce(true);
+  };
+
+  const checkIfInLoadMoreRegion = () => {
+    return scrollContainer.current?.scrollTop < FETCH_MESSAGES_TOP_THRESHOLD;
   };
 
   useEffect(() => {
+    setScrolledDownOnce(false);
     scrollToBottom();
-  }, [scrollContainer, selectedChat]);
+  }, [selectedChat]);
+
+  useEffect(() => {
+    if (!scrolledDownOnce) return;
+    if (selectedChat && !isLodingMore) {
+      if (messages?.next_page === null) return;
+      setIsLoadingMore(true);
+      fetchMoreMessages(api, dispatch, selectedChat!, messages!)
+        .then(() => {
+          setIsLoadingMore(false);
+          checkIfInLoadMoreRegion() && setIsInLoadRegion(true);
+        })
+        .catch(() => {
+          setIsLoadingMore(false);
+          checkIfInLoadMoreRegion() && setIsInLoadRegion(true);
+        });
+    }
+  }, [isInLoadRegion, isLodingMore]);
 
   useEffect(() => {
     const checkTopScroll = () => {
@@ -43,19 +68,12 @@ function ChatScrollManager({ scrollContainer, selectedChat }) {
         scrollContainer.current?.scrollTop -
         scrollContainer.current?.offsetHeight;
 
-      //console.log("scrolling", top, bottom, new Date(), displayJumpToBottom);
-
-      if (scrollContainer.current?.scrollTop < FETCH_MESSAGES_TOP_THRESHOLD) {
-        if (selectedChat && !isLodingMore) {
-          setIsLoadingMore(true);
-          fetchMoreMessages(api, dispatch, selectedChat!, messages!)
-            .then(() => {
-              setIsLoadingMore(false);
-            })
-            .catch(() => {
-              setIsLoadingMore(false);
-            });
-        }
+      //console.log("scrolling", top, bottom, new Date(), displayJumpToBottom)
+      const loadMoreRegion = checkIfInLoadMoreRegion();
+      if (loadMoreRegion && !isInLoadRegion) {
+        setIsInLoadRegion(true);
+      } else if (!loadMoreRegion && isInLoadRegion) {
+        setIsInLoadRegion(false);
       }
 
       if (bottom > HIDE_SCROLL_DOWN_THRESHOLD && !displayJumpToBottom) {

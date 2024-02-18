@@ -2,11 +2,12 @@ export default ChatViewNav;
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/reducer";
-import { navigate } from "vike/client/router";
 import { unselectChat } from "../../store/chats/api";
+import { useNavigate } from "react-router-dom";
 
 function ChatViewNav() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const selectedChat = useSelector(
     (state: RootState) => state.selectedChat.chat
   );

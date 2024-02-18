@@ -38,6 +38,7 @@ async function onRenderHtml(pageContext) {
       urlPathname: pageContext.urlPathname
         ? pageContext.urlPathname.toString()
         : "",
+      routeParams: pageContext.routeParams ? pageContext.routeParams : {},
     },
   };
 

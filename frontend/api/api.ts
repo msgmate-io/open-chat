@@ -504,6 +504,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags logout
+     * @name LogoutRetrieve
+     * @request GET:/api/logout
+     * @secure
+     */
+    logoutRetrieve: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/logout`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
      * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
      *
      * @tags messages

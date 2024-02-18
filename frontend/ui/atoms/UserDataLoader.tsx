@@ -21,7 +21,7 @@ function UserDataLoader() {
         });
       });
     }
-  }, []);
+  }, [pageContext, user]);
 
   return <></>;
 }

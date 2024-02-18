@@ -14,7 +14,7 @@ function ChatMessage({ message, isSelf, isTmpMessage = false }) {
           className={`flex flex-row content-center items-center pt-1 group relative`}
         >
           <div
-            className={`flex group w-full content-center items-center  relative hover:bg-accent rounded-xl px-1 ${
+            className={`flex group w-full content-center items-center  relative hover:bg-neutral rounded-xl px-1 ${
               isSelf ? "justify-end" : "justify-start"
             }`}
           >

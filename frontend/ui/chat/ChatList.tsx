@@ -43,10 +43,6 @@ function ChatList() {
           <ul className="">
             <li className="" key={0}></li>
             <ChatPaginationInfo />
-            <li className="" key={2}></li>
-            <li className="relative w-full" key={3}>
-              <ThemeSelector />
-            </li>
           </ul>
         </div>
       </div>

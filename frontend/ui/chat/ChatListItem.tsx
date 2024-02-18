@@ -6,6 +6,7 @@ import { selectChat } from "../../store/chats/api";
 import { RootState } from "../../store/reducer";
 import React from "react";
 import { useApi } from "../../pages/api/client";
+import { useNavigate } from "react-router-dom";
 
 function OnlineState({ isOnline = false }) {
   return (
@@ -30,6 +31,7 @@ function ChatIndicators({ chat }: { chat: ChatResult }) {
 }
 
 function ChatListItem({ chat }: { chat: ChatResult }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const api = useApi();
   const selectedChat = useSelector(
@@ -54,7 +56,7 @@ function ChatListItem({ chat }: { chat: ChatResult }) {
       <a
         className="flex relative w-full"
         onClick={() => {
-          selectChat(api, chat, selectedChat, dispatch, messages);
+          selectChat(api, chat, selectedChat, dispatch, navigate, messages);
         }}
       >
         <div className="flex flex-row w-full justify-center content-center items-center relative">

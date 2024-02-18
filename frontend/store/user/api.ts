@@ -10,6 +10,17 @@ export async function updateStatus(status: StatusTypes, dispatch: any) {
   });
 }
 
+export async function logOutUser(api: typeof Api.prototype.api, dispatch: any) {
+  await dispatch({
+    type: UserActionTypes.UPDATE_USER,
+    payload: {
+      status: StatusTypes.EMPTY,
+    },
+  });
+  await api.logoutRetrieve();
+  navigate("/login");
+}
+
 export async function loginUsername(
   api: typeof Api.prototype.api,
   dispatch: any,
