@@ -2,11 +2,10 @@ export default LoadMoreMessages;
 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchChats } from "../../store/chats/api";
 import { useApi } from "../../pages/api/client";
 import { RootState } from "../../store/reducer";
-import { fetchMessages } from "../../store/messages/api";
 import { StatusTypes } from "../../store/types";
+import { fetchMoreMessages } from "../../store/messages/api";
 
 function LoadMoreMessages() {
   const messages = useSelector((state: RootState) => state.messages);
@@ -38,7 +37,7 @@ function LoadMoreMessages() {
         } ${messagesStatus === StatusTypes.LOADING_MORE ? "btn-disabled" : ""}`}
         disabled={!moreMessagesToLoad}
         onClick={() => {
-          fetchMessages(api, dispatch, selectedChat!, messages!);
+          fetchMoreMessages(api, dispatch, selectedChat!, messages!);
         }}
       >
         Load more ( {pagesLeft} pages left ) current page: {currentPage} of (

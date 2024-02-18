@@ -10,6 +10,8 @@ import { number } from "prop-types";
 import Cookies from "js-cookie";
 import { PageContextProvider } from "./usePageContext";
 import { RootState } from "../store/reducer";
+import { LocalSettingsState } from "../store/localSettings/types";
+import { initialState as initialSettingsState } from "../store/localSettings/store";
 import "./index.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -33,9 +35,16 @@ async function render(pageContext) {
     if (pageContext.PRELOADED_STATE) {
       const themeCookie = Cookies.get("localSettings_Theme");
       // TODO: set default inital theme cookie
+      //
+
+      const localSettings: LocalSettingsState = {
+        ...initialSettingsState,
+        theme: themeCookie ? themeCookie : "light",
+      };
+
       const INJECT_REDUX_STATE = {
         ...PRELOADED_STATE,
-        localSettings: themeCookie ? { theme: themeCookie } : "light",
+        localSettings,
       };
 
       console.info("MANUAL RELOAD, injected state: ", INJECT_REDUX_STATE);

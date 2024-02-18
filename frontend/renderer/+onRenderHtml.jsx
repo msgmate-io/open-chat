@@ -60,7 +60,6 @@ async function onRenderHtml(pageContext) {
   const title = (documentProps && documentProps.title) || "Vite SSR app";
   const desc =
     (documentProps && documentProps.description) || "App using Vite + Vike";
-
   // We might also be able to already extract the theme from cookie heder:
   const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
 

@@ -1,40 +1,48 @@
 export default ChatListNavigation;
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { RootState } from "../../store/reducer";
-import { ChatListViews } from "../../store/localSettings/store";
+import { ChatListViews } from "../../store/localSettings/types";
+import { setChatListView } from "../../store/localSettings/api";
 import ChatSearch from "../atoms/ChatSearch";
 
 function ChatListNavigation() {
+  const dispatch = useDispatch();
   const chats = useSelector((state: RootState) => state.chats);
-  const [viewActive, setViewActive] = useState<ChatListViews>(
-    ChatListViews.LIST
+  const selectedChatListView = useSelector(
+    (state: RootState) => state.localSettings.selectedChatListView
   );
   const selectedChat = useSelector(
     (state: RootState) => state.chats.selectedChat
   );
   return (
     <div className="w-full bg-base-300 shadow flex flex-row justify-start items-center content-center p-1 rounded-xl relative">
-      <div className="tooltip tooltip-bottom" data-tip="Profile & Settings">
-        <a
+      <div
+        className="tooltip tooltip-bottom h-full relative flex"
+        data-tip="Profile & Settings"
+      >
+        <button
           onClick={() => {
-            if (viewActive == ChatListViews.LIST) {
-              setViewActive(ChatListViews.PROFILE);
+            if (selectedChatListView == ChatListViews.LIST) {
+              setChatListView(ChatListViews.PROFILE, dispatch);
             } else {
-              setViewActive(ChatListViews.LIST);
+              setChatListView(ChatListViews.LIST, dispatch);
             }
           }}
-          className={`avatar rounded-xl`}
+          className={`btn btn-circle ${
+            selectedChatListView == ChatListViews.PROFILE
+              ? "btn-secondary"
+              : "btn-primary"
+          }`}
         >
-          <div
-            className={`w-12 rounded-xl ${
-              viewActive == "profile" ? "border-2 border-error" : "border-2"
-            }`}
-          >
-            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+          <div className={`w-12 h-12 rounded-xl m-1`}>
+            <img
+              className="mask mask-circle"
+              src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+            />
           </div>
-        </a>
+        </button>
       </div>
       <div className="flex flex-row justify-end items-center content-center h-full w-full gap-2">
         <button className="btn btn-circle">
