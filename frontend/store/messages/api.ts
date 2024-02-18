@@ -5,6 +5,7 @@ import { ChatResult, PaginatedMessageList } from "../../api/api";
 import { MessagesState } from "./types";
 import { TmpMessagesActionTypes } from "../tmpMessages/types";
 import { UserState } from "../user/types";
+import { SelectedChatActionTypes } from "../selectedChat/types";
 
 export const updateStatus = (status: StatusTypes) => async (dispatch: any) => {
   dispatch({
@@ -77,6 +78,10 @@ export async function fetchMessages(
       chat,
       messages: fetchedMessages,
     },
+  });
+  await dispatch({
+    type: SelectedChatActionTypes.SELECT_MESSAGES,
+    payload: fetchedMessages,
   });
   await dispatch(updateStatus(StatusTypes.LOADED));
 }

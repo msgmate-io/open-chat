@@ -4,7 +4,6 @@ import { StatusTypes } from "../types";
 export interface MessagesState {
   status: StatusTypes;
   errors: string[] | string | null;
-  messages: PaginatedMessageList | null;
   chat: {
     [chatId: string]: PaginatedMessageList;
   };
@@ -31,14 +30,8 @@ export interface ServerSaveMessageAction {
   };
 }
 
-export interface SelectMessagesAction {
-  type: MessagesActionTypes.SELECT_MESSAGES;
-  payload: PaginatedMessageList | null;
-}
-
 export enum MessagesActionTypes {
   UPDATE_STATUS = "UPDATE_STATUS",
   FETCH_MESSAGES = "FETCH_MESSAGES",
-  SELECT_MESSAGES = "SELECT_MESSAGES",
   SERVER_SAVE_MESSAGE = "SERVER_SAVE_MESSAGE",
 }

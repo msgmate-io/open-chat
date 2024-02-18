@@ -17,7 +17,7 @@ function OnlineState({ isOnline = false }) {
   );
 }
 
-function OnlineIndicator() {
+function ChatIndicators({ chat }: { chat: ChatResult }) {
   return (
     <div className="flex flex-grow items-center justify-end content-end gap-2">
       <div className="badge badge-accent badge-outline">unreads</div>
@@ -65,10 +65,10 @@ function ChatListItem({ chat }: { chat: ChatResult }) {
               <h1 className="text-xl whitespace-nowrap max-w-xs overflow-hidden">
                 {chat.partner.first_name} {chat.partner.second_name}
               </h1>
-              <OnlineIndicator />
+              <ChatIndicators chat={chat} />
             </div>
             <div
-              className={`flex flex-row justify-start items-center content-center w-full max-w-full whitespace-nowrap max-w-xs overflow-hidden`}
+              className={`flex flex-row justify-start items-center content-center w-full whitespace-nowrap max-w-48 sm:max-w-xs overflow-hidden`}
             >
               {chat?.newest_message?.text}
             </div>

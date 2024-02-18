@@ -3,7 +3,6 @@ import {
   ChatsState,
   ChatsStatusAction,
   ChatsFetchAction,
-  ChatsSelectAction,
 } from "./types";
 import { StatusTypes } from "../types";
 
@@ -14,7 +13,7 @@ export const initialState: ChatsState = {
   results: [],
 };
 
-type Action = ChatsStatusAction | ChatsFetchAction | ChatsSelectAction;
+type Action = ChatsStatusAction | ChatsFetchAction;
 
 export function chatsReducer(
   state: ChatsState = initialState,
@@ -25,11 +24,6 @@ export function chatsReducer(
       return {
         ...state,
         status: action.payload,
-      };
-    case ChatsActionTypes.SELECT_CHAT:
-      return {
-        ...state,
-        selectedChat: action.payload,
       };
     case ChatsActionTypes.FETCH_CHATS:
       const prevResults = state.results ? state.results : [];

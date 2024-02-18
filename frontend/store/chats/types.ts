@@ -18,13 +18,7 @@ export interface ChatsFetchAction {
   payload: PaginatedChatResultList;
 }
 
-export interface ChatsSelectAction {
-  type: ChatsActionTypes.SELECT_CHAT;
-  payload: ChatResult;
-}
-
 export enum ChatsActionTypes {
   UPDATE_STATUS_CHATS = "UPDATE_STATUS_CHATS",
-  SELECT_CHAT = "SELECT_CHAT",
   FETCH_CHATS = "FETCH_CHATS",
 }

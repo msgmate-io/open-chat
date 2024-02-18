@@ -6,6 +6,7 @@ import { Api, ChatsListParams } from "../../api/api";
 import { ChatResult } from "../../api/api";
 import { MessagesActionTypes, MessagesState } from "../messages/types";
 import { fetchMessages } from "../messages/api";
+import { SelectedChatActionTypes } from "../selectedChat/types";
 
 export async function updateStatus(status: StatusTypes, dispatch: any) {
   dispatch({
@@ -23,12 +24,13 @@ export async function selectChat(
 ) {
   await updateStatus(StatusTypes.LOADING, dispatch);
   await dispatch({
+    // TODO: can we get rid of this?
     type: MessagesActionTypes.UPDATE_STATUS,
     payload: StatusTypes.LOADING,
   });
   if (curSelectedChat?.uuid === chat.uuid) {
     await dispatch({
-      type: ChatsActionTypes.SELECT_CHAT,
+      type: SelectedChatActionTypes.SELECT_CHAT,
       payload: null,
     });
     navigate(`/chat`);
@@ -47,12 +49,12 @@ export async function selectChat(
       );
     } else {
       await dispatch({
-        type: MessagesActionTypes.SELECT_MESSAGES,
+        type: SelectedChatActionTypes.SELECT_MESSAGES,
         payload: messages.chat[chat.uuid],
       });
     }
     await dispatch({
-      type: ChatsActionTypes.SELECT_CHAT,
+      type: SelectedChatActionTypes.SELECT_CHAT,
       payload: chat,
     });
     navigate(`/chat/${chat.uuid}`);

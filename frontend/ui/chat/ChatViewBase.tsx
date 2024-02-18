@@ -95,11 +95,11 @@ function ChatViewBase() {
   const dispatch = useDispatch();
 
   const chatMessages = useSelector(
-    (state: RootState) => state.messages.messages
+    (state: RootState) => state.selectedChat.messages
   );
   const user = useSelector((state: RootState) => state.user);
   const selectedChat = useSelector(
-    (state: RootState) => state.chats.selectedChat
+    (state: RootState) => state.selectedChat.chat
   );
   const outgoingMessages = useSelector(
     (state: RootState) => state.tmpMessages.outgoing
