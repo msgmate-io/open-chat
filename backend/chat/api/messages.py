@@ -5,8 +5,9 @@ from chat.models import Message, MessageSerializer, Chat
 from rest_framework.pagination import PageNumberPagination
 from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, DetailedPaginationMixin
 from rest_framework.decorators import action
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, inline_serializer
 from chat.consumers.messages import InPartialMessage
+from django.db.models import Q
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
@@ -61,6 +62,20 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         obj.read = True
         obj.save()
         return Response(self.serializer_class(obj).data, status=200)
+    
+    
+    @extend_schema(request=inline_serializer(fields={}, name='MarkChatMessagesRead'))
+    @action(detail=False, methods=['post'])
+    def mark_chat_messages_read(self, request, chat_uuid=None):
+        if not chat_uuid:
+            return Response({'error': 'chat_uuid is required'}, status=400)
+
+        self.chat_uuid = chat_uuid
+        Message.objects.filter(
+            ~Q(sender=request.user), 
+            chat__in=Chat.objects.filter(Q(u1=request.user) | Q(u2=request.user), uuid=chat_uuid), 
+            read=False).update(read=True)
+        return Response({'status': 'ok'}, status=200)
 
         
     @extend_schema(request=SendMessageSerializer)

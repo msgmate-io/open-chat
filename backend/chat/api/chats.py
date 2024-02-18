@@ -44,11 +44,9 @@ class ChatsModelViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
-        if not self.request.user.is_staff:
-            return Chat.objects.filter(Q(u1 = self.request.user) | Q(u2 = self.request.user))
-        else:
-            return self.queryset
+        return Chat.objects.filter(Q(u1 = self.request.user) | Q(u2 = self.request.user))
         
+    
 
     @extend_schema(responses={200: chat_res_seralizer(many=False)})
     @action(detail=False, methods=['post'])

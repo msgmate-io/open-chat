@@ -142,8 +142,6 @@ class UserStaffRestricedModelViewsetMixin:
             return super().get_queryset().get(uuid=self.kwargs["pk"])
 
     def update(self, request, *args, **kwargs):
-        
-        print("CALLING UPDATE", request.data)
         if not request.user.is_staff:
             unallowed_args = self.check_unallowed_args(request.data)
             if len(unallowed_args) > 0:
