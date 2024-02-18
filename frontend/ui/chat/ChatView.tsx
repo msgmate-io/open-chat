@@ -14,6 +14,14 @@ function transition(status: StatusTypes) {
   }`;
 }
 
+export function NoChatView() {
+  return (
+    <div className="flex flex-col items-center justify-center h-full">
+      <h1 className="text-2xl text-base-content">No chat selected</h1>
+    </div>
+  );
+}
+
 export function ChatView() {
   const messagesStatus = useSelector(
     (state: RootState) => state.messages.status
@@ -31,7 +39,8 @@ export function ChatView() {
     >
       <div className="flex flex-col h-full relative">
         <ChatViewNav />
-        <ChatViewBase />
+        {selectedChat && <ChatViewBase />}
+        {!selectedChat && <NoChatView />}
       </div>
     </div>
   );
