@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { WEBSOCKET_PROTOCOLL } from "./renderer/constants";
 
 const CORE_WS_PATH = "/api/core/ws";
-const CORE_WS_SHEME = "ws://";
 
 const WebsocketBridge = () => {
   /**
@@ -16,7 +16,7 @@ const WebsocketBridge = () => {
    */
   const dispatch = useDispatch();
   const [socketUrl, setSocketUrl] = useState(
-    CORE_WS_SHEME + window.location.host + CORE_WS_PATH
+    WEBSOCKET_PROTOCOLL + window.location.host + CORE_WS_PATH
   );
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
