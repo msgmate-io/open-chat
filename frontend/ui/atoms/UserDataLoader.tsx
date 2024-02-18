@@ -6,7 +6,7 @@ import { RootState } from "../../store/reducer";
 import { useApi } from "../../pages/api/client";
 import { StatusTypes } from "../../store/types";
 
-function UserDataLoader({ children }) {
+function UserDataLoader() {
   const dispatch = useDispatch();
   const pageContext = useSelector((state: RootState) => state.pageContext);
   const user = useSelector((state: RootState) => state.user);

@@ -5,7 +5,7 @@ import { RootState } from "../../store/reducer";
 
 function ChatViewNav() {
   const selectedChat = useSelector(
-    (state: RootState) => state.chats.selectedChat
+    (state: RootState) => state.selectedChat.chat
   );
 
   if (!selectedChat) {

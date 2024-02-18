@@ -14,6 +14,7 @@ export interface ChatResult {
   created: string;
   newest_message: Message;
   partner: UserProfile;
+  unread_count: number;
   /** @format uuid */
   uuid: string;
 }

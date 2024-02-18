@@ -1,4 +1,6 @@
 export default ChatViewBase;
+
+import ChatScrollManager from "./ChatScrollManager";
 import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ChatMessage from "./ChatMessage";
@@ -6,87 +8,77 @@ import ChatInput from "./ChatInput";
 import LoadMoreMessages from "./LoadMoreMessages";
 import { RootState } from "../../store/reducer";
 import { useApi } from "../../pages/api/client";
+import CountDown, { STATUS } from "../atoms/CountDown";
 
-function ScrollManager({ scrollContainer }) {
-  const [displayJumpToBottom, setDisplayJumpToBottom] = useState(false);
+const READ_SEND_COUNTDOWN_SECONDS = 5;
 
-  const scrollToBottom = () => {
-    console.log("scrolling to bottom");
-    if (scrollContainer.current)
-      scrollContainer.current.scrollTop = scrollContainer.current.scrollHeight;
+function ReadSendCountdown() {
+  const [hidden, setHidden] = useState(false);
+  const selectedChat = useSelector(
+    (state: RootState) => state.selectedChat.chat
+  );
+
+  const [status, setStatus] = useState(STATUS.STARTED);
+  const [secondsRemaining, setSecondsRemaining] = useState(
+    READ_SEND_COUNTDOWN_SECONDS
+  );
+
+  const restartCountdown = () => {
+    setSecondsRemaining(READ_SEND_COUNTDOWN_SECONDS);
+    setStatus(STATUS.STARTED);
   };
 
   useEffect(() => {
-    const checkTopScroll = () => {
-      const top = scrollContainer.current?.scrollTop;
-      const bottom =
-        scrollContainer.current?.scrollHeight -
-        scrollContainer.current?.scrollTop -
-        scrollContainer.current?.offsetHeight;
+    restartCountdown();
+    setHidden(false);
+  }, [selectedChat]);
 
-      console.log("scrolling", top, bottom, new Date(), displayJumpToBottom);
+  useEffect(() => {
+    console.log("CHANGE status", status);
+    if (status === STATUS.FINISHED) {
+      setTimeout(() => {
+        setHidden(true);
+      }, 1000);
+    }
+  }, [status]);
 
-      if (scrollContainer.current?.scrollTop < 50) {
-        //console.log("Almost at the top! Fetch more messages!", new Date());
-      }
-
-      if (bottom > 100 && !displayJumpToBottom) {
-        console.log("Showing");
-        setDisplayJumpToBottom(true);
-      }
-      if (bottom < 100 && displayJumpToBottom) {
-        console.log("hiding");
-        setDisplayJumpToBottom(false);
-      }
-    };
-    scrollContainer.current?.addEventListener("scroll", checkTopScroll);
-    return () => {
-      scrollContainer.current?.removeEventListener("scroll", checkTopScroll);
-    };
-  }, [scrollContainer, displayJumpToBottom]);
-
-  return displayJumpToBottom ? (
-    <div className="relative">
+  return (
+    <div className={`relative ${hidden ? "hidden" : ""}`}>
       <div
-        className="absolute bottom-0 mb-10 ml-4 tooltip"
-        data-tip="Jump down"
+        className={`absolute bottom-0 mb-28 ml-4 tooltip ${
+          status === STATUS.FINISHED ? "animate-ping" : "animate-pulse"
+        }`}
+        data-tip={
+          status === STATUS.FINISHED ? "To late to cancel" : "Click to cancel"
+        }
       >
-        <div className="h-14 w-14 flex rounded-xl bg-base-300 opacity-50 hover:opacity-100 content-center items-center justify-center">
-          <button className="btn btn-circle btn-ghost" onClick={scrollToBottom}>
+        <div
+          className={`h-10 w-34 flex rounded-xl bg-base-300 opacity-50 hover:opacity-100 content-center items-center justify-center p-2 ${
+            status === STATUS.FINISHED ? "bg-base-100" : ""
+          }`}
+        >
+          <button className="btn btn-circle btn-ghost" onClick={() => {}}>
             <kbd className="kbd">▼</kbd>
           </button>
+          <div className="flex flex-col">
+            <span className="text-xs">
+              {status === STATUS.FINISHED
+                ? "Sending 'read' ..."
+                : "Sending 'read' in"}
+            </span>
+            <div className={status === STATUS.FINISHED ? "hidden" : ""}>
+              <CountDown
+                status={status}
+                setStatus={setStatus}
+                secondsRemaining={secondsRemaining}
+                setSecondsRemaining={setSecondsRemaining}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  ) : (
-    <></>
   );
-}
-
-function PreRenderedMessages() {
-  const chatsMessages = useSelector((state: RootState) => state.messages.chat);
-  const user = useSelector((state: RootState) => state.user);
-  const selectedChat = useSelector(
-    (state: RootState) => state.chats.selectedChat
-  );
-
-  return Object.keys(chatsMessages).map((chatUuid) => {
-    return chatsMessages[chatUuid].results?.map((_message, i) => {
-      return (
-        <div
-          className={`flex w-full h-full relative ${
-            selectedChat?.uuid === chatUuid ? "" : "hidden"
-          }`}
-        >
-          <ChatMessage
-            message={_message}
-            isSelf={_message.sender == user.uuid}
-            key={i}
-          />
-        </div>
-      );
-    });
-  });
 }
 
 function ChatViewBase() {
@@ -140,7 +132,11 @@ function ChatViewBase() {
           );
         })}
       </div>
-      <ScrollManager scrollContainer={scrollContainer} />
+      <ChatScrollManager
+        scrollContainer={scrollContainer}
+        selectedChat={selectedChat}
+      />
+      <ReadSendCountdown />
       <ChatInput
         chatUuid={selectedChat?.uuid || null}
         scrollToBottom={scrollToBottom}

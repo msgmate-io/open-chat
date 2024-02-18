@@ -28,37 +28,29 @@ export async function selectChat(
     type: MessagesActionTypes.UPDATE_STATUS,
     payload: StatusTypes.LOADING,
   });
-  if (curSelectedChat?.uuid === chat.uuid) {
-    await dispatch({
-      type: SelectedChatActionTypes.SELECT_CHAT,
-      payload: null,
-    });
-    navigate(`/chat`);
+  if (!messages.chat[chat.uuid]) {
+    await fetchMessages(
+      api,
+      dispatch,
+      chat,
+      {
+        page: 1,
+        page_size: 20,
+        chatUuid: chat?.uuid,
+      },
+      messages
+    );
   } else {
-    if (!messages.chat[chat.uuid]) {
-      await fetchMessages(
-        api,
-        dispatch,
-        chat,
-        {
-          page: 1,
-          page_size: 20,
-          chatUuid: chat?.uuid,
-        },
-        messages
-      );
-    } else {
-      await dispatch({
-        type: SelectedChatActionTypes.SELECT_MESSAGES,
-        payload: messages.chat[chat.uuid],
-      });
-    }
     await dispatch({
-      type: SelectedChatActionTypes.SELECT_CHAT,
-      payload: chat,
+      type: SelectedChatActionTypes.SELECT_MESSAGES,
+      payload: messages.chat[chat.uuid],
     });
-    navigate(`/chat/${chat.uuid}`);
   }
+  await dispatch({
+    type: SelectedChatActionTypes.SELECT_CHAT,
+    payload: chat,
+  });
+  navigate(`/chat/${chat.uuid}`);
   await dispatch({
     type: MessagesActionTypes.UPDATE_STATUS,
     payload: StatusTypes.LOADED,

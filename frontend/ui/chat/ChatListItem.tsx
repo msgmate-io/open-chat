@@ -20,8 +20,11 @@ function OnlineState({ isOnline = false }) {
 function ChatIndicators({ chat }: { chat: ChatResult }) {
   return (
     <div className="flex flex-grow items-center justify-end content-end gap-2">
-      <div className="badge badge-accent badge-outline">unreads</div>
-      <OnlineState />
+      {chat.unread_count !== 0 && (
+        <div className="badge badge-accent badge-outline">
+          unreads: {chat.unread_count}
+        </div>
+      )}
     </div>
   );
 }

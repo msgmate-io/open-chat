@@ -14,6 +14,22 @@ export const updateStatus = (status: StatusTypes) => async (dispatch: any) => {
   });
 };
 
+export function mergeMessageResults(
+  messagesOld: PaginatedMessageList,
+  messagesNew: PaginatedMessageList
+) {
+  return {
+    ...messagesNew,
+    results: messagesOld.results
+      ?.filter((message) => {
+        return !messagesNew.results?.some(
+          (newMessage) => newMessage.uuid === message.uuid
+        );
+      })
+      .concat(messagesNew.results || []),
+  };
+}
+
 export async function sendMessage(
   api: typeof Api.prototype.api,
   dispatch: any,
@@ -51,6 +67,10 @@ export async function sendMessage(
       chatId: chat.uuid,
       message: serverMessage,
     },
+  });
+  await dispatch({
+    type: SelectedChatActionTypes.SAVE_MESSAGE_SELECTED_CHAT,
+    payload: serverMessage,
   });
 }
 
@@ -90,19 +110,12 @@ export async function fetchMoreMessages(
   api: typeof Api.prototype.api,
   dispatch: any,
   chat: ChatResult,
-  messages: MessagesState
+  messages: PaginatedMessageList
 ) {
-  if (
-    messages.status === StatusTypes.LOADING ||
-    messages.status === StatusTypes.LOADING_MORE
-  ) {
-    console.warn("'fetchMessages' is already running");
-    return;
-  }
   await dispatch(updateStatus(StatusTypes.LOADING_MORE));
-  const pagesTotal = messages.messages?.pages_total || 1;
-  const currentPage = messages.messages?.next_page
-    ? messages.messages?.next_page - 1
+  const pagesTotal = messages?.pages_total || 1;
+  const currentPage = messages?.next_page
+    ? messages?.next_page - 1
     : pagesTotal;
   const fetchedMessages = await api.messagesList2({
     chatUuid: chat?.uuid,
@@ -117,5 +130,9 @@ export async function fetchMoreMessages(
     },
   });
   await dispatch(updateStatus(StatusTypes.LOADED));
+  await dispatch({
+    type: SelectedChatActionTypes.SELECT_MESSAGES,
+    payload: fetchedMessages,
+  });
   console.log("fetchedMessages", fetchedMessages);
 }

@@ -8,26 +8,29 @@ import { StatusTypes } from "../../store/types";
 import { fetchMoreMessages } from "../../store/messages/api";
 
 function LoadMoreMessages() {
-  const messages = useSelector((state: RootState) => state.messages);
+  const api = useApi();
+  const dispatch = useDispatch();
+  const cachedMessages = useSelector((state: RootState) => state.messages);
+
+  const messages = useSelector(
+    (state: RootState) => state.selectedChat.messages
+  );
   const selectedChat = useSelector(
-    (state: RootState) => state.chats.selectedChat
+    (state: RootState) => state.selectedChat.chat
   );
 
   const messagesStatus = useSelector(
     (state: RootState) => state.messages.status
   );
 
-  const api = useApi();
-  const dispatch = useDispatch();
-
-  const totalItems = messages.messages?.items_total || 0;
-  const pagesTotal = messages.messages?.pages_total || 1;
-  const currentPage = messages.messages?.next_page
-    ? messages?.messages.next_page - 1
+  const totalItems = messages?.items_total || 0;
+  const pagesTotal = messages?.pages_total || 1;
+  const currentPage = messages?.next_page
+    ? messages?.next_page - 1
     : pagesTotal;
   const pagesLeft = pagesTotal - currentPage;
 
-  const moreMessagesToLoad = messages.messages?.next_page !== null;
+  const moreMessagesToLoad = messages?.next_page !== null;
 
   return (
     <div className="w-full flex flex-row px-5">
