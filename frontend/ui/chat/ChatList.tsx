@@ -17,9 +17,15 @@ function ChatList() {
     (state: RootState) => state.localSettings.selectedChatListView
   );
 
+  const selectedChat = useSelector(
+    (state: RootState) => state.selectedChat.chat
+  );
+
   return (
     <div
-      className={`menu bg-base-300 w-full sm:max-w-md min-w-md rounded-box h-full relative block`}
+      className={`menu bg-base-300 w-full sm:max-w-md min-w-md rounded-box h-full relative block ${
+        selectedChat ? "hidden md:block" : ""
+      }`}
     >
       <div className="flex flex-col w-full h-full max-h-full relative">
         <ChatListNavigation />

@@ -1,9 +1,12 @@
 export default ChatViewNav;
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/reducer";
+import { navigate } from "vike/client/router";
+import { unselectChat } from "../../store/chats/api";
 
 function ChatViewNav() {
+  const dispatch = useDispatch();
   const selectedChat = useSelector(
     (state: RootState) => state.selectedChat.chat
   );
@@ -18,7 +21,11 @@ function ChatViewNav() {
 
   return (
     <div className="flex flex-row bg-base-300 rounded-xl justify-left items-center p-2 md:p-3 shadow-md">
-      <a href="/chat/">
+      <a
+        onClick={() => {
+          unselectChat(dispatch, navigate);
+        }}
+      >
         <kbd
           className={`kbd h-10 w-10 xl:h-12 xl:w-12 ${
             selectedChat ? "lg:hidden" : ""

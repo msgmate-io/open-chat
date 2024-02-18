@@ -11,49 +11,52 @@ function ChatMessage({ message, isSelf, isTmpMessage = false }) {
     <div className={`relative`}>
       <div className="flex flex-col relative">
         <div
-          className={`flex flex-row content-center items-center pt-1 relative ${
+          className={`flex flex-row content-center items-center pt-1 group relative ${
             isSelf ? "justify-end" : "justify-start"
           }`}
         >
-          <div
-            className={`w-fit bg-base-300 p-1 px-2 rounded-xl relative group hover:bg-base-200 max-w-screen-lg shadow-md ${
-              message.read ? "" : ""
-            }`}
-          >
+          <div className="flex group w-full relative">
             <MessageOptions message={message} />
-            <Markdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h3(props) {
-                  return <h3 className="text-xl" {...props} />;
-                },
-                code(props) {
-                  const { children, className, node, ...rest } = props;
-                  const match = /language-(\w+)/.exec(className || "");
-                  return (
-                    <SyntaxHighlighter
-                      language={match ? match[1] : null}
-                      style={atomdark}
-                    >
-                      {children}
-                    </SyntaxHighlighter>
-                  );
-                },
-              }}
+            <div
+              className={`w-fit bg-base-300 p-1 px-2 rounded-xl max-w-screen overflow-x-auto relative hover:bg-base-200 shadow-md`}
             >
-              {message.text}
-            </Markdown>
-            <div className="flex flex-row justify-end text-xs gap-2">
-              {!message?.read && (
-                <div className="badge badge-outline badge-info">unread</div>
-              )}
-              {isTmpMessage && (
-                <div className="badge badge-outline badge-info">sending</div>
-              )}
-              {new Date(message.created)
-                .toISOString()
-                .slice(0, 19)
-                .replace("T", " ")}
+              <Markdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  pre(props) {
+                    return <span {...props} />;
+                  },
+                  h3(props) {
+                    return <h3 className="text-xl" {...props} />;
+                  },
+                  code(props) {
+                    const { children, className, node, ...rest } = props;
+                    const match = /language-(\w+)/.exec(className || "");
+                    return (
+                      <SyntaxHighlighter
+                        language={match ? match[1] : null}
+                        style={atomdark}
+                      >
+                        {children}
+                      </SyntaxHighlighter>
+                    );
+                  },
+                }}
+              >
+                {message.text}
+              </Markdown>
+              <div className="flex flex-row justify-end text-xs gap-2">
+                {!message?.read && (
+                  <div className="badge badge-outline badge-info">unread</div>
+                )}
+                {isTmpMessage && (
+                  <div className="badge badge-outline badge-info">sending</div>
+                )}
+                {new Date(message.created)
+                  .toISOString()
+                  .slice(0, 19)
+                  .replace("T", " ")}
+              </div>
             </div>
           </div>
         </div>

@@ -15,6 +15,18 @@ export async function updateStatus(status: StatusTypes, dispatch: any) {
   });
 }
 
+export async function unselectChat(dispatch: any, navigate: any) {
+  await dispatch({
+    type: SelectedChatActionTypes.SELECT_CHAT,
+    payload: null,
+  });
+  await dispatch({
+    type: SelectedChatActionTypes.SELECT_MESSAGES,
+    payload: null,
+  });
+  navigate("/chat");
+}
+
 export async function selectChat(
   api: typeof Api.prototype.api,
   chat: ChatResult,

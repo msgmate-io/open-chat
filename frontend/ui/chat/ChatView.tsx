@@ -19,7 +19,7 @@ export function ChatView() {
     (state: RootState) => state.messages.status
   );
   const selectedChat = useSelector(
-    (state: RootState) => state.chats.selectedChat
+    (state: RootState) => state.selectedChat.chat
   );
 
   return (
