@@ -19,6 +19,7 @@ def chat_res_seralizer(many=True):
             "uuid": serializers.UUIDField(),
             "created": serializers.DateTimeField(),
             'newest_message': MessageSerializer(many=False),
+            'unread_count': serializers.IntegerField(),
             "partner": UserProfileSerializer(many=False),
         },
         many=many,
