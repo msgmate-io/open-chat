@@ -9,12 +9,9 @@ import ChatSearch from "../atoms/ChatSearch";
 
 function ChatListNavigation() {
   const dispatch = useDispatch();
-  const chats = useSelector((state: RootState) => state.chats);
+  const user = useSelector((state: RootState) => state.user);
   const selectedChatListView = useSelector(
     (state: RootState) => state.localSettings.selectedChatListView
-  );
-  const selectedChat = useSelector(
-    (state: RootState) => state.chats.selectedChat
   );
   return (
     <div className="w-full bg-base-300 shadow flex flex-row justify-start items-center content-center p-1 rounded-xl relative">

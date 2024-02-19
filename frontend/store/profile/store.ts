@@ -8,6 +8,7 @@ import {
 
 const initialState: ProfileState = {
   status: StatusTypes.EMPTY,
+  unsavedChanges: false,
   errors: {},
   last_updated: "",
   second_name: "",
