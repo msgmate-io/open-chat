@@ -1,23 +1,29 @@
 export default MessageOptions;
 import React from "react";
 
-function MessageOptions({ message }) {
+function MessageOptions({ message, isSelf }) {
   return (
-    <div className="dropdown dropdown-end absolute right-0 z-20">
+    <div className="relative">
       <div
-        className={`btn btn-circle btn-xs hidden group-hover:block`}
-        tabIndex={0}
-        role="button"
+        className={`dropdown dropdown-start absolute ${
+          isSelf ? "left-0" : "left-0"
+        } right-0 z-20`}
       >
-        <kbd className="kbd kbd-sm bg-primary">▼</kbd>
+        <div
+          className={`btn btn-circle btn-xs hidden group-hover:block`}
+          tabIndex={0}
+          role="button"
+        >
+          <kbd className="kbd kbd-sm bg-primary">▼</kbd>
+        </div>
+        <ul
+          tabIndex={0}
+          className="dropdown-content menu shadow bg-base-100 w-52 gap-1 rounded-xl border"
+        >
+          <button className="btn btn-xs">Item 1</button>
+          <button className="btn btn-xs">Item 1</button>
+        </ul>
       </div>
-      <ul
-        tabIndex={0}
-        className="dropdown-content menu shadow bg-base-100 w-52 gap-1 rounded-xl border"
-      >
-        <button className="btn btn-xs">Item 1</button>
-        <button className="btn btn-xs">Item 1</button>
-      </ul>
     </div>
   );
 }

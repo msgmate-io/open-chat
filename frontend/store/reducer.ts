@@ -6,17 +6,21 @@ import { combineReducers } from "redux";
 import { userReducer } from "./user/store";
 import { tmpMessagesReducer } from "./tmpMessages/store";
 import { selectedChatReducer } from "./selectedChat/store";
+import { profileReducer } from "./profile/store";
 import * as toolkitRaw from "@reduxjs/toolkit";
 const { configureStore } = toolkitRaw.default ?? toolkitRaw;
 
 export const rootReducer = combineReducers({
+  user: userReducer,
+  profile: profileReducer,
+
   messages: messagesReducer,
   chats: chatsReducer,
-  user: userReducer,
   tmpMessages: tmpMessagesReducer,
+  selectedChat: selectedChatReducer,
+
   localSettings: localSettingsReducer,
   pageContext: pageContextReducer,
-  selectedChat: selectedChatReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

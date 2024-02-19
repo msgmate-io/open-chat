@@ -20,7 +20,7 @@ import { stat } from "fs";
 const queryClient = new QueryClient();
 
 let root;
-let globalStore: null | any = null;
+export let globalStore: null | any = null;
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;

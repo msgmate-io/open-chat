@@ -10,13 +10,6 @@ import { fetchChats } from "../../store/chats/api";
 
 function ChatsSelector() {
   const chats = useSelector((state: RootState) => state.chats);
-  const dispatch = useDispatch();
-  const api = useApi();
-
-  useEffect(() => {
-    if (chats.status === StatusTypes.EMPTY)
-      fetchChats(api, dispatch, { page: 1, page_size: 20 });
-  }, []);
 
   if (chats.status === StatusTypes.EMPTY) {
     return (

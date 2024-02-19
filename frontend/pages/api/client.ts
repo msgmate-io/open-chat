@@ -20,8 +20,14 @@ export function getApi(props: GetApiParamTypes): typeof Api.prototype.api {
   return api.api;
 }
 
+export function getApiClient(pageContext: any) {
+  return getApi({
+    cookie: pageContext.cookie,
+    xcsrfToken: pageContext.xcsrfToken,
+  });
+}
+
 export function getApiServer(pageContext: any) {
-  console.log("pageContext", pageContext);
   return getApi({
     cookie: pageContext.requestHeaders.cookie,
     xcsrfToken: pageContext.xcsrfToken,

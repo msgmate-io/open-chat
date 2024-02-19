@@ -14,11 +14,10 @@ function ChatMessage({ message, isSelf, isTmpMessage = false }) {
           className={`flex flex-row content-center items-center pt-1 group relative`}
         >
           <div
-            className={`flex group w-full content-center items-center  relative hover:bg-neutral rounded-xl px-1 ${
+            className={`flex group w-full content-center items-center  relative rounded-xl px-1 ${
               isSelf ? "justify-end" : "justify-start"
             }`}
           >
-            <MessageOptions message={message} />
             <div
               className={`w-fit bg-base-300 p-1 px-2 rounded-xl max-w-screen overflow-x-auto relative hover:bg-base-200 shadow-md`}
             >

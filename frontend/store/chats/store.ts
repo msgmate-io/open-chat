@@ -4,6 +4,7 @@ import {
   ChatsStatusAction,
   ChatsFetchAction,
   ChatsUpdateUnreadCountAction,
+  ChatsAddChatAction,
 } from "./types";
 import { StatusTypes } from "../types";
 
@@ -17,13 +18,24 @@ export const initialState: ChatsState = {
 type Action =
   | ChatsStatusAction
   | ChatsFetchAction
-  | ChatsUpdateUnreadCountAction;
+  | ChatsUpdateUnreadCountAction
+  | ChatsAddChatAction;
 
 export function chatsReducer(
   state: ChatsState = initialState,
   action: Action
 ): ChatsState {
   switch (action.type) {
+    case ChatsActionTypes.ADD_CHAT:
+      return {
+        ...state,
+        results: [
+          action.payload,
+          ...(state.results || []).filter(
+            (chat) => chat.uuid !== action.payload.uuid
+          ),
+        ],
+      };
     case ChatsActionTypes.UPDATE_UNREAD_COUNT:
       return {
         ...state,

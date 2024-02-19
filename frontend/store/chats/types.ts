@@ -23,8 +23,14 @@ export interface ChatsUpdateUnreadCountAction {
   payload: { chatId: string; unreadCount: number };
 }
 
+export interface ChatsAddChatAction {
+  type: ChatsActionTypes.ADD_CHAT;
+  payload: ChatResult;
+}
+
 export enum ChatsActionTypes {
   UPDATE_STATUS_CHATS = "UPDATE_STATUS_CHATS",
   FETCH_CHATS = "FETCH_CHATS",
   UPDATE_UNREAD_COUNT = "UPDATE_UNREAD_COUNT",
+  ADD_CHAT = "ADD_CHAT",
 }
