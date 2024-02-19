@@ -24,10 +24,10 @@ profile_api_admin_list = profile.UpdateProfileViewset.as_view({
 
 urlpatterns = [
     path("api/register", register.register_user),
+    path("api/logout", login.logout_user),
     path("api/login", login.login_user),
     path("api/profile", profile_api_user),
     path("api/user", user_api_user),
-
     # Admin
     path("api/profiles/", profile_api_admin_list),
     path("api/profiles/<str:pk>/", profile_api_admin),
