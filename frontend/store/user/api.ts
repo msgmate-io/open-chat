@@ -40,11 +40,7 @@ export async function loginUsername(
       payload: { ...userData, status: StatusTypes.LOADED },
     });
     await updateStatus(StatusTypes.LOADED, dispatch);
-    let navigateTo = pageContext?.urlPathname || "/";
-    if (navigateTo === "/login" || navigateTo === "/register") {
-      navigateTo = "/chat";
-    }
-    navigate(navigateTo);
+    navigate("/chat");
   } catch (e) {
     const data = await e.json();
     await dispatch({
