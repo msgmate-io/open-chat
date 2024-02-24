@@ -11,6 +11,13 @@ docker compose up --build
 
 Visit `localhost`, live reload & dev mode enabled by default.
 
+## Build
+
+```
+docker compose -f docker-compose.pro.yaml build
+docker compose -f docker-compose.pro.yaml up
+```
+
 ### Features
 
 This is a hyper-simplified overview of the repos feature / progress.

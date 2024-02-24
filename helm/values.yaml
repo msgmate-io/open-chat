@@ -10,8 +10,10 @@ redis:
   use: true
   port: 6379
   serviceName: redis-db-svc
-backend:
+ingress:
   use: true
+backend:
+  replicas: 1
   imageURL: localhost:32000/backend-image:latest
   registry:
     authRequired: false
@@ -30,7 +32,6 @@ backend:
     BASE_ADMIN_USERNAME: "admin"
     BASE_ADMIN_USER_PASSWORD: "password"
 frontend:
-  use: true
   imageURL: localhost:32000/frontend-image:latest
   registry:
     authRequired: false
