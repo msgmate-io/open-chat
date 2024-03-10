@@ -1,11 +1,17 @@
+import path from "path";
 import react from "@vitejs/plugin-react";
+import { builtinModules } from "module";
 import tailwindcss from "tailwindcss";
 import vike from "vike/plugin";
-import rollupNodePolyFill from "rollup-plugin-node-polyfills";
-import { builtinModules } from "module";
+import { defineConfig } from "vite";
 
-export default {
+export default defineConfig({
   plugins: [react(), vike({}), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname),
+    },
+  },
   alias: {
     resolve: {
       "./runtimeConfig": "./runtimeConfig.browser",
@@ -17,4 +23,4 @@ export default {
     },
   },
   server: {},
-};
+});
