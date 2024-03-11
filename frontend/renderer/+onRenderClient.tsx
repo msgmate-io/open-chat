@@ -67,11 +67,3 @@ async function render(pageContext) {
   }
   //document.title = getPageTitle(pageContext)
 }
-
-export function onHydrationEnd(pageContext) {
-  console.log(
-    "Hydration finished; page is now interactive.",
-    window.innerWidth,
-    pageContext
-  );
-}
