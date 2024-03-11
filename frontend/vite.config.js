@@ -6,7 +6,9 @@ import vike from "vike/plugin";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [react(), vike({}), tailwindcss()],
+  plugins: [react(), vike({
+    hydrationCanBeAborted: true,
+  }), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname),

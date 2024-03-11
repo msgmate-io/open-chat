@@ -1,26 +1,15 @@
 export default render;
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { PageShell } from "./PageShell";
 import { getStore } from "../store/reducer";
-import { useState, useEffect } from "react";
 import { Provider } from "react-redux";
-import WebsocketBridge from "../WebsocketBridge";
-import { number } from "prop-types";
 import Cookies from "js-cookie";
-import { PageContextProvider } from "./usePageContext";
-import { RootState } from "../store/reducer";
 import { LocalSettingsState } from "../store/localSettings/types";
 import { initialState as initialSettingsState } from "../store/localSettings/store";
 import "./index.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { stat } from "fs";
-
-const queryClient = new QueryClient();
-
 let root;
-export let globalStore: null | any = null;
+let globalStore: null | any = null;
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;
