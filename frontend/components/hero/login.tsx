@@ -25,7 +25,7 @@ import {
 import { ErrorResult } from '@/api/apiTypes';
 
 const formSchema = z.object({
-    email: z.string().min(2, {
+    username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
     }),
     password: z.string().min(8, {
@@ -52,7 +52,7 @@ export default function LoginHero({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: "",
+            username: "",
             password: ""
         },
     })
@@ -92,12 +92,12 @@ export default function LoginHero({
                     <FormProvider {...form}>
                         <FormField
                             control={form.control}
-                            name="email"
+                            name="username"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>email</FormLabel>
+                                    <FormLabel>username</FormLabel>
                                     <FormControl>
-                                        <Input type="email" placeholder="Email" {...field} />
+                                        <Input type="username" placeholder="Email" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
