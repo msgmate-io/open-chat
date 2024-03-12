@@ -12,7 +12,16 @@ import "./index.css";
 
 async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext;
-  const store = getStore()
+
+  const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
+  const initalReduxState = {
+    frontend: {
+      theme: theme,
+      sessionId: pageContext.sessionId,
+      xcsrfToken: pageContext.xcsrfToken,
+    }
+  }
+  const store = getStore(initalReduxState)
 
   // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA
   let pageHtml = "";
@@ -34,9 +43,6 @@ async function onRenderHtml(pageContext) {
   const title = (documentProps && documentProps.title) || "Vite SSR app";
   const desc =
     (documentProps && documentProps.description) || "App using Vite + Vike";
-  // We might also be able to already extract the theme from cookie heder:
-  const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
-  console.log("themeCookie", pageContext.cookies);
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en" data-theme="${theme}">
@@ -55,11 +61,7 @@ async function onRenderHtml(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      initalReduxState: {
-        frontend: {
-          theme: theme,
-        }
-      },
+      initalReduxState,
     },
   };
 }

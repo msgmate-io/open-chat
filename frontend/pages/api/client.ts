@@ -35,10 +35,10 @@ export function getApiServer(pageContext: any) {
 }
 
 export function useApi() {
-  const pageContext = useSelector((state: any) => state.pageContext);
+  const frontend = useSelector((state: any) => state.frontend);
 
   return getApi({
-    cookie: pageContext.cookie,
-    xcsrfToken: pageContext.xcsrfToken,
+    cookie: frontend.cookie,
+    xcsrfToken: frontend.xcsrfToken,
   });
 }

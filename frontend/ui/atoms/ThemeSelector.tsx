@@ -1,16 +1,19 @@
 export default ThemeSelector;
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { THEMES } from "@/store/frontendTypes";
 import { ReloadIcon } from "@radix-ui/react-icons"
+import { useSelector, useDispatch } from "react-redux";
+import { changeTheme } from "@/store/store";
 
 
 function ThemeSelector() {
-  const [theme, setTheme] = useState(null);
+  const dispatch = useDispatch();
+  const theme = useSelector((state: any) => state.frontend?.theme);
 
   useEffect(() => {
     const initalHidratiedTheme = Cookies.get("theme");
-    setTheme(initalHidratiedTheme);
+    dispatch(changeTheme(initalHidratiedTheme));
     console.log("initalHidratiedTheme", initalHidratiedTheme);
   }, []);
 
@@ -27,7 +30,7 @@ function ThemeSelector() {
     !theme ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> :
       <select
         onChange={(e) => {
-          setTheme(e.target.value);
+          dispatch(changeTheme(e.target.value));
           Cookies.set("theme", e.target.value);
         }}
         value={theme}
