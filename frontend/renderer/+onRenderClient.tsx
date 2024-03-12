@@ -1,11 +1,8 @@
 export default render;
 import ReactDOM from "react-dom/client";
-import { PageShell } from "./PageShell";
-import { getStore } from "../store/reducer";
+import React from "react";
+import { getStore } from "../store/store";
 import { Provider } from "react-redux";
-import Cookies from "js-cookie";
-import { LocalSettingsState } from "../store/localSettings/types";
-import { initialState as initialSettingsState } from "../store/localSettings/store";
 import "./index.css";
 
 let root;
@@ -16,45 +13,16 @@ async function render(pageContext) {
 
   let store = globalStore;
   if (!store) {
-    // First Time Server Side Rendering
-    let PRELOADED_STATE = pageContext.PRELOADED_STATE
-      ? pageContext.PRELOADED_STATE
-      : {};
-
-    if (pageContext.PRELOADED_STATE) {
-      const themeCookie = Cookies.get("localSettings_Theme");
-      // TODO: set default inital theme cookie
-      //
-
-      const localSettings: LocalSettingsState = {
-        ...initialSettingsState,
-        theme: themeCookie ? themeCookie : "light",
-      };
-
-      const INJECT_REDUX_STATE = {
-        ...PRELOADED_STATE,
-        localSettings,
-      };
-
-      console.info("MANUAL RELOAD, injected state: ", INJECT_REDUX_STATE);
-
-      const currentDocumentTheme =
-        document.documentElement.getAttribute("data-theme");
-      if (currentDocumentTheme !== themeCookie) {
-        document.documentElement.setAttribute("data-theme", themeCookie);
-      }
-
-      store = getStore(INJECT_REDUX_STATE);
-      globalStore = store;
-    }
+    store = getStore({});
+    globalStore = store;
   }
 
   const page = (
-    <PageShell pageContext={pageContext}>
+    <React.StrictMode>
       <Provider store={store}>
         <Page {...pageProps} />
       </Provider>
-    </PageShell>
+    </React.StrictMode>
   );
   const container = document.getElementById("react-root");
   if (pageContext.isHydration) {

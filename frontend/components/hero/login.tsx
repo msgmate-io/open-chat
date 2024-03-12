@@ -59,7 +59,6 @@ export default function LoginHero({
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
-            console.log("KEY", event);
             if (event.key === "Enter") {
                 form.handleSubmit(onSubmit)();
             }

@@ -3,9 +3,7 @@ export default {
   passToClient: [
     "pageProps",
     "routeParams",
-    "PRELOADED_STATE",
-    "shell",
-    "INJECT_REDUX_STATE",
+    "initalReduxState"
   ],
   clientRouting: true,
   hydrationCanBeAborted: true

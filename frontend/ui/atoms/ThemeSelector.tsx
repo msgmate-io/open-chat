@@ -1,14 +1,18 @@
 export default ThemeSelector;
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../store/reducer";
-import React, { useEffect } from "react";
-import { changeTheme } from "../../store/localSettings/api";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { THEMES } from "../../store/localSettings/types";
+import { THEMES } from "@/store/frontendTypes";
+import { ReloadIcon } from "@radix-ui/react-icons"
+
 
 function ThemeSelector() {
-  const dispatch = useDispatch();
-  const theme = useSelector((state: RootState) => state.localSettings?.theme);
+  const [theme, setTheme] = useState(null);
+
+  useEffect(() => {
+    const initalHidratiedTheme = Cookies.get("theme");
+    setTheme(initalHidratiedTheme);
+    console.log("initalHidratiedTheme", initalHidratiedTheme);
+  }, []);
 
   useEffect(() => {
     const currentDocumentTheme =
@@ -20,19 +24,19 @@ function ThemeSelector() {
   }, [theme]);
 
   return (
-    <select
-      onChange={(e) => {
-        console.log("THEME", e.target.value);
-        changeTheme(e.target.value as THEMES)(dispatch);
-      }}
-      value={theme}
-      className="select w-full"
-    >
-      {Object.values(THEMES).map((theme) => (
-        <option key={theme} value={theme}>
-          {theme}
-        </option>
-      ))}
-    </select>
-  );
+    !theme ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> :
+      <select
+        onChange={(e) => {
+          setTheme(e.target.value);
+          Cookies.set("theme", e.target.value);
+        }}
+        value={theme}
+        className="select w-full"
+      >
+        {Object.values(THEMES).map((_theme) => (
+          <option key={_theme} value={_theme}>
+            {_theme}
+          </option>
+        ))}
+      </select>)
 }
