@@ -9,10 +9,12 @@ import { changeTheme } from "@/store/store";
 
 function ThemeSelector() {
   const dispatch = useDispatch();
-  const theme = useSelector((state: any) => state.frontend?.theme);
+  const frontend = useSelector((state: any) => state.frontend);
+  console.log("frontend", frontend);
+  const theme = frontend.theme;
 
   useEffect(() => {
-    const initalHidratiedTheme = Cookies.get("theme");
+    const initalHidratiedTheme = Cookies.get("theme") || THEMES.LIGHT;
     dispatch(changeTheme(initalHidratiedTheme));
     console.log("initalHidratiedTheme", initalHidratiedTheme);
   }, []);

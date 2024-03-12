@@ -1,4 +1,5 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import * as toolkitRaw from '@reduxjs/toolkit';
+const { createSlice, configureStore } = toolkitRaw.default ?? toolkitRaw;
 
 const userSlice = createSlice({
     name: 'user',

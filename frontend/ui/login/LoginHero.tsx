@@ -5,9 +5,7 @@ import React, { useRef, useState } from "react";
 import PasswordInput from "../atoms/PasswordInput";
 import EmailInput from "../atoms/EmailInput";
 import UsernameInput from "../atoms/UsernameInput";
-import { useApi } from "../../pages/api/client";
-import { RootState } from "../../store/reducer";
-import { loginUsername } from "../../store/user/api";
+import { useApi } from "@/_api/client2";
 import { StatusTypes } from "../../store/types";
 import FormSubmitButton from "../atoms/FormSubmitButton";
 import FieldErrorDisplay from "../atoms/FieldErrorDisplay";
@@ -79,9 +77,8 @@ function LoginForm() {
       <span className="text-neutral-content text-center">
         Login via{" "}
         <button
-          className={`btn ${
-            loginOption == "username" ? "btn-primary" : "btn-outline"
-          } btn-xs`}
+          className={`btn ${loginOption == "username" ? "btn-primary" : "btn-outline"
+            } btn-xs`}
           onClick={() => setLoginOption("username")}
         >
           username
