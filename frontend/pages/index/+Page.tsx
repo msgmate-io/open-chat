@@ -44,7 +44,7 @@ function Page() {
       <ThemeSelector />
     </div>
     <LoginHero
-      title="Welcome to Little World Matching Pannel V3!"
+      title="Msgmate.io Open Chat Interface"
       description="Please login to continue"
       isFetching={isFetching}
       onSubmit={onSubmit}
