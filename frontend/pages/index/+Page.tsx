@@ -1,13 +1,13 @@
-import React from "react";
 import LoginHero from "@/components/hero/login";
 import { toast } from "sonner"
-import { useApi } from "../api/client";
-import { ErrorResult } from "@/api/apiTypes";
+import { useApi } from "@/_api/client2";
+import { ErrorResult } from "@/_api/apiTypes";
 import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner"
-import { LoginInfo } from "@/api/api";
+import { LoginInfo } from "@/_api/api";
 import ThemeSelector from "@/ui/atoms/ThemeSelector";
-import { processErrorRespose } from "@/api/apiUtils";
+import { navigate } from 'vike/client/router'
+import { processErrorRespose } from "@/_api/apiUtils";
 
 
 export { Page };
@@ -23,11 +23,12 @@ function Page() {
       ...data
     }
     try {
-      const res = await api.loginCreate(loginData)
-      toast.success("Logged in as " + data.email)
+      await api.loginCreate(loginData)
+      toast.success("Logged in as " + data.username)
       setTimeout(() => {
         setIsFetching(false)
-      }, 600)
+      }, 200)
+      navigate("/chat")
     } catch (e) {
       console.log("ERROR: ", e)
       const processedError = await processErrorRespose(e)
