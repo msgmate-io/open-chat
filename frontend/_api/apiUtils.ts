@@ -1,8 +1,6 @@
-import { ErrorResult } from './apiTypes';
-
-export async function processErrorRespose(response: Response): Promise<ErrorResult> {
+export async function processErrorRespose(response: Response) {
     let data: any = null
-    let errorResult: ErrorResult = {}
+    let errorResult = {}
     if (response.headers.get("Content-Type") === "application/json") {
         data = await response.json()
     }

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner"
 import { LoginInfo } from "@/api/api";
 import ThemeSelector from "@/ui/atoms/ThemeSelector";
+import { processErrorRespose } from "@/api/apiUtils";
 
 
 export { Page };
@@ -29,10 +30,10 @@ function Page() {
       }, 600)
     } catch (e) {
       console.log("ERROR: ", e)
-      /**const processedError = await processErrorRespose(e)
+      const processedError = await processErrorRespose(e)
       setError(processedError)
       toast.error("Error: " + JSON.stringify(processedError))
-      setIsFetching(false)**/
+      setIsFetching(false)
     }
   };
 
