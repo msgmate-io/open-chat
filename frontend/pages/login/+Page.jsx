@@ -1,10 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import LoginPage from "@/components/pages/Login";
 
-export default Page;
-
-function Page(pageProps) {
-  const dispatch = useDispatch();
-
-  return <div>Test</div>
+export function Page() {
+  return <LoginPage />;
 }
