@@ -43,6 +43,20 @@ This is a hyper-simplified overview of the repos feature / progress.
   - [x] Helm Chart for k8s deployment
   - [ ] Github Actions Build & Tests
   - [ ] Github Actions Deployment Workflow & Empherial Envs
+  
+### How we use vike.dev
+
+Web Setup:
+- SSR all pages
+- Subsequent navigation always client side
+- Prefetching only on public SSR pages ( only where good SEO is needed )
+- Utelize `+guard.js` for authentication guard and redirects
+- Clientside fetching for hyperdynamic internal app pages
+
+Mobile / Capacitor Setup ( `frontend.constants:STATIC_EXPORT === True` )
+- Prebuild **all pages** ( maybe exclude some landing / blog pages not required in mobile app )
+- No dynamic wild card routes allowed atm! ( [they cannot yet be prerendered](https://github.com/vikejs/vike/issues/1476) )
+- Utelize `+onHydrationEnd()` for authentication guard ( toggle with `STATIC_EXPORT` not used in web )
 
 ### LICENSE
 
