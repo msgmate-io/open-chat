@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'OpenChat',
   webDir: 'dist/client',
   server: {
+    cleartext: true,
     androidScheme: 'https'
   }
 };
