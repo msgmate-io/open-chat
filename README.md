@@ -2,14 +2,14 @@
 
 > also called `tims-stack-v5` :warning: this repo is work in progress!
 
-By @tbscode
+By [@tbscode](https://github.com/tbscode/)
 Contributions are welcome, please open PR's and issue at any time!
 
 Contributors:
 - @tbscode
 - @JannisToelle
 
-## Components
+## Services
 
 - `backend`: Django + Rest-Framework + Django-Channels
 - `frontend`: Express + Vike
@@ -17,7 +17,7 @@ Contributors:
 
 ## Development
 
-### TL;DR
+### Docker
 
 Full docker all in one development `backend` + `frontend` + `proxy`
 
@@ -27,7 +27,23 @@ docker compose up --build
 
 Visit `localhost`, live reload & dev mode enabled by default.
 
-## Local
+#### Shell in container
+
+1. Shell on container `docker compose exec <service> sh`
+2. Do stuff e.g.: *Install Packages* `pip3 install ...` / `npm run dev`
+
+#### Api Client
+
+Generate typed api client outside the container: `cd frontend && npm run generate-api`, consider:
+
+1. updates to the api client should be commited
+2. Api is generated based in infered types from `rest_framework` and `drf_spectacular`
+3. Use `rest_framework.serializers` ( and `ModelSerializer` ) where possible
+4. Use `drf_spectacular.utils.extend_schema` to extend incomplete schemas
+
+View the swagger-ui at `/api/schema/swagger-ui/`
+
+### Local
 
 Covenient for live-reload capacitor development.
 
@@ -48,14 +64,14 @@ npx cap sync
 npx cap run android -l --external
 ```
 
-## Deployment Build
+### Deployment Build
 
 ```bash
 docker compose -f docker-compose.pro.yaml build
 docker compose -f docker-compose.pro.yaml up
 ```
 
-## Frontend
+## UI
 
 The UI uses React and Vike It has two modes:
 
