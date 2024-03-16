@@ -1,4 +1,4 @@
-import HomePage from "@/ui/landing/HomePage";
+import HomePage from "@/components/pages/HomePage";
 
 
 export { Page };

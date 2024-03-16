@@ -8,7 +8,7 @@ import { LoginInfo } from "@/_api/api";
 import { processErrorRespose } from "@/_api/apiUtils";
 import { toast } from "sonner"
 import LoginHero from "@/components/hero/login";
-import { LoginNavbar } from "@/ui/landing/HomePage";
+import { LoginNavbar } from "@/components/pages/HomePage";
 import { fetchUser } from "@/store/store";
 import { useDispatch } from "react-redux";
 
