@@ -45,7 +45,8 @@ const routeList: RouteProps[] = [
 export const Navbar = ({
   logoIcon = <LogoIcon />,
   logoTitle = "ShadcnUI/React",
-  routes = routeList
+  routes = routeList,
+  loginLink = "/login",
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
@@ -136,8 +137,7 @@ export const Navbar = ({
               Github
             </a>
             <a
-              href="https://github.com/leoMirandaa/shadcn-landing-page.git"
-              target="_blank"
+              href={loginLink}
               className={`border ${buttonVariants({ variant: "outline" })}`}
             >
               🚀

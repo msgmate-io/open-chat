@@ -169,13 +169,25 @@ const msgmateStatistics = [
     },
 ]
 
+export function LoginNavbar() {
+    return <Navbar
+        logoIcon={"💬 "}
+        logoTitle={logoTitle}
+        routes={[]}
+    />
+}
+
+export function HomeNavbar() {
+    return <Navbar
+        logoIcon={"💬 "}
+        logoTitle={logoTitle}
+        routes={navbarRoutes}
+    />
+}
+
 function HomePage() {
     return <>
-        <Navbar
-            logoIcon={"💬 "}
-            logoTitle={logoTitle}
-            routes={navbarRoutes}
-        />
+        <HomeNavbar />
         <Hero
             cinematicTitle={cinematicTitle}
             subtitle={heroSubtitle}

@@ -9,6 +9,7 @@ import { processErrorRespose } from "@/_api/apiUtils";
 import ThemeSelector from "@/ui/atoms/ThemeSelector";
 import { toast } from "sonner"
 import LoginHero from "@/components/hero/login";
+import { LoginNavbar } from "@/ui/landing/HomePage";
 
 function LoginPage() {
     const api = useApi();
@@ -36,11 +37,9 @@ function LoginPage() {
         }
     };
 
-    return <div>
+    return <div className="h-screen w-screen flex flex-col">
+        <LoginNavbar />
         <Toaster />
-        <div className="absolute top-0 right-0 p-4">
-            <ThemeSelector />
-        </div>
         <LoginHero
             title="Msgmate.io Open Chat Interface"
             description="Please login to continue"

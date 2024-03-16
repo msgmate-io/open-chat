@@ -15,11 +15,11 @@ export const Hero = ({
   return (
     <section className="container grid lg:grid-cols-2 place-items-center py-20 md:py-32 gap-4">
       <div className="text-center lg:text-start space-y-6">
-        <main className="text-4xl md:text-5xl font-bold">
+        <main className="text-3xl w-full md:text-4xl lg:w-8/12 font-bold">
           {cinematicTitle}
         </main>
 
-        <p className="text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0">
+        <p className="text-xl text-muted-foreground md:w-8/12 mx-auto lg:mx-0">
           {subtitle}
         </p>
 

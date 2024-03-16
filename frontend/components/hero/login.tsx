@@ -82,7 +82,7 @@ export default function LoginHero({
     }, [error])
 
     return (
-        <CenterDiv className='h-screen'>
+        <CenterDiv className='flex flex-grow'>
             <Card>
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
