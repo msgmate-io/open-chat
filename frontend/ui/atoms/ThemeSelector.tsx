@@ -36,7 +36,7 @@ function ThemeSelector() {
           Cookies.set("theme", e.target.value);
         }}
         value={theme}
-        className="select w-full"
+        className="select select-sm w-full"
       >
         {Object.values(THEMES).map((_theme) => (
           <option key={_theme} value={_theme}>
