@@ -1,6 +1,6 @@
 import { UserSelf } from '@/_api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
-const { createSlice, configureStore } = toolkitRaw.default ?? toolkitRaw;
+const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
 
 interface UserState {
     value: null | UserSelf;
@@ -37,7 +37,7 @@ export const { fetchUser } = userSlice.actions;
 
 export const { fetchFrontend, changeTheme } = frontendSlice.actions;
 
-const rootReducer = toolkitRaw.combineReducers({
+const rootReducer = combineReducers({
     user: userSlice.reducer,
     frontend: frontendSlice.reducer,
 })

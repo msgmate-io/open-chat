@@ -1,0 +1,1 @@
+export const INTERNAL_BACKEND_ROUTE = import.meta.env.INTERNAL_BACKEND_ROUTE;
