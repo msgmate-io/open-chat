@@ -9,51 +9,103 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Check, Linkedin } from "lucide-react";
+import { Check, Linkedin, TriangleAlert } from "lucide-react";
 import { LightBulbIcon } from "./Icons";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import logo from "@/assets/logo.png";
+/**
+  comment = {
+    userName: "John Doe React",
+    userTag: "@john_doe",
+    comment: "This landig page is awesome!"
+  },
+  infoCard = {
+    title: "Light & dark mode",
+    description: "Lorem ipsum dolor sit amet consect adipisicing elit. Consectetur natusm."
+  },
+  pricingCard = {
+    title: "Free",
+    description: "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
+    badge: "Most popular",
+    buttonText: "Start Free Trial",
+    features: ["4 Team member", "4 GB Storage", "Upto 6 pages"]
+  },
+  userCard = {
+    username: "Leo Miranda",    
+    userDescription: "Frontend Developer",
+    info: "I really enjoy transforming ideas into functional software that exceeds expectations",
+    image: "https://i.pravatar.cc/150?img=58",
+  },
+ */
 
-export const HeroCards = () => {
+
+export const HeroCards = ({
+  comment = {
+    image: <TriangleAlert />,
+    userName: "WORK IN PROGRESS",
+    userTag: "still coding ...",
+    comment: "Checkout github for progress information and complete feature list!"
+  },
+  infoCard = {
+    title: "Checkout the creator of this landing page",
+    description: "Leo Miranda created the basis for this landing page using react & shadcn"
+  },
+  pricingCard = {
+    title: "Open Source",
+    priceText: "MIT",
+    priceDescription: "",
+    description: "This is build to be build with!",
+    badge: null,
+    buttonText: "Build & Contribute Now!",
+    features: ["Django Backend", "Django Channels", "React & TailwindCSS", "Docker + Helm", "Android, Ios and Web", "Open Source"]
+  },
+  userCard = {
+    username: "Tim Schupp",
+    userDescription: "Full Stack Developer & Founder",
+    info: "I love building stuff, especially with others open source!",
+    image: "https://pbs.twimg.com/profile_images/1479831065409867781/hZhS0L9m_400x400.jpg",
+  },
+}) => {
   return (
     <div className="hidden lg:flex flex-row flex-wrap gap-8 relative w-[700px] h-[500px]">
       {/* Testimonial */}
       <Card className="absolute w-[340px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="flex flex-row items-center gap-4 pb-2">
           <Avatar>
-            <AvatarImage
-              alt=""
-              src="https://github.com/shadcn.png"
-            />
-            <AvatarFallback>SH</AvatarFallback>
+            {typeof comment.image === "string" ? (
+              <><AvatarImage
+                alt=""
+                src={comment.image}
+              />
+                <AvatarFallback>SH</AvatarFallback></>) : comment.image}
           </Avatar>
 
           <div className="flex flex-col">
-            <CardTitle className="text-lg">John Doe React</CardTitle>
-            <CardDescription>@john_doe</CardDescription>
+            <CardTitle className="text-lg">{comment.userName}</CardTitle>
+            <CardDescription>{comment.userTag}</CardDescription>
           </div>
         </CardHeader>
 
-        <CardContent>This landig page is awesome!</CardContent>
+        <CardContent>{comment.comment}</CardContent>
       </Card>
 
       {/* Team */}
       <Card className="absolute right-[20px] top-4 w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="mt-8 flex justify-center items-center pb-2">
           <img
-            src="https://i.pravatar.cc/150?img=58"
+            src={userCard.image}
             alt="user avatar"
             className="absolute grayscale-[0%] -top-12 rounded-full w-24 h-24 aspect-square object-cover"
           />
-          <CardTitle className="text-center">Leo Miranda</CardTitle>
+          <CardTitle className="text-center">{userCard.username}</CardTitle>
           <CardDescription className="font-normal text-primary">
-            Frontend Developer
+            {userCard.userDescription}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="text-center pb-2">
           <p>
-            I really enjoy transforming ideas into functional software that
-            exceeds expectations
+            {userCard.info}
           </p>
         </CardContent>
 
@@ -106,36 +158,36 @@ export const HeroCards = () => {
       </Card>
 
       {/* Pricing */}
-      <Card className="absolute top-[150px] left-[50px] w-72  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute top-[190px] left-[50px] w-72  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader>
           <CardTitle className="flex item-center justify-between">
-            Free
-            <Badge
+            {pricingCard.title}
+            {pricingCard.badge && <Badge
               variant="secondary"
               className="text-sm text-primary"
             >
-              Most popular
-            </Badge>
+              {pricingCard.badge}
+            </Badge>}
           </CardTitle>
           <div>
-            <span className="text-3xl font-bold">$0</span>
-            <span className="text-muted-foreground"> /month</span>
+            <span className="text-3xl font-bold">{pricingCard.priceText}</span>
+            <span className="text-muted-foreground">{pricingCard.priceDescription}</span>
           </div>
 
           <CardDescription>
-            Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.
+            {pricingCard.description}
           </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <Button className="w-full">Start Free Trial</Button>
+          <Button className="w-full">{pricingCard.buttonText}</Button>
         </CardContent>
 
         <hr className="w-4/5 m-auto mb-4" />
 
         <CardFooter className="flex">
           <div className="space-y-4">
-            {["4 Team member", "4 GB Storage", "Upto 6 pages"].map(
+            {pricingCard.features.map(
               (benefit: string) => (
                 <span
                   key={benefit}
@@ -151,16 +203,15 @@ export const HeroCards = () => {
       </Card>
 
       {/* Service */}
-      <Card className="absolute w-[350px] -right-[10px] bottom-[35px]  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute w-[370px] -right-[35px] bottom-[15px]  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
           <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
             <LightBulbIcon />
           </div>
           <div>
-            <CardTitle>Light & dark mode</CardTitle>
+            <CardTitle>{infoCard.title}</CardTitle>
             <CardDescription className="text-md mt-2">
-              Lorem ipsum dolor sit amet consect adipisicing elit. Consectetur
-              natusm.
+              {infoCard.description}
             </CardDescription>
           </div>
         </CardHeader>
