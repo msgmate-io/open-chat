@@ -1,4 +1,4 @@
-import{i}from"../chunks/chunk-8188229c.js";import{j as e,r as t,i as s,a,b as l}from"../chunks/chunk-9f04795d.js";import{D as d}from"../chunks/chunk-f01e1987.js";import"../chunks/chunk-5e178793.js";import"../chunks/chunk-edb2da2a.js";import"../chunks/chunk-5a2f32c8.js";import"../chunks/chunk-5225eac5.js";function o(r){const n={blockquote:"blockquote",code:"code",em:"em",h1:"h1",h2:"h2",li:"li",ol:"ol",p:"p",pre:"pre",...r.components};return e.jsxs(e.Fragment,{children:[e.jsx(n.h1,{children:"Docker Development"}),`
+import{i}from"../chunks/chunk-8188229c.js";import{j as e,r as t,i as s,a,b as l}from"../chunks/chunk-9f04795d.js";import{D as d}from"../chunks/chunk-f05bb37f.js";import"../chunks/chunk-75dabdee.js";import"../chunks/chunk-edb2da2a.js";import"../chunks/chunk-5a2f32c8.js";import"../chunks/chunk-5225eac5.js";function o(r){const n={blockquote:"blockquote",code:"code",em:"em",h1:"h1",h2:"h2",li:"li",ol:"ol",p:"p",pre:"pre",...r.components};return e.jsxs(e.Fragment,{children:[e.jsx(n.h1,{children:"Docker Development"}),`
 `,e.jsxs(n.blockquote,{children:[`
 `,e.jsx(n.p,{children:"✅ recommended way to develop for web!"}),`
 `]}),`
