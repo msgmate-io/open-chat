@@ -16,7 +16,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { buttonVariants } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { LogoIcon } from "./Icons";
-import ThemeSelector from "@/ui/atoms/ThemeSelector";
+import ThemeSelector from "@/components/atoms/ThemeSelector";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
