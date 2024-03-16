@@ -31,6 +31,7 @@ class LoginInfoSerializer(DataclassSerializer):
 
 @extend_schema(
     request=LoginInfoSerializer,
+    responses={200: UserSelfSerializer}
 )
 @throttle_classes([AnonRateThrottle])
 @api_view(['POST'])
