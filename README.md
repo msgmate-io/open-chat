@@ -80,8 +80,8 @@ This project is initiated and built by @tbscode, intended to become an open, sel
 
 The interface will also provide a means to integrate with AI-bots/agents. Services such as [msgmate.io](https://msgmate.io) will provide endpoints for these models and bots, which can then be used through this chat interface.
 
-There is copyrighted static content present in this repo at: `./frontend/assets`. This includes, for example, the msgmate.io logo and other landing page assets (please replace/delete them before publishing).
+There is copyrighted static content present in this repo at: `./frontend/assets`. This includes, for example, the msgmate.io logo, other external logos ( `./frontend/assets/_external_logos` ) and other landing page assets ( please replace/delete them incase you inted to publish / fork ).
 
 There is also a fork/port of [shadcn-landing-page](https://github.com/leoMirandaa/shadcn-landing-page/tree/main) included at `./frontend/components/landing_page`.
 
-The rest of the repo is licensed with MIT: [Check LICENSE.md](TODO)
+The rest of the repo is licensed with MIT: [Check LICENSE.md](./LICENSE.md)
