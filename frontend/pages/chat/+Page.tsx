@@ -1,7 +1,5 @@
-import CenterDiv from "@/components/layout/CenterDiv"
+import ChatPage from "@/components/pages/Chat";
 
 export function Page() {
-    return <CenterDiv className="h-screen">
-        TODO chat page
-    </CenterDiv>
+    return <ChatPage />;
 }

@@ -69,6 +69,7 @@ export const Navbar = ({
   logoIcon = <LogoIcon />,
   logoTitle = "ShadcnUI/React",
   routes = routeList,
+  githubLink = "",
   loginLink = "/login",
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -120,7 +121,7 @@ export const Navbar = ({
                     </a>
                   ))}
                   <a
-                    href="https://github.com/leoMirandaa/shadcn-landing-page.git"
+                    href={githubLink}
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
                       variant: "secondary",
@@ -153,7 +154,7 @@ export const Navbar = ({
 
           <div className="hidden md:flex gap-2 justify-center content-center items-center">
             <a
-              href="https://github.com/leoMirandaa/shadcn-landing-page.git"
+              href={githubLink}
               target="_blank"
               className={`border ${buttonVariants({ variant: "secondary" })}`}
             >
