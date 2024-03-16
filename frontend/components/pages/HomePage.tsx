@@ -76,6 +76,10 @@ const navbarRoutes = [
         href: "#msgmate",
         label: "About Msgmate",
     },
+    {
+        href: "/docs",
+        label: "Docs",
+    },
 ]
 const logoTitle = "Open Chat Interface"
 const cinematicTitle = (
