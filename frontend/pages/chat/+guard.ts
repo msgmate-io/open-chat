@@ -2,20 +2,20 @@ export { guard }
 
 import type { GuardAsync } from 'vike/types'
 import { redirect } from 'vike/abort'
-import { getApiServer } from '@/_api/client2'
+import { getApi } from '@/_api/client2'
+import Cookies from 'js-cookie'
 
 const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
-    console.log("Running chat page guard")
-    if (!pageContext.sessionId || !pageContext.sessionId.length) {
+    // Guard must be client & server compatible!
+    const isServer = typeof window === "undefined";
+    const xcsrfToken = isServer ? pageContext.xcsrfToken : Cookies.get("csrftoken")
+    const api = getApi({
+        cookie: isServer ? pageContext.cookies : null,
+        xcsrfToken,
+    })
+    try {
+        const user = await api.userRetrieve()
+    } catch (e) {
         throw redirect(`/login?next=${pageContext.urlOriginal}`)
-    } else {
-        const api = getApiServer(pageContext)
-        try {
-            const user = await api.userRetrieve()
-            console.log("User data:", user)
-        } catch (e) {
-            console.log("Error fetching user data", e)
-            throw redirect(`/login?next=${pageContext.urlOriginal}`)
-        }
     }
 }

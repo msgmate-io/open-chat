@@ -17,6 +17,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { LogoIcon } from "./Icons";
 import ThemeSelector from "@/ui/atoms/ThemeSelector";
+import { useSelector } from "react-redux";
 
 interface RouteProps {
   href: string;
@@ -41,6 +42,28 @@ const routeList: RouteProps[] = [
     label: "FAQ",
   },
 ];
+
+export const DynamicLoginButton = ({
+  loginLink = "/login",
+  authenticatedLink = "/chat"
+}) => {
+  const user = useSelector((state) => state.user.value);
+  const isAuthenticated = Boolean(user)
+
+  return !isAuthenticated ? <a
+    href={loginLink}
+    className={`border ${buttonVariants({ variant: "outline" })}`}
+  >
+    🚀
+    Log-In
+  </a> : <a
+    href={authenticatedLink}
+    className={`border bg-success ${buttonVariants({ variant: "outline" })}`}
+  >
+    Authenticated
+  </a>
+
+}
 
 export const Navbar = ({
   logoIcon = <LogoIcon />,
@@ -82,7 +105,7 @@ export const Navbar = ({
               <SheetContent side={"left"}>
                 <SheetHeader>
                   <SheetTitle className="font-bold text-xl">
-                    Shadcn/React
+                    {logoTitle}
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
@@ -106,6 +129,7 @@ export const Navbar = ({
                     <GitHubLogoIcon className="mr-2 w-5 h-5" />
                     Github
                   </a>
+                  <DynamicLoginButton />
                   <ThemeSelector />
                 </nav>
               </SheetContent>
@@ -136,13 +160,7 @@ export const Navbar = ({
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
               Github
             </a>
-            <a
-              href={loginLink}
-              className={`border ${buttonVariants({ variant: "outline" })}`}
-            >
-              🚀
-              Log-In
-            </a>
+            <DynamicLoginButton />
             <ThemeSelector />
           </div>
         </NavigationMenuList>

@@ -13,7 +13,6 @@ async function render(pageContext) {
 
   let store = globalStore;
   if (!store) {
-    console.log("Creating store", pageContext.initalReduxState);
     store = getStore(pageContext.initalReduxState);
     globalStore = store;
   }

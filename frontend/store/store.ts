@@ -3,10 +3,13 @@ const { createSlice, configureStore } = toolkitRaw.default ?? toolkitRaw;
 
 const userSlice = createSlice({
     name: 'user',
-    initialState: null,
+    initialState: {
+        value: null,
+    },
     reducers: {
         fetchUser: (state, action) => {
-            state = action.payload;
+            console.log('fetchUser', action.payload);
+            state.value = action.payload;
         },
     },
 });

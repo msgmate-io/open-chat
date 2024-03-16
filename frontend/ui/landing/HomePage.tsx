@@ -25,16 +25,30 @@ import { Newsletter } from "@/components/landing_page/Newsletter";
 import { Footer } from "@/components/landing_page/Footer";
  */
 
+export const HoverLink = ({ href, children }) => {
+
+    return <a className="group bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text transition-all duration-300 ease-in-out" href={href}>
+        <span className="bg-left-bottom bg-gradient-to-r from-pink-500 to-pink-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
+            {children}
+        </span>
+    </a>
+}
+
 const heroCardContents = {
     comment: {
         image: <TriangleAlert />,
+        className: "animate-pulse bg-orange-300",
         userName: "WORK IN PROGRESS",
         userTag: "still coding ...",
         comment: "Checkout github for progress information and complete feature list!"
     },
     infoCard: {
         title: "Checkout the creator of this landing page",
-        description: "Leo Miranda created the basis for this landing page using react & shadcn"
+        description: (
+            <>
+                <HoverLink href="https://github.com/leoMirandaa">Leo Miranda</HoverLink> created the basis for this landing page using react & shadcn
+            </>
+        )
     },
     pricingCard: {
         title: "Open Source",
@@ -116,14 +130,6 @@ const servicesTitle = (
     </>
 )
 
-const HoverLink = ({ href, children }) => {
-
-    return <a className="group bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text transition-all duration-300 ease-in-out" href={href}>
-        <span className="bg-left-bottom bg-gradient-to-r from-pink-500 to-pink-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-            {children}
-        </span>
-    </a>
-}
 
 const magemateAboutImage = featureDemontrationImage;
 const msgmateAboutSubtitle = "Uses opensource tools & libaries and is build with development and build processes in mind"
@@ -173,7 +179,12 @@ export function LoginNavbar() {
     return <Navbar
         logoIcon={"💬 "}
         logoTitle={logoTitle}
-        routes={[]}
+        routes={[
+            {
+                href: "/",
+                label: "🔙 Back Home",
+            }
+        ]}
     />
 }
 

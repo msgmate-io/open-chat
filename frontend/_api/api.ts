@@ -494,12 +494,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     loginCreate: (data: LoginInfo, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<UserSelf, any>({
         path: `/api/login`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
         ...params,
       }),
 

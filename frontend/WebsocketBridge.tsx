@@ -39,7 +39,7 @@ const WebsocketBridge = () => {
     [ReadyState.CLOSED]: "Closed",
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
-  console.log("SOCKET LOADED", connectionStatus);
+  console.log("SOCKET UPDATED", connectionStatus);
 
   return null;
 };

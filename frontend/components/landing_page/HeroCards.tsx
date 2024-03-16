@@ -48,7 +48,7 @@ export const HeroCards = ({
   return (
     <div className="hidden lg:flex flex-row flex-wrap gap-8 relative w-[500px] h-[500px] scale-75 xl:scale-100">
       {/* Testimonial */}
-      <Card className="absolute w-[320px] -left-[280px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className={`absolute w-[320px] -left-[280px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10 ${comment.className}`}>
         <CardHeader className="flex flex-row items-center gap-4 pb-2">
           <Avatar>
             {typeof comment.image === "string" ? (
