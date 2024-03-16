@@ -228,6 +228,12 @@ export interface UserSelf {
   is_superuser?: boolean;
   /** @format date-time */
   last_login?: string | null;
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   * @maxLength 150
+   * @pattern ^[\w.@+-]+$
+   */
+  username: string;
   /** @format uuid */
   uuid: string;
 }
@@ -494,12 +500,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     loginCreate: (data: LoginInfo, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<UserSelf, any>({
         path: `/api/login`,
         method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
         ...params,
       }),
 

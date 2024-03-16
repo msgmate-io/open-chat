@@ -43,7 +43,7 @@ class User(AbstractUser):
 class UserSelfSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'uuid', 'email',  'is_staff', 'is_superuser', 'date_joined', 'last_login', 'automated']
+        fields = ['id', 'uuid', 'email',  'is_staff', 'username', 'is_superuser', 'date_joined', 'last_login', 'automated']
 
 class UserFieldsSeralizer(serializers.ModelSerializer):
     class Meta:

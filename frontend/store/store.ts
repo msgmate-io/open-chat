@@ -1,12 +1,21 @@
+import { UserSelf } from '@/_api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
-const { createSlice, configureStore } = toolkitRaw.default ?? toolkitRaw;
+const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
+
+interface UserState {
+    value: null | UserSelf;
+}
+const inialUserState: UserState = {
+    value: null,
+} satisfies UserState as UserState;
 
 const userSlice = createSlice({
     name: 'user',
-    initialState: null,
+    initialState: inialUserState,
     reducers: {
         fetchUser: (state, action) => {
-            state = action.payload;
+            console.log('fetchUser', action.payload);
+            state.value = action.payload;
         },
     },
 });
@@ -28,13 +37,19 @@ export const { fetchUser } = userSlice.actions;
 
 export const { fetchFrontend, changeTheme } = frontendSlice.actions;
 
+const rootReducer = combineReducers({
+    user: userSlice.reducer,
+    frontend: frontendSlice.reducer,
+})
 
 export function getStore(initalReduxState) {
     return configureStore({
         preloadedState: initalReduxState,
-        reducer: {
-            user: userSlice.reducer,
-            frontend: frontendSlice.reducer,
-        },
+        reducer: rootReducer
     });
+}
+
+export interface RootState {
+    user: UserState,
+    frontend: any,
 }

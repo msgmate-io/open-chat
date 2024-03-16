@@ -1,0 +1,34 @@
+# Docker Development
+
+> ✅ recommended way to develop for web!
+
+```bash
+docker compose up --build
+```
+
+Visit `localhost` ( http port 80 ), live reload & dev mode enabled by default.
+
+## Capacitor Development
+
+Be sure to have all required android build tools installed, check capacitor docs for more info.
+
+```bash
+npx cap sync
+npx cap run android -l --external
+```
+
+## Shell in container
+
+1. Shell on container `docker compose exec <service> sh`
+2. Do stuff e.g.: *Install Packages* `pip3 install ...` / `npm run dev`
+
+## Updating Api Client
+
+Generate typed api client outside the container: `cd frontend && npm run generate-api`, consider:
+
+1. updates to the api client should be commited
+2. Api is generated based in infered types from `rest_framework` and `drf_spectacular`
+3. Use `rest_framework.serializers` ( and `ModelSerializer` ) where possible
+4. Use `drf_spectacular.utils.extend_schema` to extend incomplete schemas
+
+View the swagger-ui at `/api/schema/swagger-ui/`

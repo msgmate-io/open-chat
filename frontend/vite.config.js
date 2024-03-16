@@ -3,12 +3,13 @@ import react from "@vitejs/plugin-react";
 import { builtinModules } from "module";
 import tailwindcss from "tailwindcss";
 import vike from "vike/plugin";
+import { mdx } from "@cyco130/vite-plugin-mdx";
 import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react(), vike({
     hydrationCanBeAborted: true,
-  }), tailwindcss()],
+  }), mdx(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname),
