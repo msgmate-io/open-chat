@@ -1,7 +1,6 @@
 # Open Chat Interface
 
-> also called `tims-stack-v5`.
-> :warning: this repo is work in progress!
+> also called `tims-stack-v5` :warning: this repo is work in progress!
 
 By @tbscode
 Contributions are welcome, please open PR's and issue at any time!
