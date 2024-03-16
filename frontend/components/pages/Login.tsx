@@ -11,6 +11,7 @@ import LoginHero from "@/components/hero/login";
 import { LoginNavbar } from "@/components/pages/HomePage";
 import { fetchUser } from "@/store/store";
 import { useDispatch } from "react-redux";
+import { navigate } from "@/components/atoms/Link";
 
 const cinematicTitle = (
     <>
@@ -65,7 +66,7 @@ function LoginPage({
             toast.success("Logged in as " + data.username)
             setTimeout(() => {
                 setIsFetching(false)
-                //navigate("/chat")
+                navigate("/chat")
             }, 400)
         } catch (e) {
             console.error("ERROR: ", e)

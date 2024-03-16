@@ -2,7 +2,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { HeroCards } from "./HeroCards";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { defaultCardContents } from "./HeroCards";
-import { navigate } from "vike/client/router";
+import { navigate } from "../atoms/Link";
 
 export const Hero = ({
   cinematicTitle = (<></>),

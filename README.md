@@ -23,7 +23,7 @@ docker compose up --build
 
 ## Documentation & Preview
 
-- [the documentation](https://tbscode.github.io/django-vike-chat/)
+- [the documentation](https://tbscode.github.io/django-vike-chat/docs)
 
 ### About
 

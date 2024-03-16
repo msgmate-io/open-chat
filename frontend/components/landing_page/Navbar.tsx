@@ -56,6 +56,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
+import { Link } from "../atoms/Link";
 
 export const UserHoverCard = ({ children }) => {
   const user = useSelector((state: RootState) => state.user.value);
@@ -94,20 +95,20 @@ export const DynamicLoginButton = ({
   const user = useSelector<RootState>((state) => state.user.value);
   const isAuthenticated = Boolean(user)
 
-  return !isAuthenticated ? <a
+  return !isAuthenticated ? <Link
     href={loginLink}
     className={`border ${buttonVariants({ variant: "outline" })}`}
   >
     🚀
     Log-In
-  </a> : <UserHoverCard>
-    <a
+  </Link> : <UserHoverCard>
+    <Link
       href={authenticatedLink}
       className={`border border-success ${buttonVariants({ variant: "outline" })}`}
     >
       ✅
       Logged-In
-    </a>
+    </Link>
   </UserHoverCard>
 }
 
@@ -124,13 +125,13 @@ export const Navbar = ({
       <NavigationMenu className="mx-auto">
         <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
           <NavigationMenuItem className="font-bold flex">
-            <a
+            <Link
               href="/"
               className="ml-2 font-bold text-xl flex"
             >
               {logoIcon}
               {logoTitle}
-            </a>
+            </Link>
           </NavigationMenuItem>
 
           {/* mobile */}
@@ -157,16 +158,16 @@ export const Navbar = ({
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
                   {routes.map(({ href, label }: RouteProps) => (
-                    <a
+                    <Link
                       key={label}
                       href={href}
                       onClick={() => setIsOpen(false)}
                       className={buttonVariants({ variant: "ghost" })}
                     >
                       {label}
-                    </a>
+                    </Link>
                   ))}
-                  <a
+                  <Link
                     href={githubLink}
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
@@ -175,7 +176,7 @@ export const Navbar = ({
                   >
                     <GitHubLogoIcon className="mr-2 w-5 h-5" />
                     Github
-                  </a>
+                  </Link>
                   <DynamicLoginButton />
                   <ThemeSelector />
                 </nav>
@@ -186,7 +187,7 @@ export const Navbar = ({
           {/* desktop */}
           <nav className="hidden md:flex gap-2">
             {routes.map((route: RouteProps, i) => (
-              <a
+              <Link
                 href={route.href}
                 key={i}
                 className={`text-[17px] ${buttonVariants({
@@ -194,19 +195,19 @@ export const Navbar = ({
                 })}`}
               >
                 {route.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
           <div className="hidden md:flex gap-2 justify-center content-center items-center">
-            <a
+            <Link
               href={githubLink}
               target="_blank"
               className={`border ${buttonVariants({ variant: "secondary" })}`}
             >
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
               Github
-            </a>
+            </Link>
             <DynamicLoginButton />
             <ThemeSelector />
           </div>
