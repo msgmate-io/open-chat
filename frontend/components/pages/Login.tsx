@@ -5,9 +5,7 @@ import { ErrorResult } from "@/_api/apiTypes";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/sonner"
 import { LoginInfo } from "@/_api/api";
-import { navigate } from 'vike/client/router'
 import { processErrorRespose } from "@/_api/apiUtils";
-import ThemeSelector from "@/ui/atoms/ThemeSelector";
 import { toast } from "sonner"
 import LoginHero from "@/components/hero/login";
 import { LoginNavbar } from "@/ui/landing/HomePage";
