@@ -1,1 +1,0 @@
-function o(e){console.log("Hydration finished; page is now interactive.",window.innerWidth,e)}const n=Object.freeze(Object.defineProperty({__proto__:null,default:o},Symbol.toStringTag,{value:"Module"}));export{n as i};
