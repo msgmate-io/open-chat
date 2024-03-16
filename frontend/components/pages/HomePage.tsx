@@ -2,7 +2,6 @@ export default HomePage;
 import { About } from "@/components/landing_page/About";
 import { Navbar } from "@/components/landing_page/Navbar";
 import { Hero } from "@/components/landing_page/Hero";
-import { Sponsors } from "@/components/landing_page/Sponsors";
 import { Radar } from "lucide-react";
 import { Services } from "@/components/landing_page/Services";
 import { ScrollToTop } from "@/components/landing_page/ScrollToTop";
@@ -10,8 +9,7 @@ import { TriangleAlert } from "lucide-react";
 import featureDemontrationImage from "@/assets/feature-demonstration.svg";
 import vikeLogo from "@/assets/_external_logos/vike.svg";
 import djangoLogo from "@/assets/_external_logos/django.png";
-import { buttonVariants } from "@/components/ui/button"
-import { text } from "stream/consumers";
+import { Link } from "../atoms/Link";
 // 
 /**
 import { HowItWorks } from "@/components/landing_page/HowItWorks";
@@ -27,11 +25,11 @@ import { Footer } from "@/components/landing_page/Footer";
 
 export const HoverLink = ({ href, children }) => {
 
-    return <a className="group bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text transition-all duration-300 ease-in-out" href={href}>
+    return <Link className="group bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text transition-all duration-300 ease-in-out" href={href}>
         <span className="bg-left-bottom bg-gradient-to-r from-pink-500 to-pink-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
             {children}
         </span>
-    </a>
+    </Link>
 }
 
 const heroCardContents = {

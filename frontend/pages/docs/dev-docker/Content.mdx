@@ -6,14 +6,23 @@
 docker compose up --build
 ```
 
-Visit `localhost`, live reload & dev mode enabled by default.
+Visit `localhost` ( http port 80 ), live reload & dev mode enabled by default.
 
-#### Shell in container
+## Capacitor Development
+
+Be sure to have all required android build tools installed, check capacitor docs for more info.
+
+```bash
+npx cap sync
+npx cap run android -l --external
+```
+
+## Shell in container
 
 1. Shell on container `docker compose exec <service> sh`
 2. Do stuff e.g.: *Install Packages* `pip3 install ...` / `npm run dev`
 
-#### Updating Api Client
+## Updating Api Client
 
 Generate typed api client outside the container: `cd frontend && npm run generate-api`, consider:
 

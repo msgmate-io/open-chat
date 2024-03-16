@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/reducer";
 import { StatusTypes } from "../../store/types";
 import UserDataLoader from "./UserDataLoader";
+import { Link } from "@/components/atoms/Link";
 
 function UserIndicator() {
   const user = useSelector((state: RootState) => state.user);
@@ -19,9 +20,8 @@ function UserIndicator() {
 
   return (
     <div
-      className={`w-40 h-14 rounded-xl flex flex-col items-center content-center justify-center relative ${
-        user.status === StatusTypes.LOADED ? "bg-success" : "bg-error"
-      }`}
+      className={`w-40 h-14 rounded-xl flex flex-col items-center content-center justify-center relative ${user.status === StatusTypes.LOADED ? "bg-success" : "bg-error"
+        }`}
     >
       <UserDataLoader />
       {text}
@@ -32,9 +32,9 @@ function UserIndicator() {
         </div>
       )}
       {user.status === StatusTypes.EMPTY && (
-        <a href="/login" className="btn btn-outline btn-xs">
+        <Link href="/login" className="btn btn-outline btn-xs">
           Login
-        </a>
+        </Link>
       )}
     </div>
   );
