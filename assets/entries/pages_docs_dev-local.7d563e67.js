@@ -1,4 +1,4 @@
-import{i as o}from"../chunks/chunk-8188229c.js";import{j as e,r as i,i as a,a as l,b as s}from"../chunks/chunk-05bfc087.js";import{D as d}from"../chunks/chunk-c0662d29.js";import"../chunks/chunk-373d3a17.js";import"../chunks/chunk-edb2da2a.js";import"../chunks/chunk-5a2f32c8.js";import"../chunks/chunk-5225eac5.js";function t(r){const n={code:"code",h1:"h1",li:"li",ol:"ol",p:"p",pre:"pre",...r.components};return e.jsxs(e.Fragment,{children:[e.jsx(n.h1,{children:"Local Development"}),`
+import{i as o}from"../chunks/chunk-8188229c.js";import{j as e,r as i,i as a,a as l,b as s}from"../chunks/chunk-05bfc087.js";import{D as d}from"../chunks/chunk-ed22c924.js";import"../chunks/chunk-373d3a17.js";import"../chunks/chunk-edb2da2a.js";import"../chunks/chunk-5a2f32c8.js";import"../chunks/chunk-5225eac5.js";function t(r){const n={code:"code",h1:"h1",li:"li",ol:"ol",p:"p",pre:"pre",...r.components};return e.jsxs(e.Fragment,{children:[e.jsx(n.h1,{children:"Local Development"}),`
 `,e.jsx(n.p,{children:"Covenient for live-reload capacitor development."}),`
 `,e.jsxs(n.ol,{children:[`
 `,e.jsx(n.li,{children:"Manually start a proxy:"}),`
