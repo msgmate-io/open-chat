@@ -1,14 +1,8 @@
-import CenterDiv from "@/components/layout/CenterDiv";
-import { navigate } from "vike/client/router";
+import HomePage from "@/ui/landing/HomePage";
 
 
 export { Page };
 
 function Page() {
-  return <CenterDiv className="h-screen">
-    TODO index /landing page
-    <a onClick={() => {
-      navigate("/login")
-    }}>Login</a>
-  </CenterDiv>
+  return <HomePage />;
 }
