@@ -40,10 +40,11 @@ export const Services = ({
   ),
   services = serviceList,
   subtitle = "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis dolor.",
-  image = cubeLeg
+  image = cubeLeg,
+  sectionId = "features",
 }) => {
   return (
-    <section className="container py-24 sm:py-32">
+    <section className="container py-24 sm:py-32" id={sectionId}>
       <div className="grid lg:grid-cols-[1fr,1fr] gap-8 place-items-center">
         <div>
           {title}

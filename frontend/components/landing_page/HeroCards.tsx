@@ -12,60 +12,39 @@ import {
 import { Check, Linkedin, TriangleAlert } from "lucide-react";
 import { LightBulbIcon } from "./Icons";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import logo from "@/assets/logo.png";
-/**
-  comment = {
+export const defaultCardContents = {
+  comment: {
+    image: "",
     userName: "John Doe React",
     userTag: "@john_doe",
     comment: "This landig page is awesome!"
   },
-  infoCard = {
+  infoCard: {
     title: "Light & dark mode",
     description: "Lorem ipsum dolor sit amet consect adipisicing elit. Consectetur natusm."
   },
-  pricingCard = {
+  pricingCard: {
     title: "Free",
+    priceText: "0",
+    priceDescription: "/mo",
     description: "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
     badge: "Most popular",
     buttonText: "Start Free Trial",
     features: ["4 Team member", "4 GB Storage", "Upto 6 pages"]
   },
-  userCard = {
-    username: "Leo Miranda",    
+  userCard: {
+    username: "Leo Miranda",
     userDescription: "Frontend Developer",
     info: "I really enjoy transforming ideas into functional software that exceeds expectations",
     image: "https://i.pravatar.cc/150?img=58",
   },
- */
+}
 
 
 export const HeroCards = ({
-  comment = {
-    image: <TriangleAlert />,
-    userName: "WORK IN PROGRESS",
-    userTag: "still coding ...",
-    comment: "Checkout github for progress information and complete feature list!"
-  },
-  infoCard = {
-    title: "Checkout the creator of this landing page",
-    description: "Leo Miranda created the basis for this landing page using react & shadcn"
-  },
-  pricingCard = {
-    title: "Open Source",
-    priceText: "MIT",
-    priceDescription: "",
-    description: "This is build to be build with!",
-    badge: null,
-    buttonText: "Build & Contribute Now!",
-    features: ["Django Backend", "Django Channels", "React & TailwindCSS", "Docker + Helm", "Android, Ios and Web", "Open Source"]
-  },
-  userCard = {
-    username: "Tim Schupp",
-    userDescription: "Full Stack Developer & Founder",
-    info: "I love building stuff, especially with others open source!",
-    image: "https://pbs.twimg.com/profile_images/1479831065409867781/hZhS0L9m_400x400.jpg",
-  },
+  cardContents = defaultCardContents
 }) => {
+  const { comment, infoCard, pricingCard, userCard } = cardContents;
   return (
     <div className="hidden lg:flex flex-row flex-wrap gap-8 relative w-[700px] h-[500px]">
       {/* Testimonial */}

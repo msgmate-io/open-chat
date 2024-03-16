@@ -6,9 +6,11 @@ import { Sponsors } from "@/components/landing_page/Sponsors";
 import { Radar } from "lucide-react";
 import { Services } from "@/components/landing_page/Services";
 import { ScrollToTop } from "@/components/landing_page/ScrollToTop";
+import { TriangleAlert } from "lucide-react";
 import featureDemontrationImage from "@/assets/feature-demonstration.svg";
 import vikeLogo from "@/assets/_external_logos/vike.svg";
 import djangoLogo from "@/assets/_external_logos/django.png";
+import { text } from "stream/consumers";
 // 
 /**
 import { HowItWorks } from "@/components/landing_page/HowItWorks";
@@ -22,14 +24,42 @@ import { Newsletter } from "@/components/landing_page/Newsletter";
 import { Footer } from "@/components/landing_page/Footer";
  */
 
+const heroCardContents = {
+    comment: {
+        image: <TriangleAlert />,
+        userName: "WORK IN PROGRESS",
+        userTag: "still coding ...",
+        comment: "Checkout github for progress information and complete feature list!"
+    },
+    infoCard: {
+        title: "Checkout the creator of this landing page",
+        description: "Leo Miranda created the basis for this landing page using react & shadcn"
+    },
+    pricingCard: {
+        title: "Open Source",
+        priceText: "MIT",
+        priceDescription: "",
+        description: "This is build to be build with!",
+        badge: null,
+        buttonText: "Build & Contribute Now!",
+        features: ["Django Backend", "Django Channels", "React & TailwindCSS", "Docker + Helm", "Android, Ios and Web", "Open Source"]
+    },
+    userCard: {
+        username: "Tim Schupp",
+        userDescription: "Full Stack Developer & Founder",
+        info: "I love building stuff, especially with others open source!",
+        image: "https://pbs.twimg.com/profile_images/1479831065409867781/hZhS0L9m_400x400.jpg",
+    }
+}
+
 const navbarRoutes = [
     {
-        href: "#pricing",
-        label: "Pricing",
+        href: "#features",
+        label: "Features",
     },
     {
-        href: "#faq",
-        label: "FAQ",
+        href: "#msgmate",
+        label: "About Msgmate",
     },
 ]
 const logoTitle = "Open Chat Interface"
@@ -53,6 +83,10 @@ const cinematicTitle = (
 )
 const heroSubtitle = "Open source chat interface for AI developed & suppored by the creator of msgmate.io"
 const githubLink = "https://github.com/tbscode/django-vike-chat"
+const heroToAppButton = {
+    text: "Checkout the Chat",
+    link: "/chat"
+}
 const sponsorsTitle = "Supported by"
 const sponsors = [
     {
@@ -106,17 +140,44 @@ const servicesList = [
     },
 ]
 
+const msgmateStatistics = [
+    {
+        quantity: "5+",
+        description: "AI Models",
+    },
+    {
+        quantity: "300+",
+        description: "Users",
+    },
+    {
+        quantity: "5000+",
+        description: "Messages Send",
+    },
+    {
+        quantity: "200+",
+        description: "Images Generated",
+    },
+]
+
 function HomePage() {
     return <>
         <Navbar
             logoTitle={logoTitle}
             routes={navbarRoutes}
         />
-        <Hero cinematicTitle={cinematicTitle} subtitle={heroSubtitle} githubLink={githubLink} />
+        <Hero
+            cinematicTitle={cinematicTitle}
+            subtitle={heroSubtitle}
+            githubLink={githubLink}
+            cardContents={heroCardContents}
+            toAppButtonText={heroToAppButton.text}
+            toAppLink={heroToAppButton.link}
+        />
         <Sponsors title={sponsorsTitle} sponsors={sponsors} />
         {/** <HowItWorks /> */}
         {/** <Features /> */}
         <Services
+            sectionId="features"
             title={servicesTitle}
             image={magemateAboutImage}
             subtitle={msgmateAboutSubtitle}
@@ -129,7 +190,9 @@ function HomePage() {
         {/** <Newsletter /> */}
         <About
             header={msgmateAboutHeader}
-            text="Msgmate.io is a LLM chat & Agent integration for messages and more!"
+            text="Msgmate.io is a LLM chat & Agent integration for messages and more! This repository is build and maintained by the founder of msgmate.io and is used in production. It is build with the same tools and libaries as msgmate.io."
+            stats={msgmateStatistics}
+            sectionId="msgmate"
         />
         {/** <Footer /> */}
         <ScrollToTop />

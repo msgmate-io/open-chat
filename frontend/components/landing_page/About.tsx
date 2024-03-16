@@ -11,12 +11,13 @@ export const About = ({
       Company
     </h2>
   ),
+  sectionId = "about",
   text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
   stats = defaultStatistics
 }) => {
   return (
     <section
-      id="about"
+      id={sectionId}
       className="container py-24 sm:py-32"
     >
       <div className="bg-muted/50 border rounded-lg py-12">

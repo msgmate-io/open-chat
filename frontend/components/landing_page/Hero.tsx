@@ -1,11 +1,16 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import { HeroCards } from "./HeroCards";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { defaultCardContents } from "./HeroCards";
+import { navigate } from "vike/client/router";
 
 export const Hero = ({
   cinematicTitle = (<></>),
   subtitle = "subtitle",
-  githubLink = ""
+  githubLink = "",
+  toAppButtonText = "Get Started",
+  toAppLink = "/app",
+  cardContents = defaultCardContents,
 }) => {
   return (
     <section className="container grid lg:grid-cols-2 place-items-center py-20 md:py-32 gap-10">
@@ -19,7 +24,7 @@ export const Hero = ({
         </p>
 
         <div className="space-y-4 md:space-y-0 md:space-x-4">
-          <Button className="w-full md:w-1/3">Get Started</Button>
+          <Button className="w-full md:w-1/3" onClick={() => navigate(toAppLink)}>{toAppButtonText}</Button>
 
           <a
             href={githubLink}
@@ -36,7 +41,7 @@ export const Hero = ({
 
       {/* Hero cards sections */}
       <div className="z-10">
-        <HeroCards />
+        <HeroCards cardContents={cardContents} />
       </div>
 
       {/* Shadow effect */}

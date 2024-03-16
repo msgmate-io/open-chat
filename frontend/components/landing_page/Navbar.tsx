@@ -63,7 +63,6 @@ export const Navbar = ({
 
           {/* mobile */}
           <span className="flex md:hidden">
-            <ThemeSelector />
 
             <Sheet
               open={isOpen}
@@ -105,6 +104,7 @@ export const Navbar = ({
                     <GitHubLogoIcon className="mr-2 w-5 h-5" />
                     Github
                   </a>
+                  <ThemeSelector />
                 </nav>
               </SheetContent>
             </Sheet>
@@ -125,7 +125,7 @@ export const Navbar = ({
             ))}
           </nav>
 
-          <div className="hidden md:flex gap-2">
+          <div className="hidden md:flex gap-2 justify-center content-center items-center">
             <a
               href="https://github.com/leoMirandaa/shadcn-landing-page.git"
               target="_blank"
@@ -134,7 +134,14 @@ export const Navbar = ({
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
               Github
             </a>
-
+            <a
+              href="https://github.com/leoMirandaa/shadcn-landing-page.git"
+              target="_blank"
+              className={`border ${buttonVariants({ variant: "outline" })}`}
+            >
+              🚀
+              Log-In
+            </a>
             <ThemeSelector />
           </div>
         </NavigationMenuList>
