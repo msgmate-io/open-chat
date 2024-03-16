@@ -43,6 +43,7 @@ const routeList: RouteProps[] = [
 ];
 
 export const Navbar = ({
+  logoIcon = <LogoIcon />,
   logoTitle = "ShadcnUI/React",
   routes = routeList
 }) => {
@@ -56,7 +57,7 @@ export const Navbar = ({
               href="/"
               className="ml-2 font-bold text-xl flex"
             >
-              <LogoIcon />
+              {logoIcon}
               {logoTitle}
             </a>
           </NavigationMenuItem>

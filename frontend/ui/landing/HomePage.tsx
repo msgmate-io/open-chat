@@ -10,6 +10,7 @@ import { TriangleAlert } from "lucide-react";
 import featureDemontrationImage from "@/assets/feature-demonstration.svg";
 import vikeLogo from "@/assets/_external_logos/vike.svg";
 import djangoLogo from "@/assets/_external_logos/django.png";
+import { buttonVariants } from "@/components/ui/button"
 import { text } from "stream/consumers";
 // 
 /**
@@ -75,13 +76,13 @@ const cinematicTitle = (
         <h2 className="inline">
             for{" "}
             <span className="inline bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text">
-                AI Agent & Bot
+                AI Agent/Bot
             </span>{" "}
-            developers & users
+            users and developers
         </h2>
     </>
 )
-const heroSubtitle = "Open source chat interface for AI developed & suppored by the creator of msgmate.io"
+const heroSubtitle = "Open Source Chat Full Stack Interface, build with Open Source Frameworks and Libaries. Build to be self deployable and extendable with development and build processes in mind."
 const githubLink = "https://github.com/tbscode/django-vike-chat"
 const heroToAppButton = {
     text: "Checkout the Chat",
@@ -115,19 +116,28 @@ const servicesTitle = (
     </>
 )
 
+const HoverLink = ({ href, children }) => {
+
+    return <a className="group bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text transition-all duration-300 ease-in-out" href={href}>
+        <span className="bg-left-bottom bg-gradient-to-r from-pink-500 to-pink-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
+            {children}
+        </span>
+    </a>
+}
+
 const magemateAboutImage = featureDemontrationImage;
 const msgmateAboutSubtitle = "Uses opensource tools & libaries and is build with development and build processes in mind"
 const msgmateAboutHeader = (
     <h2 className="text-3xl md:text-4xl font-bold">
-        <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-            Used by{" "}
-        </span>
-        Msgmate.io
+        Used by{" "}
+        <HoverLink href="https://msgmate.io">
+            Msgmate.io
+        </HoverLink>
     </h2>
 );
 const servicesList = [
     {
-        title: "Django + Django REST Framework + Django Channels",
+        title: "Django + REST Framework + Channels",
         description:
             "Includes several other django / python related libaries and tools.",
         icon: <img src={djangoLogo} alt="Django Logo" />
@@ -162,6 +172,7 @@ const msgmateStatistics = [
 function HomePage() {
     return <>
         <Navbar
+            logoIcon={"💬 "}
             logoTitle={logoTitle}
             routes={navbarRoutes}
         />
@@ -173,7 +184,7 @@ function HomePage() {
             toAppButtonText={heroToAppButton.text}
             toAppLink={heroToAppButton.link}
         />
-        <Sponsors title={sponsorsTitle} sponsors={sponsors} />
+        {/** <Sponsors title={sponsorsTitle} sponsors={sponsors} /> */}
         {/** <HowItWorks /> */}
         {/** <Features /> */}
         <Services
