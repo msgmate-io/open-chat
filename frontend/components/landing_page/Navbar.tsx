@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -18,6 +18,7 @@ import { Menu } from "lucide-react";
 import { LogoIcon } from "./Icons";
 import ThemeSelector from "@/ui/atoms/ThemeSelector";
 import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface RouteProps {
   href: string;
@@ -43,11 +44,54 @@ const routeList: RouteProps[] = [
   },
 ];
 
+import { CalendarIcon } from "@radix-ui/react-icons"
+
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+
+export const UserHoverCard = ({ children }) => {
+  const user = useSelector((state: RootState) => state.user.value);
+
+  return <HoverCard>
+    <HoverCardTrigger asChild>
+      {children}
+    </HoverCardTrigger>
+    <HoverCardContent className="w-80">
+      <div className="flex justify-between space-x-4">
+        <Avatar>
+          <AvatarImage src="" />
+          <AvatarFallback>VC</AvatarFallback>
+        </Avatar>
+        <div className="space-y-1">
+          <h4 className="text-sm font-semibold">{user?.username}</h4>
+          <p className="text-sm">
+            {user?.uuid}
+          </p>
+          <div className="flex items-center pt-2">
+            <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
+            <span className="text-xs text-muted-foreground">
+              Joined {new Date(user?.date_joined).toDateString()}
+            </span>
+          </div>
+        </div>
+      </div>
+    </HoverCardContent>
+  </HoverCard>
+}
+
 export const DynamicLoginButton = ({
   loginLink = "/login",
   authenticatedLink = "/chat"
 }) => {
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector<RootState>((state) => state.user.value);
   const isAuthenticated = Boolean(user)
 
   return !isAuthenticated ? <a
@@ -56,13 +100,15 @@ export const DynamicLoginButton = ({
   >
     🚀
     Log-In
-  </a> : <a
-    href={authenticatedLink}
-    className={`border bg-success ${buttonVariants({ variant: "outline" })}`}
-  >
-    Authenticated
-  </a>
-
+  </a> : <UserHoverCard>
+    <a
+      href={authenticatedLink}
+      className={`border border-success ${buttonVariants({ variant: "outline" })}`}
+    >
+      ✅
+      Logged-In
+    </a>
+  </UserHoverCard>
 }
 
 export const Navbar = ({

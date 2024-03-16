@@ -228,6 +228,12 @@ export interface UserSelf {
   is_superuser?: boolean;
   /** @format date-time */
   last_login?: string | null;
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   * @maxLength 150
+   * @pattern ^[\w.@+-]+$
+   */
+  username: string;
   /** @format uuid */
   uuid: string;
 }
