@@ -51,7 +51,6 @@ export const { fetchUser } = userSlice.actions;
 export const { fetchChats } = chatsSlice.actions;
 export const { fetchFrontend, changeTheme } = frontendSlice.actions;
 export const { fetchPageProps } = pagePropsSlice.actions;
-export const { fetchMessages } = messagesSlice.actions;
 
 const rootReducer = combineReducers({
     user: userSlice.reducer,

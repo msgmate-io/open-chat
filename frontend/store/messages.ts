@@ -32,9 +32,26 @@ export const messagesSlice = createSlice({
                 [action.payload.chatId]: action.payload.messages,
             };
         },
+        insertMessage: (state: MessagesState, action) => {
+            const { chatId, message } = action.payload;
+            if (chatId in state.chatMessages) {
+                state.chatMessages[chatId].results = [
+                    message,
+                    ...state.chatMessages[chatId].results
+                ]
+            } else {
+                console.warn('Chat not found', chatId, 'cannot insert message');
+            }
+        }
     },
 });
 
 export const getMessagesByChatId = (state: RootState, chatId: string) => {
     return state.messages.chatMessages?.[chatId];
 }
+
+
+export const {
+    fetchMessages,
+    insertMessage,
+} = messagesSlice.actions;

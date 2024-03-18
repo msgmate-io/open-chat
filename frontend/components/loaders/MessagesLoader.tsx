@@ -1,5 +1,6 @@
 import { useApi } from "@/_api/client2";
-import { RootState, fetchMessages } from "@/store/store";
+import { RootState } from "@/store/store";
+import { fetchMessages } from "@/store/messages";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 

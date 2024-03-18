@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/resizable"
 import { ChatsList } from "../chat/ChatView";
 import { MessagesView } from "../chat/MessageView";
+import { Toaster } from "../ui/sonner";
 
 
 export function Resizable({
@@ -48,5 +49,8 @@ function Chat() {
 
 function ChatPage() {
 
-    return <Chat />
+    return <>
+        <Chat />
+        <Toaster />
+    </>
 }
