@@ -3,7 +3,8 @@ export default {
   passToClient: [
     "pageProps",
     "routeParams",
-    "initalReduxState"
+    "initalReduxState",
+    "search"
   ],
   clientRouting: true,
   hydrationCanBeAborted: true

@@ -9,6 +9,7 @@ import { getStore } from "../store/store";
 import { Provider } from "react-redux";
 import { BASE_PAGE_TITLE } from "./constants";
 import favicon from '@/assets/logo.png';
+import WebsocketBridge from '@/WebsocketBridge';
 
 import "./index.css";
 
@@ -21,8 +22,14 @@ async function onRenderHtml(pageContext) {
       theme: theme,
       sessionId: pageContext.sessionId,
       xcsrfToken: pageContext.xcsrfToken,
+      routeParams: pageContext.routeParams,
+    },
+    pageProps: {
+      routeParams: pageContext.routeParams,
+      search: pageContext.urlParsed.search
     }
   }
+  console.log('initalReduxState', initalReduxState)
   const store = getStore(initalReduxState)
 
   // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA

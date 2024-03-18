@@ -1,7 +1,7 @@
 export default render;
 import ReactDOM from "react-dom/client";
 import React from "react";
-import { getStore } from "../store/store";
+import { fetchPageProps, getStore } from "../store/store";
 import { Provider } from "react-redux";
 import "./index.css";
 
@@ -11,15 +11,27 @@ let globalStore: null | any = null;
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;
 
-  let store = globalStore;
-  if (!store) {
-    store = getStore(pageContext.initalReduxState);
-    globalStore = store;
+  console.log("RENDERING PAGE", pageContext.routeParams, pageContext.urlParsed.search);
+  if (!globalStore) {
+    globalStore = getStore({
+      ...pageContext.initalReduxState
+    });
+  } else {
+    if (typeof window !== "undefined") {
+      // on client side navigation always update 'pageProps'
+      globalStore = getStore({
+        ...globalStore.getState(),
+        pageProps: {
+          routeParams: pageContext.routeParams,
+          search: pageContext.urlParsed.search
+        }
+      });
+    }
   }
 
   const page = (
     <React.StrictMode>
-      <Provider store={store}>
+      <Provider store={globalStore}>
         <Page {...pageProps} />
       </Provider>
     </React.StrictMode>

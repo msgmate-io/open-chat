@@ -1,6 +1,8 @@
 import { UserSelf } from '@/_api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
 const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
+import { chatsSlice, ChatState } from './chats';
+import { messagesSlice, MessagesState } from './messages';
 
 interface UserState {
     value: null | UserSelf;
@@ -33,13 +35,30 @@ const frontendSlice = createSlice({
     },
 });
 
-export const { fetchUser } = userSlice.actions;
 
+const pagePropsSlice = createSlice({
+    name: 'pageProps',
+    initialState: {},
+    reducers: {
+        fetchPageProps: (state, action) => {
+            state = action.payload;
+        },
+    },
+});
+
+
+export const { fetchUser } = userSlice.actions;
+export const { fetchChats } = chatsSlice.actions;
 export const { fetchFrontend, changeTheme } = frontendSlice.actions;
+export const { fetchPageProps } = pagePropsSlice.actions;
+export const { fetchMessages } = messagesSlice.actions;
 
 const rootReducer = combineReducers({
     user: userSlice.reducer,
     frontend: frontendSlice.reducer,
+    pageProps: pagePropsSlice.reducer,
+    chats: chatsSlice.reducer,
+    messages: messagesSlice.reducer,
 })
 
 export function getStore(initalReduxState) {
@@ -51,5 +70,8 @@ export function getStore(initalReduxState) {
 
 export interface RootState {
     user: UserState,
+    chats: ChatState,
+    messages: MessagesState,
+    pageProps: any,
     frontend: any,
 }

@@ -16,7 +16,7 @@ const WebsocketBridge = () => {
    */
   const dispatch = useDispatch();
   const [socketUrl, setSocketUrl] = useState(
-    WEBSOCKET_PROTOCOLL + window.location.host + CORE_WS_PATH
+    WEBSOCKET_PROTOCOLL + "localhost" + CORE_WS_PATH
   );
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);

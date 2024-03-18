@@ -4,7 +4,7 @@ export const LOGIN_AS_GUEST = {
   password: "Test123!",
 }
 export const BASE_PAGE_TITLE = "Open Chat Interface"
-export const ROUTE_PREFIX = import.meta.env.PUBLIC_ENV__ROUTE_PREFIX;
+export const ROUTE_PREFIX = import.meta.env.PUBLIC_ENV__ROUTE_PREFIX || "";
 export const FRONTNED_BACKEND_ROUTE = import.meta.env.PUBLIC_ENV__FRONTNED_BACKEND_ROUTE;
 export const WEBSOCKET_PROTOCOLL =
   import.meta.env.PUBLIC_ENV__WEBSOCKET_PROTOCOLL || "ws://";

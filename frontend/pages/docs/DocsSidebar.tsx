@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils"
 
-export function DocsSidebarNav({ items }) {
-    const pathname = "was";
+export function DocsSidebarNav({ items, pathname }) {
 
     return items.length ? (
         <div className="w-full">
@@ -11,7 +10,7 @@ export function DocsSidebarNav({ items }) {
                         {item.title}
                     </h4>
                     {item?.items?.length && (
-                        <DocsSidebarNavItems items={item.items} pathname={pathname} />
+                        <DocsSidebarNavItems baseurl={item.baseurl} items={item.items} pathname={pathname} />
                     )}
                 </div>
             ))}
@@ -20,6 +19,7 @@ export function DocsSidebarNav({ items }) {
 }
 
 export function DocsSidebarNavItems({
+    baseurl,
     items,
     pathname,
 }) {
@@ -29,7 +29,7 @@ export function DocsSidebarNavItems({
                 item.href && !item.disabled ? (
                     <a
                         key={index}
-                        href={item.href}
+                        href={baseurl + item.href}
                         className={cn(
                             "group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:underline",
                             item.disabled && "cursor-not-allowed opacity-60",

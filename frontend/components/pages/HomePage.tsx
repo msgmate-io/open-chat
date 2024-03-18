@@ -191,6 +191,24 @@ export function LoginNavbar() {
     />
 }
 
+export function DocsNavbar({
+    children
+}) {
+    return <Navbar
+        logoIcon={"💬 "}
+        logoTitle={logoTitle}
+        githubLink={githubLink}
+        mobileFlexDir="row"
+        mobileChildren={children}
+        routes={[
+            {
+                href: "/",
+                label: "🔙",
+            }
+        ]}
+    />
+}
+
 export function HomeNavbar() {
     return <Navbar
         logoIcon={"💬 "}

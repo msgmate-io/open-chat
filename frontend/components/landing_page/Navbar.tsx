@@ -118,6 +118,8 @@ export const Navbar = ({
   routes = routeList,
   githubLink = "",
   loginLink = "/login",
+  mobileFlexDir = "col",
+  mobileChildren = null
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
@@ -156,7 +158,7 @@ export const Navbar = ({
                     {logoTitle}
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col justify-center items-center gap-2 mt-4">
+                <nav className={`flex flex-${mobileFlexDir} justify-center items-center gap-2 mt-4`}>
                   {routes.map(({ href, label }: RouteProps) => (
                     <Link
                       key={label}
@@ -180,6 +182,7 @@ export const Navbar = ({
                   <DynamicLoginButton />
                   <ThemeSelector />
                 </nav>
+                {mobileChildren}
               </SheetContent>
             </Sheet>
           </span>
