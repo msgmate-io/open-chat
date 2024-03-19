@@ -6,12 +6,12 @@ import { getApi } from '@/_api/client2'
 import Cookies from 'js-cookie'
 
 const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
-    // Guard must be client & server compatible!
     const isServer = typeof window === "undefined";
-    const xcsrfToken = isServer ? pageContext.xcsrfToken : Cookies.get("csrftoken")
-    const sessionToken = isServer ? false : (Cookies.get("sessionid") || false)
-    if (sessionToken)
+    if (!isServer) {
+        // The guard is meant for servier side only!
         return
+    }
+    const xcsrfToken = isServer ? pageContext.xcsrfToken : Cookies.get("csrftoken")
     const api = getApi({
         cookie: isServer ? pageContext.cookies : null,
         xcsrfToken,

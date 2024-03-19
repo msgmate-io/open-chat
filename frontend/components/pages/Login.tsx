@@ -9,7 +9,7 @@ import { processErrorRespose } from "@/_api/apiUtils";
 import { toast } from "sonner"
 import LoginHero from "@/components/hero/login";
 import { LoginNavbar } from "@/components/pages/HomePage";
-import { fetchUser } from "@/store/store";
+import { fetchUser } from "@/store/user";
 import { useDispatch } from "react-redux";
 import { navigate } from "@/components/atoms/Link";
 

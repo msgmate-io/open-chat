@@ -1,19 +1,19 @@
-export default UserLoader;
+export default ProfileLoader;
 
 import { useApi } from "@/_api/client2";
+import { fetchProfile } from "@/store/profile";
 import { RootState } from "@/store/store";
-import { fetchUser } from "@/store/user";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-function UserLoader() {
+function ProfileLoader() {
     const api = useApi();
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.user.value);
+    const profile = useSelector((state: RootState) => state.profile.value);
     useEffect(() => {
-        if (!user) {
-            api.userRetrieve().then((user) => {
-                dispatch(fetchUser(user));
+        if (!profile) {
+            api.profileRetrieve().then((profile) => {
+                dispatch(fetchProfile(profile));
             })
         }
     }, []);

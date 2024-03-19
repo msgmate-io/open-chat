@@ -13,7 +13,7 @@ function ChatsLoader() {
     useEffect(() => {
         if (!chats) {
             api.chatsList({
-                page_size: 5
+                page_size: 20
             }).then((chats) => {
                 dispatch(fetchChats(chats));
             })

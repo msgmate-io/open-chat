@@ -6,6 +6,7 @@ import { navigateSearch } from "../atoms/Link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ChatItem } from "./chat";
+import ProfileLoader from "../loaders/ProfileLoader";
 
 function NewChatCard() {
 
@@ -23,16 +24,20 @@ function NewChatCard() {
 }
 
 function UserCard() {
+    const profile = useSelector((state: RootState) => state.profile.value)
 
-    return <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
-        <div className="flex">
-            <img src={logo} className="h-12" alt="logo" />
-        </div>
-        <div className="flex flex-grow items-center content-center justify-start pr-2">
-            <div className="p-2 flex flex-grow">Profile Card</div>
-            <div>✍️</div>
-        </div>
-    </Card>
+    return <>
+        <ProfileLoader />
+        <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
+            <div className="flex">
+                <img src={logo} className="h-12" alt="logo" />
+            </div>
+            <div className="flex flex-grow items-center content-center justify-start pr-2">
+                <div className="p-2 flex flex-grow">{profile?.first_name} {profile?.second_name}</div>
+                <div>✍️</div>
+            </div>
+        </Card>
+    </>
 }
 
 export function ChatsList() {

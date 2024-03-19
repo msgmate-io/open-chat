@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WEBSOCKET_PROTOCOLL } from "./renderer/constants";
+import { insertMessage } from "./store/messages";
+import { updateNewestMessage } from "./store/chats";
 
 const CORE_WS_PATH = "/api/core/ws";
 
@@ -9,6 +11,18 @@ const useCustomEventHandler = (dispatch) => {
   return {
     userWentOnline: (payload) => {
       console.debug("User went online", payload);
+    },
+    newMessage: (payload) => {
+      const { chat, message, senderId } = payload;
+      console.debug("New message", { chat, message, senderId });
+      dispatch(insertMessage({
+        chatId: chat.uuid,
+        message: message
+      }));
+      dispatch(updateNewestMessage({
+        chatId: chat.uuid,
+        message: message
+      }));
     }
   }
 };
@@ -32,7 +46,7 @@ const WebsocketBridge = () => {
 
   const handleIncomingMessage = (message) => {
     if (message.type === "custom") {
-      customEventHandler[message.data.action](message.data);
+      customEventHandler[message.data.action](message.data.payload);
     } else if (message.type === "reduction") {
       dispatch({
         type: message.data.action,

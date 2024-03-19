@@ -17,10 +17,13 @@ async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext;
 
   const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
+  // TODO: deliberetely don't expose sessionId though I'd like tho know is its insecure to expose it? 
+  // As cookie I seem not th be able to access it in browser js
+  const sessionIdExists = pageContext.sessionId ? true : false;
   const initalReduxState = {
     frontend: {
       theme: theme,
-      sessionId: pageContext.sessionId,
+      sessionId: sessionIdExists,
       xcsrfToken: pageContext.xcsrfToken,
       routeParams: pageContext.routeParams,
     },
@@ -32,7 +35,6 @@ async function onRenderHtml(pageContext) {
   console.debug({ initalReduxState })
   const store = getStore(initalReduxState)
 
-  // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA
   let pageHtml = "";
   if (!Page) {
     // SPA mode
@@ -47,7 +49,6 @@ async function onRenderHtml(pageContext) {
     );
   }
 
-  // See https://vike.dev/head
   const { documentProps } = pageContext.exports;
   const title = (documentProps && documentProps.title) || BASE_PAGE_TITLE;
   const desc =

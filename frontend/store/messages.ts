@@ -34,7 +34,7 @@ export const messagesSlice = createSlice({
         },
         insertMessage: (state: MessagesState, action) => {
             const { chatId, message } = action.payload;
-            if (chatId in state.chatMessages) {
+            if (chatId in (state.chatMessages ?? {})) {
                 state.chatMessages[chatId].results = [
                     message,
                     ...state.chatMessages[chatId].results
