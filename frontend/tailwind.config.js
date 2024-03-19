@@ -1,6 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 const daisyuiColorObj = require("daisyui/src/theming/index");
 
+const screens = {
+  sm: "640px",
+  // => @media (min-width: 640px) { ... }
+
+  md: "768px",
+  // => @media (min-width: 768px) { ... }
+
+  lg: "1024px",
+  // => @media (min-width: 1024px) { ... }
+
+  xl: "1280px",
+  // => @media (min-width: 1280px) { ... }
+
+  "2xl": "1536px",
+  // => @media (min-width: 1536px) { ... }
+}
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -12,29 +29,12 @@ module.exports = {
     "node_modules/react-daisyui/dist/**/*.js",
   ],
   prefix: "",
-  screens: {
-    sm: "640px",
-    // => @media (min-width: 640px) { ... }
-
-    md: "768px",
-    // => @media (min-width: 768px) { ... }
-
-    lg: "1024px",
-    // => @media (min-width: 1024px) { ... }
-
-    xl: "1280px",
-    // => @media (min-width: 1280px) { ... }
-
-    "2xl": "1536px",
-    // => @media (min-width: 1536px) { ... }
-  },
+  screens,
   theme: {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens
     },
     extend: {
       colors: {

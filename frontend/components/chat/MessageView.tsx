@@ -74,7 +74,7 @@ function MessageScrollView({ chatId, chat }) {
         scrollToBottom()
     }, [messages])
 
-    return <div className="flex flex-col h-full lg:w-[1000px] relativ">
+    return <div className="flex flex-col h-full w-full xl:w-[900px] relativ">
         <div ref={scrollRef} className="flex flex-col flex-grow gap-2 items-center content-center overflow-y-scroll">
             {chatId}
             {isLoading && <div>Loading...</div>}

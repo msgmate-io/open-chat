@@ -11,17 +11,17 @@ export function MessageItem({
     chat: ChatResult,
     selfIsSender?: boolean
 }) {
-    return <div key={message.uuid} className="flex flex-row px-4 w-full relativ">
+    return <div key={message.uuid} className="flex flex-row px-4 w-full relativ max-w-full">
         <div className="flex">
-            <div className="w-8 flex m-2">
+            <div className="w-8 m-2 hidden md:flex">
                 {selfIsSender ? <div>🙂</div> : <img src={logo} className="h-8 w-8" alt="logo" />}
             </div>
         </div>
-        <div className="flex flex-col flex-grow">
+        <div className="flex flex-col flex-grow relative">
             <div className="flex flex-row font-bold">
                 {selfIsSender ? "You" : `${chat?.partner?.first_name} ${chat?.partner?.second_name}`}
             </div>
-            <div className="article prose max-w-full">
+            <div className="article prose w-full overflow-x-scroll">
                 <Markdown>{message.text}</Markdown>
             </div>
         </div>
