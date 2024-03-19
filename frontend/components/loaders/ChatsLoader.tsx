@@ -1,7 +1,8 @@
 export default ChatsLoader;
 
 import { useApi } from "@/_api/client2";
-import { RootState, fetchChats } from "@/store/store";
+import { fetchChats } from "@/store/chats";
+import { RootState } from "@/store/store";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 

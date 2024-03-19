@@ -48,7 +48,6 @@ const pagePropsSlice = createSlice({
 
 
 export const { fetchUser } = userSlice.actions;
-export const { fetchChats } = chatsSlice.actions;
 export const { fetchFrontend, changeTheme } = frontendSlice.actions;
 export const { fetchPageProps } = pagePropsSlice.actions;
 

@@ -9,11 +9,6 @@ Contributors:
 - @tbscode
 - @JannisToelle
 
-## Services
-
-- `backend`: Django + Rest-Framework + Django-Channels
-- `frontend`: Express + Vike
-- `proxy`: Nginx
 
 ## TL;DR
 

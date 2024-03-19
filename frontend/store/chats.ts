@@ -18,9 +18,23 @@ export const chatsSlice = createSlice({
         fetchChats: (state, action) => {
             state.value = action.payload;
         },
+        updateNewestMessage: (state, action) => {
+            const { chatId, message } = action.payload;
+            if (state.value) {
+                const chat = state.value.results.find(chat => chat.uuid === chatId);
+                if (chat) {
+                    chat.newest_message = message;
+                }
+            }
+        },
     }
 });
 
 export const getChatByChatId = (state: RootState, chatId: string) => {
     return state.chats.value?.results?.find(chat => chat.uuid === chatId);
 }
+
+export const {
+    fetchChats,
+    updateNewestMessage
+} = chatsSlice.actions;

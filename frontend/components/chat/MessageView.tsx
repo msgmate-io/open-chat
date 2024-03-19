@@ -1,14 +1,14 @@
 import { RootState } from "@/store/store";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner"
 import { ChatMessagesLoader } from "../loaders/MessagesLoader";
 import {
     Card,
 } from "@/components/ui/card"
 import { getMessagesByChatId, insertMessage } from "@/store/messages";
-import { getChatByChatId } from "@/store/chats";
+import { getChatByChatId, updateNewestMessage } from "@/store/chats";
 import logo from "@/assets/logo.png";
 import { MessageItem } from "./message";
 import { Button } from "../ui/button";
@@ -16,19 +16,28 @@ import { useApi } from "@/_api/client2";
 import { ChatResult } from "@/_api/api";
 
 function MessageViewInput({
-    chat
+    chat,
+    scrollToBottom = () => { }
 }: {
-    chat: ChatResult
+    chat: ChatResult,
+    scrollToBottom: () => void
 }) {
     const inputRef = useRef<HTMLInputElement>(null)
+    const [isLoading, setIsLoading] = useState(false)
     const dispatch = useDispatch()
     const api = useApi()
 
     const onSendMessage = () => {
-        console.log('send', inputRef.current?.value);
+        setIsLoading(true)
         api.messagesSendCreate(chat.uuid, { text: inputRef.current?.value }).then((res) => {
             dispatch(insertMessage({ chatId: chat.uuid, message: res }))
+            dispatch(updateNewestMessage({ chatId: chat.uuid, message: res }))
+            setTimeout(() => {
+                scrollToBottom()
+                setIsLoading(false)
+            }, 50)
         }).catch((err) => {
+            setIsLoading(false)
             toast.error(`Failed to send message: ${err}`)
         })
     }
@@ -39,9 +48,9 @@ function MessageViewInput({
         </div>
         <div className="flex flex-grow items-center content-center justify-start pr-2">
             <div className="p-2 flex flex-grow">
-                <Input ref={inputRef} placeholder="Type a message..." />
+                <Input ref={inputRef} placeholder="Type a message..." disabled={isLoading} />
             </div>
-            <Button onClick={onSendMessage}>
+            <Button onClick={onSendMessage} disabled={isLoading}  >
                 <div>✍️</div>
                 Send
             </Button>
@@ -49,15 +58,29 @@ function MessageViewInput({
     </Card>
 }
 
-function MessagesScrollView({ chatId, chat }) {
+function MessageScrollView({ chatId, chat }) {
+    const scrollRef = useRef<HTMLDivElement>(null)
     const messages = useSelector((state: RootState) => getMessagesByChatId(state, chatId))
     const user = useSelector((state: RootState) => state.user.value)
     const isLoading = chatId && !messages
 
-    return <div className="flex flex-col flex-grow gap-2 items-center content-center overflow-y-scroll">
-        {chatId}
-        {isLoading && <div>Loading...</div>}
-        {messages && messages.results.map((message) => <MessageItem message={message} chat={chat} selfIsSender={user.uuid === message.sender} />).reverse()}
+    const scrollToBottom = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+        }
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
+
+    return <div className="flex flex-col h-full lg:w-[1000px] relativ">
+        <div ref={scrollRef} className="flex flex-col flex-grow gap-2 items-center content-center overflow-y-scroll">
+            {chatId}
+            {isLoading && <div>Loading...</div>}
+            {messages && messages.results.map((message) => <MessageItem message={message} chat={chat} selfIsSender={user.uuid === message.sender} />).reverse()}
+        </div>
+        <MessageViewInput chat={chat} scrollToBottom={scrollToBottom} />
     </div>
 }
 
@@ -92,10 +115,7 @@ export function MessagesView() {
                     </Card>
                 </div>
             </div>
-            <div className="flex flex-col h-full lg:w-[1000px] relativ">
-                <MessagesScrollView chatId={chatId} chat={chat} />
-                <MessageViewInput chat={chat} />
-            </div>
+            <MessageScrollView chatId={chatId} chat={chat} />
         </div>
     </>
 }
