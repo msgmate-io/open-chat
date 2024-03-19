@@ -29,7 +29,7 @@ async function onRenderHtml(pageContext) {
       search: pageContext.urlParsed.search
     }
   }
-  console.log('initalReduxState', initalReduxState)
+  console.debug({ initalReduxState })
   const store = getStore(initalReduxState)
 
   // This render() hook only supports SSR, see https://vike.dev/render-modes for how to modify render() to support SPA

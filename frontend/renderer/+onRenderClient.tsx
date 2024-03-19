@@ -11,7 +11,6 @@ let globalStore: null | any = null;
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;
 
-  console.log("RENDERING PAGE", pageContext.routeParams, pageContext.urlParsed.search);
   if (!globalStore) {
     globalStore = getStore({
       ...pageContext.initalReduxState

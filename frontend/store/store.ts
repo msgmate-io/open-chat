@@ -16,7 +16,6 @@ const userSlice = createSlice({
     initialState: inialUserState,
     reducers: {
         fetchUser: (state, action) => {
-            console.log('fetchUser', action.payload);
             state.value = action.payload;
         },
     },

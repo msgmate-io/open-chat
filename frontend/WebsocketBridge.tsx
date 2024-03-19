@@ -5,6 +5,14 @@ import { WEBSOCKET_PROTOCOLL } from "./renderer/constants";
 
 const CORE_WS_PATH = "/api/core/ws";
 
+const useCustomEventHandler = (dispatch) => {
+  return {
+    userWentOnline: (payload) => {
+      console.debug("User went online", payload);
+    }
+  }
+};
+
 const WebsocketBridge = () => {
   /**
    * Esablishes a websocket connection with the backend
@@ -15,17 +23,33 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const dispatch = useDispatch();
+  const customEventHandler = useCustomEventHandler(dispatch);
   const [socketUrl, setSocketUrl] = useState(
     WEBSOCKET_PROTOCOLL + "localhost" + CORE_WS_PATH
   );
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
+  const handleIncomingMessage = (message) => {
+    if (message.type === "custom") {
+      customEventHandler[message.data.action](message.data);
+    } else if (message.type === "reduction") {
+      dispatch({
+        type: message.data.action,
+        payload: message.data.payload,
+      })
+    }
+  }
+
   useEffect(() => {
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
-      console.log("CORE SOCKET:", message);
+      try {
+        handleIncomingMessage(message);
+      } catch (e) {
+        console.warn("Failed to handle incoming message", e, message)
+      }
     }
   }, [lastMessage, setMessageHistory]);
 
@@ -36,7 +60,7 @@ const WebsocketBridge = () => {
     [ReadyState.CLOSED]: "Closed",
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
-  console.log("SOCKET UPDATED", connectionStatus);
+  console.debug("SOCKET UPDATED", connectionStatus);
 
   return null;
 };

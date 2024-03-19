@@ -17,8 +17,7 @@ export function UnreadBadge({
     return chat.unread_count > 0 ? <Badge variant="outline" className="ml-1 border-accent text-accent">{chat.unread_count}</Badge> : null
 }
 
-export function ChatItem({ chat, key = "_default_chat_item", isSelected = false }: {
-    key: string,
+export function ChatItem({ chat, isSelected = false }: {
     chat: ChatResult,
     isSelected?: boolean
 }) {
@@ -26,7 +25,7 @@ export function ChatItem({ chat, key = "_default_chat_item", isSelected = false 
         <Card className={cn(
             "bg-base-200 hover:bg-base-300 p-0",
             isSelected && "bg-accent bg-opacity-10 hover:bg-opacity-10"
-        )} key={key} onClick={() => {
+        )} key={chat.uuid} onClick={() => {
             navigateSearch({ chat: chat.uuid })
         }}>
             <CardHeader className="p-2">

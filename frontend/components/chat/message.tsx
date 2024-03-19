@@ -17,11 +17,11 @@ export function MessageItem({
                 {selfIsSender ? <div>🙂</div> : <img src={logo} className="h-8 w-8" alt="logo" />}
             </div>
         </div>
-        <div className="flex flex-col flex-grow relative">
-            <div className="flex flex-row font-bold">
+        <div className="w-full flex flex-col flex-grow relative">
+            <div className="flex flex-row font-bold w-full">
                 {selfIsSender ? "You" : `${chat?.partner?.first_name} ${chat?.partner?.second_name}`}
             </div>
-            <div className="article prose w-full overflow-x-scroll">
+            <div className="article prose w-95 overflow-x-scroll">
                 <Markdown>{message.text}</Markdown>
             </div>
         </div>

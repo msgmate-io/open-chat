@@ -8,7 +8,6 @@ export function ChatMessagesLoader({ chatId }) {
     const api = useApi();
     const dispatch = useDispatch();
     const chatMessages = useSelector((state: RootState) => state.messages.chatMessages);
-    console.log('chatMessages', chatMessages, chatId);
     useEffect(() => {
         if (chatId && !chatMessages?.[chatId]) {
             api.messagesList2({

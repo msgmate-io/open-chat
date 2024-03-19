@@ -55,7 +55,6 @@ async function startServer() {
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.all("*", async (req, res, next) => {
-    console.log("cookie", req.cookies)
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       requestBody: req.body,
@@ -82,5 +81,5 @@ async function startServer() {
 
   const port = process.env.PORT || 3000;
   app.listen(port);
-  console.log(`Server running at http://localhost:${port}`);
+  console.info(`Server running at http://localhost:${port}`);
 }

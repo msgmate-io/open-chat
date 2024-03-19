@@ -14,6 +14,7 @@ import { MessageItem } from "./message";
 import { Button } from "../ui/button";
 import { useApi } from "@/_api/client2";
 import { ChatResult } from "@/_api/api";
+import { navigateSearch } from "../atoms/Link";
 
 function MessageViewInput({
     chat,
@@ -74,21 +75,32 @@ function MessageScrollView({ chatId, chat }) {
         scrollToBottom()
     }, [messages])
 
-    return <div className="flex flex-col h-full w-full xl:w-[900px] relativ">
+    return <div className="flex flex-col h-full w-full lg:max-w-[900px] relativ">
         <div ref={scrollRef} className="flex flex-col flex-grow gap-2 items-center content-center overflow-y-scroll">
             {chatId}
             {isLoading && <div>Loading...</div>}
-            {messages && messages.results.map((message) => <MessageItem message={message} chat={chat} selfIsSender={user.uuid === message.sender} />).reverse()}
+            {messages && messages.results.map((message) => <MessageItem key={`msg_${message.uuid}`} message={message} chat={chat} selfIsSender={user?.uuid === message.sender} />).reverse()}
         </div>
         <MessageViewInput chat={chat} scrollToBottom={scrollToBottom} />
+    </div>
+}
+
+function MobileBackButton() {
+    return <div className="z-10 sm:hidden absolute top-0 mt-2 mr-2 right-0" onClick={() => {
+        navigateSearch({ chat: null })
+    }}>
+        <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
+            <div className="flex flex-grow items-center content-center justify-start pl-2">
+                <div>👈</div>
+                <div className="p-2 flex flex-grow">back</div>
+            </div>
+        </Card>
     </div>
 }
 
 export function MessagesView() {
     const chatId = useSelector((state: RootState) => state.pageProps.search?.chat)
     const chat = useSelector((state: RootState) => getChatByChatId(state, chatId))
-
-    console.log('chatId chat: ', chatId, chat);
 
     return <>
         <ChatMessagesLoader chatId={chatId} />
@@ -106,14 +118,7 @@ export function MessagesView() {
                         </div>}
                     </Card>
                 </div>
-                <div className="absolute top-0 mt-2 mr-2 right-0">
-                    <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
-                        <div className="flex flex-grow items-center content-center justify-start pr-2">
-                            <div className="p-2 flex flex-grow">share</div>
-                            <div>🗞️</div>
-                        </div>
-                    </Card>
-                </div>
+                <MobileBackButton />
             </div>
             <MessageScrollView chatId={chatId} chat={chat} />
         </div>

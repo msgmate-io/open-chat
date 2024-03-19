@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 import { useMediaQuery } from 'react-responsive';
+import { useEffect, useState } from "react";
 
 const screens = {
   sm: "640px",
@@ -24,16 +25,33 @@ const breakpoints = screens;
 type BreakpointKey = keyof typeof breakpoints;
 
 export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
+  const [queryResult, setQueryResult] = useState(false);
   // https://stackoverflow.com/a/71098593
   const bool = useMediaQuery({
     query: `(min-width: ${breakpoints[breakpointKey]})`,
   });
+
   const capitalizedKey = breakpointKey[0].toUpperCase() + breakpointKey.substring(1);
   type Key = `is${Capitalize<K>}`;
+  useEffect(() => {
+    // Layout sizes can only be determined client-side
+    // we return 'false' by default and just set it after hidration to avoid and SSR issues
+    setQueryResult(bool);
+  }, []);
+
+  useEffect(() => {
+    if (queryResult !== bool) {
+      setQueryResult(bool);
+    }
+  }, [bool]);
   return {
-    [`is${capitalizedKey}`]: bool,
+    [`is${capitalizedKey}`]: queryResult,
   } as Record<Key, boolean>;
 }
+
+export const useClientside = (defaultValue, useElseValue) => {
+  return typeof window === 'undefined' ? defaultValue : useElseValue;
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

@@ -29,7 +29,7 @@ function UserCard() {
             <img src={logo} className="h-12" alt="logo" />
         </div>
         <div className="flex flex-grow items-center content-center justify-start pr-2">
-            <div className="p-2 flex flex-grow">User Card</div>
+            <div className="p-2 flex flex-grow">Profile Card</div>
             <div>✍️</div>
         </div>
     </Card>
@@ -41,7 +41,7 @@ export function ChatsList() {
     return <div className="flex flex-col gap-2 h-full">
         <NewChatCard />
         <div className="flex flex-col flex-grow gap-2 overflow-y-scroll">{
-            chats ? chats.results?.map(chat => <ChatItem chat={chat} key={chat.uuid} isSelected={chat.uuid === chatId} />) : <div>Loading...</div>
+            chats ? chats.results?.map(chat => <ChatItem chat={chat} key={`chat_${chat.uuid}`} isSelected={chat.uuid === chatId} />) : <div>Loading...</div>
         }</div>
         <UserCard />
     </div>
