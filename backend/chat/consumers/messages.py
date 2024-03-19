@@ -9,16 +9,30 @@ class MessageTypes(Enum):
     no_type = "no_type"
     user_went_online = "user_went_online"
     user_went_offline = "user_went_offline"
-    match_proposal_added = "match_proposal_added"
-    unconfirmed_match_added = "unconfirmed_match_added" # A new match but hasn't been viewed yet
-    block_incoming_call = "block_incoming_call"
-    new_incoming_call = "new_incoming_call"
     new_message = "new_message"
     new_partial_message = "new_partial_message"
     
 def send_message(user_id, type: MessageTypes, data):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(user_id, data)
+    
+def reduction_event(action, payload):
+    return {
+        "type": "reduction",
+        "data": {
+            "action": action,
+            "payload": payload
+        }
+    }
+    
+def custom_event(action, payload):
+    return {
+        "type": "custom",
+        "data": {
+            "action": action,
+            "payload": payload
+        }
+    }
 
 @dataclass
 class MessageBase:
@@ -38,112 +52,33 @@ class MessageBase:
         return json.loads(self.action_json())
     
     def action_json(self):
-        assert hasattr(self, "build_redux_action"), "Message must have a build_redux_action method"
-        return json.dumps(self.build_redux_action(), cls=CoolerJson)
+        return json.dumps(self.build_event(), cls=CoolerJson)
     
     def send(self, user_id):
         send_message(user_id, self.type, self.dict_valid())
     
 @dataclass
-class OutUserWentOnline(MessageBase):
+class UserWentOnline(MessageBase):
     sender_id: str
     type: str = MessageTypes.user_went_online.value
     
-    def build_redux_action(self):
-        return {
-            "action": "updateMatchProfile", 
-            "payload": {
-                "partnerId": self.sender_id,
-                "profile": {
-                    "is_online": True
-                }
+    def build_event(self):
+        return custom_event(
+            "userWentOnline",
+            {
+                "userId": self.sender_id
             }
-        }
+        )
     
 @dataclass
-class OutUserWentOffline(MessageBase):
+class UserWentOffline(MessageBase):
     sender_id: str
     type: str = MessageTypes.user_went_offline.value
-    
-    def build_redux_action(self):
-        return {
-            "action": "updateMatchProfile", 
-            "payload": {
-                "partnerId": self.sender_id,
-                "profile": {
-                    "is_online": False
-                }
-            }
-        }
-        
-@dataclass 
-class InMatchProposalAdded(MessageBase):
-    match: dict
-    category: str = "proposed"
-    type: str = MessageTypes.match_proposal_added.value
-    
-    def build_redux_action(self):
-        return {
-            "action": "addMatch", 
-            "payload": {
-                "category": self.category,
-                "match": self.match
-            }
-        }
-        
-@dataclass
-class InUnconfirmedMatchAdded(MessageBase):
-    match: dict
-    category: str = "unconfirmed"
-    type: str = MessageTypes.unconfirmed_match_added.value
-    
-    def build_redux_action(self):
-        return {
-            "action": "addMatch", 
-            "payload": {
-                "category": self.category,
-                "match": self.match
-            }
-        }
-        
-@dataclass
-class InBlockIncomingCall(MessageBase):
-    sender_id: str
-    type: str = MessageTypes.block_incoming_call.value
-    
-    def build_redux_action(self):
-        return {
-            "action": "blockIncomingCall", 
-            "payload": {
-                "userId": self.sender_id
-            }
-        }
-        
-@dataclass
-class InNewIncomingCall(MessageBase):
-    sender_id: str
-    type: str = MessageTypes.new_incoming_call.value
-    
-    def build_redux_action(self):
-        return {
-            "action": "addIncomingCall", 
-            "payload": {
-                "userId": self.sender_id
-            }
-        }
 
-@dataclass
-class InPartialMessage(MessageBase):
-    sender_id: str
-    tmp_uuid: str
-    sender: str
-    created: str
-    read: bool
-    type: str = MessageTypes.new_partial_message.value
-    
-    def build_redux_action(self):
-        return {
-            "action": "partialMessage", 
-            "payload": self.dict()
-        }
-        
+    def build_event(self):
+        return custom_event(
+            "userWentOffline",
+            {
+                "userId": self.sender_id
+            }
+        )

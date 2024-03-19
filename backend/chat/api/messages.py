@@ -6,7 +6,6 @@ from rest_framework.pagination import PageNumberPagination
 from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, DetailedPaginationMixin
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, inline_serializer
-from chat.consumers.messages import InPartialMessage
 from django.db.models import Q
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -103,10 +102,6 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         )
         
         serialized_message = self.serializer_class(message).data
-        
-        #TODO: re-integrate callbacks
-        #callbacks.message_incoming(request.user, message)
-        #callbacks.message_send(partner, message)
         
         return Response(serialized_message, status=200)
 
