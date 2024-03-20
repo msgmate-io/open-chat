@@ -1,0 +1,45 @@
+import { Link } from "@/components/atoms/Link"
+
+# Helm deployment
+
+Backend & Frontend can be deployed seperately but a current image url for both must be provided.
+
+### Updating Backend & Frontend
+
+1) Setup the env
+
+```bash
+touch .env
+RANDOM_TAG=$(openssl rand -hex 6)
+vim .env
+IMAGE_PREFIX="localhost:32000/open-chat-"
+IMAGE_TAG="latest"
+```
+
+2) Build Backend & Frontend
+
+```bash
+docker compose -f docker-compose.pro.yaml build
+```
+
+3) Push to local micok8s registry
+
+Setup and install microk8s on your system, then:
+
+```bash
+microk8s enable registry
+docker compose -f docker-compose.pro.yaml push
+```
+
+4) Check default helm `values.yaml` ( should be good to go )
+
+```bash
+microk8s helm install -f ./helm/values.yaml open-chat ./helm
+```
+
+#### Updating one at a time
+
+```bash
+docker compose -f docker-compose.pro.yaml backend build
+docker compose -f docker-compose.pro.yaml backend push
+```

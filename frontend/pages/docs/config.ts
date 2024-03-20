@@ -23,15 +23,27 @@ export const docsConfig = {
                     href: "/dev-local",
                     items: [],
                 },
+                {
+                    title: "Helm deployment",
+                    href: "/helm-deployment",
+                    items: [],
+                },
             ],
         },
     ]
 }
 
-export const pages = [{
-    route: "",
-    component: lazy(() => import("./pages/Intro.mdx"))
-}, {
-    route: "dev-docker",
-    component: lazy(() => import("./pages/Development.mdx"))
-}]
+export const pages = [
+    {
+        route: "",
+        component: lazy(() => import("./pages/Intro.mdx"))
+    },
+    {
+        route: "dev-docker",
+        component: lazy(() => import("./pages/Development.mdx"))
+    },
+    {
+        route: "helm-deployment",
+        component: lazy(() => import("./pages/HelmDeployment.mdx"))
+    }
+]
