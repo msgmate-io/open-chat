@@ -2,40 +2,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: frontend
   namespace: {{ .Values.namespace }}
   labels:
-    app: backend
+    app: frontend
 spec:
-  replicas: {{ .Values.backend.replicas }}
+  replicas: {{ .Values.frontend.replicas }}
   selector:
     matchLabels:
-      app: backend
+      app: fontend
   template:
     metadata:
       labels:
-        app: backend
+        app: fontend
     spec:
       containers:
-        - name: backend
-          image: {{ .Values.backend.imageURL }}
+        - name: fontend
+          image: {{ .Values.fontend.imageURL }}
           ports:
-            - containerPort: 8000
+            - containerPort: 3000
           envFrom:
             - secretRef:
-                name: backend-secret
-      {{- if .Values.backend.registry.authRequired }}
+                name: fontend-secret
+      {{- if .Values.fontend.registry.authRequired }}
       imagePullSecrets:
-        - name: {{ .Values.backend.registry.secretName }}
+        - name: {{ .Values.fontend.registry.secretName }}
       {{- end }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: backend-secrets
+  name: fontend-secrets
   namespace: {{ .Values.rootNamespace }}
 type: Opaque
 data:
-{{- range $key, $value := .Values.backend.env }}
+{{- range $key, $value := .Values.fontend.env }}
   {{ $key }}: {{ $value | b64enc }}
 {{- end }}
