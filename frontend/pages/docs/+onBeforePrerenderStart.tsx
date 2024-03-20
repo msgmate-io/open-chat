@@ -2,11 +2,11 @@ export { onBeforePrerenderStart }
 
 import type { OnBeforePrerenderStartAsync } from 'vike/types'
 
-import { docsConfig } from './config'
+import { pages } from './config'
 
 const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
 ): ReturnType<OnBeforePrerenderStartAsync> => {
-    return docsConfig.sidebarNav[0].items.map((item) => {
-        return `/docs${item.href}`
+    return pages.map((page) => {
+        return `/docs/${page.route}`
     })
 }
