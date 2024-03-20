@@ -1,9 +1,14 @@
 import * as toolkitRaw from '@reduxjs/toolkit';
 const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
 import { chatsSlice, ChatState } from './chats';
+import { Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 import { messagesSlice, MessagesState } from './messages';
-import { UserState, userSlice } from './user';
+import { UserState, fetchUser, userSlice } from './user';
 import { profileSlice, ProfileState } from './profile';
+import { Api } from '@/_api/api';
+import { toast } from 'sonner';
+import { navigate } from '@/components/atoms/Link';
 
 const frontendSlice = createSlice({
     name: 'frontend',
@@ -47,6 +52,24 @@ export function getStore(initalReduxState) {
     });
 }
 
+export const logoutUser = (
+    api: typeof Api.prototype.api
+) => async (
+    dispatch: Dispatch
+) => {
+        try {
+            await api.logoutRetrieve();
+            // Assuming fetchUser is correctly typed elsewhere
+            dispatch(fetchUser(null));
+            setTimeout(() => {
+                navigate("/");
+            }, 100);
+        } catch (e) {
+            toast.error("Error: " + JSON.stringify(e.error)); // Assuming e has an error property
+        }
+    };
+
+export type AppDispatch = typeof rootReducer.dispatch;
 export interface RootState {
     user: UserState,
     chats: ChatState,

@@ -7,6 +7,7 @@ import { mdx } from "@cyco130/vite-plugin-mdx";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  base: "/",
   plugins: [react(), vike({
     hydrationCanBeAborted: true,
   }), mdx(), tailwindcss()],

@@ -69,10 +69,8 @@ function LoginPage({
                 navigate("/chat")
             }, 400)
         } catch (e) {
-            console.error("ERROR: ", e)
-            const processedError = await processErrorRespose(e)
-            setError(processedError)
-            toast.error("Error: " + JSON.stringify(processedError))
+            setError(e.error)
+            toast.error("Error: " + JSON.stringify(e.error))
             setIsFetching(false)
         }
     };
