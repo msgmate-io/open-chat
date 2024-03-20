@@ -1,1 +1,0 @@
-import{u as o}from"./chunk-296580cd.js";import{u,r as a,p as c}from"./chunk-8b89587c.js";import{u as i}from"./chunk-6dd62648.js";function m(){const s=o(),r=i(),t=u(e=>e.user.value);return a.useEffect(()=>{t||s.userRetrieve().then(e=>{r(c(e))})},[]),null}export{m as U};
