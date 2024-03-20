@@ -4,7 +4,7 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    image: "${IMAGE_PREFIX-}backend"
+    image: "backend"
     environment:
       DJANGO_DEBUG: 'true'
       PRODUCTION: 'true'
@@ -26,14 +26,14 @@ services:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
-    image: "${IMAGE_PREFIX-}frontend"
+    image: "frontend"
     ports:
       - "3000:3000"
       - "24678:24678"
     volumes:
       - ./frontend/:/frontend/
       - ./docs/:/docs/client/
-    entrypoint: sh -c "npm install && npm run dev"
+    entrypoint: sh -c "npm install && npm run build && npm run dev"
     environment:
       ROOT_URL: 'http://localhost'
       WEBSOCKET_PROTOCOL: 'ws://'
