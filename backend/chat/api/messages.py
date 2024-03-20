@@ -1,12 +1,13 @@
 from rest_framework import serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from chat.models import Message, MessageSerializer, Chat
+from chat.models import Message, MessageSerializer, Chat, ChatSerializer
 from rest_framework.pagination import PageNumberPagination
 from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, DetailedPaginationMixin
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, inline_serializer
 from django.db.models import Q
+from chat.consumers.messages import NewMessage
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
@@ -102,6 +103,16 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         )
         
         serialized_message = self.serializer_class(message).data
+        
+        chat_serialized = ChatSerializer(chat, context={
+            "request": request,
+        }).data
+        
+        NewMessage(
+            sender_id=str(request.user.uuid),
+            message=serialized_message,
+            chat=chat_serialized
+        ).send(str(partner.uuid))
         
         return Response(serialized_message, status=200)
 

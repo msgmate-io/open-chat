@@ -82,3 +82,20 @@ class UserWentOffline(MessageBase):
                 "userId": self.sender_id
             }
         )
+        
+@dataclass
+class NewMessage(MessageBase):
+    sender_id: str
+    message: dict
+    chat: dict
+    type: str = MessageTypes.new_message.value
+    
+    def build_event(self):
+        return custom_event(
+            "newMessage",
+            {
+                "senderId": self.sender_id,
+                "message": self.message,
+                "chat": self.chat
+            }
+        )

@@ -2,7 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from asgiref.sync import sync_to_async
 from .messages import (
-    MessageTypes, UserWentOffline, UserWentOnline,
+    MessageTypes, UserWentOffline, UserWentOnline, NewMessage
 )
 from .db_ops import is_staff_or_matching, get_all_chat_user_ids, connect_user, disconnect_user
 from .control import get_user_channel_name
@@ -89,6 +89,10 @@ Every user that connects joins:
     async def user_went_online(self, event):
         assert event['type'] == MessageTypes.user_went_online.value
         await self.send(text_data=UserWentOnline(**event).action_json())
+        
+    async def new_message(self, event):
+        assert event['type'] == MessageTypes.new_message.value
+        await self.send(text_data=NewMessage(**event).action_json())
         
     async def user_went_offline(self, event):
         assert event['type'] == MessageTypes.user_went_offline.value
