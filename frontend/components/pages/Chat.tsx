@@ -18,6 +18,7 @@ import {
     getPanelGroupElement
 } from "react-resizable-panels";
 import { useEffect, useRef } from "react";
+import WebsocketBridge from "../atoms/WebsocketBridge";
 
 function CollapseIndicator({
     isCollapsed,
@@ -149,6 +150,7 @@ function Chat() {
 function ChatPage() {
 
     return <>
+        <WebsocketBridge />
         <Chat />
         <Toaster />
     </>

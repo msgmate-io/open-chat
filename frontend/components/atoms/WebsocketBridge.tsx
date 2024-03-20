@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
@@ -30,6 +28,8 @@ const useCustomEventHandler = (dispatch) => {
   }
 };
 
+const useWs = useWebSocket?.default || useWebSocket;
+
 const WebsocketBridge = () => {
   /**
    * Esablishes a websocket connection with the backend
@@ -39,11 +39,12 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
+
   const dispatch = useDispatch();
   const customEventHandler = useCustomEventHandler(dispatch);
   const [socketUrl, setSocketUrl] = useState(WEBSOCKET_URL);
   const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState } = useWebSocket("ws://localhost/api/core/ws");
+  const { sendMessage, lastMessage, readyState } = useWs("ws://localhost/api/core/ws");
 
   const handleIncomingMessage = (message) => {
     if (message.type === "custom") {
