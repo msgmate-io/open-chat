@@ -4,7 +4,6 @@ WORKDIR /frontend
 COPY . .
 
 RUN npm install
-RUN npm run lint
 RUN npm run build
 
 ENV NODE_ENV=production

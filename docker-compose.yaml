@@ -26,6 +26,7 @@ services:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile
+    image: "${IMAGE_PREFIX-}frontend"
     ports:
       - "3000:3000"
       - "24678:24678"

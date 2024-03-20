@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { WEBSOCKET_PROTOCOLL } from "./renderer/constants";
+import { WEBSOCKET_URL } from "./renderer/constants";
 import { insertMessage } from "./store/messages";
 import { updateNewestMessage } from "./store/chats";
-
-const CORE_WS_PATH = "/api/core/ws";
 
 const useCustomEventHandler = (dispatch) => {
   return {
     userWentOnline: (payload) => {
       console.debug("User went online", payload);
+    },
+    userWentOffline: (payload) => {
+      console.debug("User went offline", payload);
     },
     newMessage: (payload) => {
       const { chat, message, senderId } = payload;
@@ -38,9 +39,7 @@ const WebsocketBridge = () => {
    */
   const dispatch = useDispatch();
   const customEventHandler = useCustomEventHandler(dispatch);
-  const [socketUrl, setSocketUrl] = useState(
-    WEBSOCKET_PROTOCOLL + "localhost" + CORE_WS_PATH
-  );
+  const [socketUrl, setSocketUrl] = useState(WEBSOCKET_URL);
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
