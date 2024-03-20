@@ -10,32 +10,32 @@ spec:
   replicas: {{ .Values.frontend.replicas }}
   selector:
     matchLabels:
-      app: fontend
+      app: frontend
   template:
     metadata:
       labels:
-        app: fontend
+        app: frontend
     spec:
       containers:
-        - name: fontend
-          image: {{ .Values.fontend.imageURL }}
+        - name: frontend
+          image: {{ .Values.frontend.imageURL }}
           ports:
             - containerPort: 3000
           envFrom:
             - secretRef:
-                name: fontend-secret
-      {{- if .Values.fontend.registry.authRequired }}
+                name: frontend-secret
+      {{- if .Values.frontend.registry.authRequired }}
       imagePullSecrets:
-        - name: {{ .Values.fontend.registry.secretName }}
+        - name: {{ .Values.frontend.registry.secretName }}
       {{- end }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: fontend-secrets
+  name: frontend-secret
   namespace: {{ .Values.rootNamespace }}
 type: Opaque
 data:
-{{- range $key, $value := .Values.fontend.env }}
+{{- range $key, $value := .Values.frontend.env }}
   {{ $key }}: {{ $value | b64enc }}
 {{- end }}

@@ -32,7 +32,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: backend-secrets
+  name: backend-secret
   namespace: {{ .Values.rootNamespace }}
 type: Opaque
 data:

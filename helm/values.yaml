@@ -1,7 +1,7 @@
----
-namespace: tims-stack-dev
+namespace: default
 registry:
   use: false
+  host: "ghcr.io"
   authToken: "token"
 certmanager:
   use: false
@@ -12,9 +12,10 @@ redis:
   serviceName: redis-db-svc
 ingress:
   use: true
+  host: localhost
 backend:
   replicas: 1
-  imageURL: localhost:32000/backend-image:latest
+  imageURL: localhost:32000/open-chat-backend:latest
   registry:
     authRequired: false
     secretName: dockerconfigjson-github-com
@@ -33,18 +34,18 @@ backend:
     BASE_ADMIN_USER_PASSWORD: "password"
 frontend:
   replicas: 1
-  imageURL: localhost:32000/frontend-image:latest
+  imageURL: localhost:32000/open-chat-frontend:latest
   registry:
     authRequired: false
     secretName: dockerconfigjson-github-com
   env:
     INTERNAL_BACKEND_ROUTE: "http://backend-service.tims-stack-dev.svc.cluster.local:8000"
-    PUBLIC_ENV__GUEST_LOGIN_ALLOWED: true
+    PUBLIC_ENV__GUEST_LOGIN_ALLOWED: "true"
     PUBLIC_ENV__GUEST_USERNAME: "testUser1"
     PUBLIC_ENV__GUEST_PASSWORD: "Test123!"
     PUBLIC_ENV__FRONTNED_BACKEND_ROUTE: "http://localhost"
     PUBLIC_ENV__WEBSOCKET_PROTOCOLL: "ws://"
     PUBLIC_ENV__WEBSOCKET_HOST: "localhost"
     PUBLIC_ENV__WEBSOCKET_PATH: "/api/core/ws"
-    PUBLIC_ENV__STATIC_EXPORT: false
+    PUBLIC_ENV__STATIC_EXPORT: "false"
     PUBLIC_ENV__ROUTE_PREFIX: ""
