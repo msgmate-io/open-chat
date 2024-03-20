@@ -9,7 +9,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
     base: "https://tbscode.github.io/django-vike-chat/",
     plugins: [react(), vike({
-        hydrationCanBeAborted: true,
+        prerender: true
     }), mdx(), tailwindcss()],
     resolve: {
         alias: {

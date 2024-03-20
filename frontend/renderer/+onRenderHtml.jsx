@@ -9,7 +9,6 @@ import { getStore } from "../store/store";
 import { Provider } from "react-redux";
 import { BASE_PAGE_TITLE } from "./constants";
 import favicon from '@/assets/logo.png';
-import WebsocketBridge from '@/WebsocketBridge';
 
 import "./index.css";
 

@@ -1,5 +1,7 @@
-import Development from "./pages/Development.mdx";
 import { lazy } from "react";
+import Intro from "./pages/Intro.mdx";
+import Development from "./pages/Development.mdx";
+import HelmDeployment from "./pages/HelmDeployment.mdx";
 
 
 export const docsConfig = {
@@ -36,14 +38,14 @@ export const docsConfig = {
 export const pages = [
     {
         route: "",
-        component: lazy(() => import("./pages/Intro.mdx"))
+        component: Intro
     },
     {
         route: "dev-docker",
-        component: lazy(() => import("./pages/Development.mdx"))
+        component: Development
     },
     {
         route: "helm-deployment",
-        component: lazy(() => import("./pages/HelmDeployment.mdx"))
+        component: HelmDeployment
     }
 ]
