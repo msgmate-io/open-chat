@@ -1,4 +1,4 @@
-import{j as t,v as fe,r as l}from"./chunk-a2378650.js";import{j as D,c as $,N as Ge,O as Ve,e as Be,f as Ue,g as Ye,_ as Te}from"./chunk-b3511bc0.js";import{$ as $e,a as Se,b as oe,d as se,e as We,f as Ee,g as Ce,D as Je}from"./chunk-54be2a6f.js";function xe(r){const e={blockquote:"blockquote",code:"code",h1:"h1",li:"li",p:"p",ul:"ul",...r.components};return t.jsxs(t.Fragment,{children:[t.jsx(e.h1,{children:"Welcome to Open Chat Docs!"}),`
+import{j as t,v as fe,r as l}from"./chunk-58104f81.js";import{j as D,c as $,N as Ge,O as Ve,e as Be,f as Ue,g as Ye,_ as Te}from"./chunk-843192a0.js";import{$ as $e,a as Se,b as oe,d as se,e as We,f as Ee,g as Ce,D as Je}from"./chunk-ea722ee0.js";function xe(r){const e={blockquote:"blockquote",code:"code",h1:"h1",li:"li",p:"p",ul:"ul",...r.components};return t.jsxs(t.Fragment,{children:[t.jsx(e.h1,{children:"Welcome to Open Chat Docs!"}),`
 `,t.jsxs(e.blockquote,{children:[`
 `,t.jsx(e.p,{children:"Docs are still work in progress feel free to open a PR"}),`
 `]}),`
