@@ -15,6 +15,10 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
+      - name: Prepare
+        working-directory: frontend
+        run: |
+          cp .env.docs .env.production
       - name: Build Frontend
         run: |
           docker compose build frontend
