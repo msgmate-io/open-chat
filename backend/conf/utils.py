@@ -17,3 +17,6 @@ class CoolerJson(json.JSONEncoder):
             return json.JSONEncoder.default(self, obj)
         except:
             return str(obj)
+
+def dataclass_as_dict(data):
+    return {k: getattr(data, k) for k in data.__annotations__}
