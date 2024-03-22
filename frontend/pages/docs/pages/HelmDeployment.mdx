@@ -4,14 +4,18 @@ import { Link } from "@/components/atoms/Link"
 
 Backend & Frontend can be deployed seperately but a current image url for both must be provided.
 
-### Updating Backend & Frontend
+## Locally using `microk8s`
 
-1) Setup the env
+Make sure you have [setup & installed](https://microk8s.io/docs/getting-started) `microk8s`.
+
+> We utelize microk8s for easly local developement to work with managed k8s ( AKS or EKS ) you may need to add extra annotations to the ingress or add a loadbalancer.
+> But for small scale deployment microk8s can also work [checkout tim's blog post on how this can be set-up](https://blog.t1m.me/blog/microk8s-on-vps)
+
+### Build & Install Helm
+
+1) Setup the env, `vim .env`
 
 ```bash
-touch .env
-RANDOM_TAG=$(openssl rand -hex 6)
-vim .env
 IMAGE_PREFIX="localhost:32000/open-chat-"
 IMAGE_TAG="latest"
 ```
@@ -37,9 +41,34 @@ docker compose -f docker-compose.pro.yaml push
 microk8s helm install -f ./helm/values.yaml open-chat ./helm
 ```
 
-#### Updating one at a time
+#### Deploying services individually
+
+Currently `frontend` & `backend` services may be deployed seperately.
+
+1) Build & Push only one service
 
 ```bash
-docker compose -f docker-compose.pro.yaml backend build
-docker compose -f docker-compose.pro.yaml backend push
+docker compose -f docker-compose.pro.yaml <service-name> build
+docker compose -f docker-compose.pro.yaml <service-name> push
+```
+
+2) Update OR retrieve the current helm `values.yaml`
+
+Either edit `helm/values.yaml` to include you already deployed images.
+Or retrieve the current image url's:
+
+```bash
+microk8s helm get values open-chat -o yaml > ./helm/values.yaml
+```
+
+3) Update the image url in `helm/values.yaml` and install the service
+
+```bash
+microk8s helm upgrade -f ./helm/values.yaml open-chat ./helm
+```
+
+### Uninstall Helm
+
+```bash
+microk8s helm uninstall open-chat
 ```

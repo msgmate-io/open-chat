@@ -2,7 +2,7 @@ import * as toolkitRaw from '@reduxjs/toolkit';
 const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
 import { chatsSlice, ChatState } from './chats';
 import { Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import Cookies from "js-cookie";
 import { messagesSlice, MessagesState } from './messages';
 import { UserState, fetchUser, userSlice } from './user';
 import { profileSlice, ProfileState } from './profile';
@@ -61,6 +61,7 @@ export const logoutUser = (
             await api.logoutRetrieve();
             // Assuming fetchUser is correctly typed elsewhere
             dispatch(fetchUser(null));
+            Cookies.remove("sessionid");
             setTimeout(() => {
                 navigate("/");
             }, 100);
