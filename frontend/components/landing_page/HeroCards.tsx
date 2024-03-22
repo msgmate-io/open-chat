@@ -91,7 +91,7 @@ export const HeroCards = ({
         <CardFooter>
           <div>
             <a
-              href="https://github.com/leoMirandaa"
+              href="https://github.com/tbscode"
               target="_blank"
               className={buttonVariants({
                 variant: "ghost",
@@ -102,7 +102,7 @@ export const HeroCards = ({
               <GitHubLogoIcon className="w-5 h-5" />
             </a>
             <a
-              href="https://twitter.com/leo_mirand4"
+              href="https://twitter.com/tim_schupp"
               target="_blank"
               className={buttonVariants({
                 variant: "ghost",
@@ -122,7 +122,7 @@ export const HeroCards = ({
             </a>
 
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/tim-schupp-a414b8207/"
               target="_blank"
               className={buttonVariants({
                 variant: "ghost",
