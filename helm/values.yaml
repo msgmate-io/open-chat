@@ -27,9 +27,9 @@ backend:
     EXTRA_TRUSTED_ORIGINS: ""
     DJANGO_SECRET_KEY: "SomeSecret"
     DJANGO_ALLOWED_HOSTS: "*"
-    REDIS_URL: "redis://redis-db-svc.tims-stack-dev.svc.cluster.local:6379"
+    REDIS_URL: "redis://redis-service.default.svc.cluster.local:6379"
     USE_NEXTJS_PROXY_ROUTES: "true"
-    NEXTJS_HOST_URL: "http://frontend-service.tims-stack-dev.svc.cluster.local:3000"
+    NEXTJS_HOST_URL: "http://frontend-service.default.svc.cluster.local:3000"
     BASE_ADMIN_USERNAME: "admin"
     BASE_ADMIN_USER_PASSWORD: "password"
 frontend:
@@ -39,7 +39,7 @@ frontend:
     authRequired: false
     secretName: dockerconfigjson-github-com
   env:
-    INTERNAL_BACKEND_ROUTE: "http://backend-service.tims-stack-dev.svc.cluster.local:8000"
+    INTERNAL_BACKEND_ROUTE: "http://backend-service.default.svc.cluster.local:8000"
     PUBLIC_ENV__GUEST_LOGIN_ALLOWED: "true"
     PUBLIC_ENV__GUEST_USERNAME: "testUser1"
     PUBLIC_ENV__GUEST_PASSWORD: "Test123!"

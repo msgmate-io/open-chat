@@ -39,3 +39,18 @@ data:
 {{- range $key, $value := .Values.frontend.env }}
   {{ $key }}: {{ $value | b64enc }}
 {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: frontend
