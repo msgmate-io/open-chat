@@ -1,0 +1,47 @@
+import { Link } from "@/components/atoms/Link"
+
+# Github Actions CI/CD
+
+> This section is WIP
+
+A collection of github actions and a k8s cluster maybe be used to manage the CI/CD process.
+
+## Setting up environment
+
+> As this is a public repo it has access to [github environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
+> If you are using this in context of a private repo you may need to adjust the github actions.
+
+### Environment Secrets
+
+You are required to configure the following:
+
+- `KUBECONFIG_B64`: a base64 encoded kubeconfig file
+- `REGISTRY_PASSWORD`: a docker registry password
+- `REGISTRY_HOST`: a docker registry host
+- `REGISTRY_USER`: a docker registry user
+- `BOT_TOKEN`: a scoped github token of bot account
+
+All workflows accessing this enviroment require prior approval of <Link href="https://github.com/tbscode" target="_blank">@tbscode</Link>
+
+## Using Github Actions
+
+Actions are environment scoped they share the following parameters:
+
+- `DEPLOYMENT_TARGET`: Atm only `staging` is supported
+
+### Install Open Chat
+
+Workflow: `./github/workflows/install-open-chat.yml`
+
+This workflow should be used for the inital helm installation of a setup.
+
+
+Installs the <Link href="/docs/helm-deployment" target="_blank">open-chat helm chart</Link> to <Link href="staging-open-chat.msgmate.io" target="_blank">Open Chat Staging Server</Link>.
+
+### Update Existing Installation
+
+*Update Frontend*
+Workflow: `./github/workflows/update-frontend.yml`
+
+*Update Backend*
+Workflow: `./github/workflows/update-backend.yml`
