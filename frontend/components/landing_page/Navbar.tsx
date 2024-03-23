@@ -169,7 +169,7 @@ export const Navbar = ({
                       {label}
                     </Link>
                   ))}
-                  <Link
+                  {githubLink && <Link
                     href={githubLink}
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
@@ -178,8 +178,8 @@ export const Navbar = ({
                   >
                     <GitHubLogoIcon className="mr-2 w-5 h-5" />
                     Github
-                  </Link>
-                  <DynamicLoginButton />
+                  </Link>}
+                  {loginLink && <DynamicLoginButton loginLink={loginLink} />}
                   <ThemeSelector />
                 </nav>
                 {mobileChildren}
@@ -203,15 +203,15 @@ export const Navbar = ({
           </nav>
 
           <div className="hidden md:flex gap-2 justify-center content-center items-center">
-            <Link
+            {githubLink && <Link
               href={githubLink}
               target="_blank"
               className={`border ${buttonVariants({ variant: "secondary" })}`}
             >
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
               Github
-            </Link>
-            <DynamicLoginButton />
+            </Link>}
+            {loginLink && <DynamicLoginButton />}
             <ThemeSelector />
           </div>
         </NavigationMenuList>

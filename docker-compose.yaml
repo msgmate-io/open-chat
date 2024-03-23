@@ -33,7 +33,6 @@ services:
     volumes:
       - ./frontend/:/frontend/
       - ./docs/:/docs/client/
-    entrypoint: sh -c "npm install && npm run build && npm run dev"
   redis:
     image: redis:5
   ingress:

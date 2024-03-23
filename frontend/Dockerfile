@@ -3,6 +3,7 @@ FROM node:20-alpine
 WORKDIR /frontend
 COPY . .
 
-RUN npm i
+RUN npm install
+RUN npm run build
 
-ENTRYPOINT ["node", "./server"]
+ENTRYPOINT ["npm", "run", "dev"]

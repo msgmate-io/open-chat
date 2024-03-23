@@ -8,6 +8,17 @@ docker compose up --build
 
 Visit `localhost` ( http port 80 ), live reload & dev mode enabled by default.
 
+## Build the docs
+
+Creates a full static export of docs in `./docs`.
+
+```bash
+docker compose build frontend
+docker compose run --entrypoint sh frontend -c "npm install && npm run build:docs"
+```
+
+Then view it with any statics server, e.g.: `cd ./docs && php -S localhost:8080`
+
 ## Capacitor Development
 
 Be sure to have all required android build tools installed, check capacitor docs for more info.

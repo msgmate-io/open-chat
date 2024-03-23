@@ -197,7 +197,8 @@ export function DocsNavbar({
     return <Navbar
         logoIcon={"💬 "}
         logoTitle={logoTitle}
-        githubLink={githubLink}
+        githubLink={null}
+        loginLink={null}
         mobileFlexDir="row"
         mobileChildren={children}
         routes={[

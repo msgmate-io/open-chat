@@ -2,8 +2,8 @@ import { lazy } from "react";
 import Intro from "./pages/Intro.mdx";
 import Development from "./pages/Development.mdx";
 import CapacitorDevelopment from "./pages/CapacitorDevelopment.mdx";
-import GithubActions from "./pages/GithubActions.mdx";
 import HelmDeployment from "./pages/HelmDeployment.mdx";
+import GithubActions from "./pages/GithubActions.mdx";
 
 
 export const docsConfig = {
@@ -23,6 +23,11 @@ export const docsConfig = {
                     items: [],
                 },
                 {
+                    title: "Github Actions",
+                    href: "/workflows",
+                    items: [],
+                },
+                {
                     title: "Capacitor Native App",
                     href: "/dev-capacitor",
                     items: [],
@@ -30,11 +35,6 @@ export const docsConfig = {
                 {
                     title: "Helm deployment",
                     href: "/helm-deployment",
-                    items: [],
-                },
-                {
-                    title: "Github Actions",
-                    href: "/github-actions",
                     items: [],
                 },
             ],
@@ -60,7 +60,7 @@ export const pages = [
         component: HelmDeployment
     },
     {
-        route: "github-actions",
-        components: GithubActions
+        route: "workflows",
+        component: GithubActions
     },
 ]
