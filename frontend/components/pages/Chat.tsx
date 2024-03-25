@@ -12,11 +12,7 @@ import { Toaster } from "../ui/sonner";
 import { useBreakpoint } from "@/lib/utils";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import {
-    getPanelElement,
-    getResizeHandleElement,
-    getPanelGroupElement
-} from "react-resizable-panels";
+import { NewChatCard } from "../chat/MessageView";
 import { useEffect, useRef } from "react";
 import WebsocketBridge from "../atoms/WebsocketBridge";
 
@@ -110,7 +106,7 @@ export function Resizable({
     return (
         <ResizablePanelGroup
             direction="horizontal"
-            className="rounded-lg border"
+            className=""
             id="group"
         >
             <ResizablePanel
@@ -135,12 +131,16 @@ export function Resizable({
 }
 
 function Chat() {
-    // h-[calc(100vh-3.7rem)]
+    const chatId = useSelector((state: RootState) => state.pageProps.search?.chat)
+
     return <>
         <div className="flex h-screen">
             <Resizable
                 left={<ChatsList />}
-                right={<MessagesView />}
+                right={<>
+                    {chatId !== "new" && <MessagesView chatId={chatId} />}
+                    {chatId === "new" && <NewChatCard />}
+                </>}
             />
         </div>
     </>

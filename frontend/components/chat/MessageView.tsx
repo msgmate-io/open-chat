@@ -98,8 +98,16 @@ function MobileBackButton() {
     </div>
 }
 
-export function MessagesView() {
-    const chatId = useSelector((state: RootState) => state.pageProps.search?.chat)
+export function NewChatCard() {
+    return <div className="flex flex-col h-full w-full content-center items-center">
+        <div className="w-full flex items-center content-center justify-left">
+            <MobileBackButton />
+        </div>
+        New chat card
+    </div>
+}
+
+export function MessagesView({ chatId }) {
     const chat = useSelector((state: RootState) => getChatByChatId(state, chatId))
 
     return <>
