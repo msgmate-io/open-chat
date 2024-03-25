@@ -1,0 +1,36 @@
+name: Deploy Staging Full
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    environment: "Staging Deployments"
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.COMMIT_REF }}
+  build-backend:
+    environment: "Staging Deployments"
+    uses: tbscode/django-vike-chat/.github/workflows/build-docker-image.yaml@main
+    with:
+      BUILD_TARGET: "backend"
+      COMMIT_REF: ${{ github.event.inputs.COMMIT_REF }}
+  build-frontend:
+    environment: "Staging Deployments"
+    uses: tbscode/django-vike-chat/.github/workflows/build-docker-image.yaml@main
+    with:
+      BUILD_TARGET: "frontend"
+      COMMIT_REF: ${{ github.event.inputs.COMMIT_REF }}
+  install-helm:
+    environment: "Staging Deployments"
+    uses: tbscode/django-vike-chat/.github/workflows/install-helm.yaml@main
+    with:
+      DEPLOYMENT_TARGET: "staging"
+      BACKEND_IMAGE_URL: ${{ needs.build-backend.outputs.IMAGE_URL }}
+      FRONTEND_IMAGE_URL: ${{ needs.build-frontend.outputs.IMAGE_URL }}

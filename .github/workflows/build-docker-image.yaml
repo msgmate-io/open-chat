@@ -13,6 +13,21 @@ on:
         type: string
         description: Commit reference
         default: "main"
+  workflow_call:
+    inputs:
+      BUILD_TARGET:
+        type: choice
+        description: Build target
+        options:
+          - "backend"
+          - "frontend"
+      COMMIT_REF:
+        type: string
+        description: Commit reference
+        default: "main"
+    outputs:
+      IMAGE_URL: ${{ jobs.deploy.outputs.IMAGE_URL }}
+
 jobs:
   deploy:
     runs-on: ubuntu-22.04
@@ -21,6 +36,8 @@ jobs:
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
+    outputs:
+      IMAGE_URL: "${{ steps.prepare.outputs.IMAGE_URL }}"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -31,10 +48,13 @@ jobs:
           touch .env; rm .env; touch .env
           RANDOM_TAG=$(openssl rand -hex 4)
           echo "IMAGE_PREFIX=${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-" > .env
+          echo "IMAGE_URL=$IMAGE_PREFIX${{ github.event.inputs.BUILD_TARGET }}:$RANDOM_TAG" >> .env
           echo "IMAGE_TAG=$RANDOM_TAG" >> .env
           echo "RANDOM_TAG=$RANDOM_TAG" >> $GITHUB_OUTPUT
+          echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_OUTPUT
       - name: Build Image
         run: |
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+          cp ./frontend/.env.development ./frontend/.env.production
           docker compose -f docker-compose.pro.yaml build ${{ github.event.inputs.BUILD_TARGET }}
           docker compose -f docker-compose.pro.yaml push ${{ github.event.inputs.BUILD_TARGET }}
