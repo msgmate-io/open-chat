@@ -12,88 +12,23 @@ import { logoutUser } from "@/store/store";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuPortal,
     DropdownMenuSeparator,
     DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useApi } from "@/_api/client2";
-import { toast } from "sonner";
-
-export function DropdownMenuDemo() {
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline">Open</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        Profile
-                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Billing
-                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Settings
-                        <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Keyboard shortcuts
-                        <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                            <DropdownMenuSubContent>
-                                <DropdownMenuItem>Email</DropdownMenuItem>
-                                <DropdownMenuItem>Message</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>More...</DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                    </DropdownMenuSub>
-                    <DropdownMenuItem>
-                        New Team
-                        <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>GitHub</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuItem disabled>API</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    Log out
-                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
-}
+import ThemeSelector from "@/components/atoms/ThemeSelector";
 
 function NewChatCard() {
 
-    return <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
+    return <Card className="bg-base-200 hover:bg-base-300 p-0 flex drop-shadow-xl z-10" key={"chatListHeader"}>
         <div className="flex">
             <img src={logo} className="h-12" alt="logo" />
         </div>
         <div className="flex flex-grow items-center content-center justify-start pr-2" onClick={() => {
-            navigateSearch({ chat: null })
+            navigateSearch({ chat: "new" })
         }}>
             <div className="p-2 flex flex-grow">New Chat</div>
             <div>✍️</div>
@@ -126,30 +61,33 @@ function ProfileMenu() {
     const onLogout = () => {
         dispatch(logoutUser(api))
     }
-    return <DropdownMenu>
-        <ProfileCardButton />
-        <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Home Page</DropdownMenuItem>
-            <DropdownMenuItem>Docs</DropdownMenuItem>
-            <DropdownMenuItem disabled>API</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onLogout}>
-                Log out
-                <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-            </DropdownMenuItem>
-        </DropdownMenuContent>
-    </DropdownMenu>
+    return <div className="shadow-xl">
+        <DropdownMenu>
+            <ProfileCardButton />
+            <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Home Page</DropdownMenuItem>
+                <DropdownMenuItem>Docs</DropdownMenuItem>
+                <DropdownMenuLabel><ThemeSelector /></DropdownMenuLabel>
+                <DropdownMenuItem disabled>API</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onLogout}>
+                    Log out
+                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </div>
 }
 
 
 export function ChatsList() {
     const chats = useSelector((state: RootState) => state.chats.value)
     const chatId = useSelector((state: RootState) => state.pageProps.search?.chat)
-    return <div className="flex flex-col gap-2 h-full">
+    return <div className="flex flex-col gap-0 h-full">
         <NewChatCard />
-        <div className="flex flex-col flex-grow gap-2 overflow-y-scroll">{
+        <div className="flex flex-col flex-grow gap-2 overflow-y-scroll py-2">{
             chats ? chats.results?.map(chat => <ChatItem chat={chat} key={`chat_${chat.uuid}`} isSelected={chat.uuid === chatId} />) : <div>Loading...</div>
         }</div>
         <ProfileMenu />
