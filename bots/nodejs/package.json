@@ -1,0 +1,22 @@
+{
+  "name": "example_node",
+  "version": "1.0.0",
+  "description": "Example Bot API",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tsx index.ts"
+  },
+  "author": "Tim Schupp",
+  "license": "MIT",
+  "devDependencies": {
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "engine.io-client": "^6.5.3",
+    "openai": "^4.29.2",
+    "ws": "^8.16.0"
+  }
+}
