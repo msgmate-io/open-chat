@@ -105,7 +105,7 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         serialized_message = self.serializer_class(message).data
         
         chat_serialized = ChatSerializer(chat, context={
-            "request": request,
+            "user": request.user
         }).data
         
         NewMessage(

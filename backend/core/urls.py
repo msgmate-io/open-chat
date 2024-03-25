@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/register", register.register_user),
     path("api/logout", login.logout_user),
     path("api/login", login.login_user),
+    path("api/bot_login", login.bot_login),
     path("api/profile", profile_api_user),
     path("api/user", user_api_user),
     # Admin

@@ -11,6 +11,7 @@ from chat.models import MessageSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
+from django.db.models import Max
 
 def chat_res_seralizer(many=True):
     return inline_serializer(
@@ -44,8 +45,9 @@ class ChatsModelViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
-        return Chat.objects.filter(Q(u1 = self.request.user) | Q(u2 = self.request.user))
-        
+        return Chat.objects.annotate(
+            newest_message_time=Max('message__created'),
+        ).filter(Q(u1 = self.request.user) | Q(u2 = self.request.user)).order_by('-newest_message_time')
     
 
     @extend_schema(responses={200: chat_res_seralizer(many=False)})

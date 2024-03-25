@@ -7,7 +7,7 @@
     "server:dev": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server",
     "lint": "eslint . --max-warnings 0",
-    "generate-api": "npx swagger-typescript-api --extract-request-params --extract-request-body --unwrap-response-data --sort-types --sort-routes --extract-enums -p http://localhost/api/schema -o ./_api -n api.ts"
+    "generate-api": "npx swagger-typescript-api --extract-request-params --extract-request-body --unwrap-response-data --sort-types --sort-routes --extract-enums -p http://localhost:8000/api/schema -o ./_api -n api.ts"
   },
   "dependencies": {
     "@capacitor/android": "^5.7.2",
