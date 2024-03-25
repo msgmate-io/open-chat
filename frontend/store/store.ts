@@ -1,11 +1,11 @@
 import * as toolkitRaw from '@reduxjs/toolkit';
 const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
-import { chatsSlice, ChatState } from './chats';
+import { chatsSlice, ChatState, fetchChats } from './chats';
 import { Dispatch } from 'redux';
 import Cookies from "js-cookie";
 import { messagesSlice, MessagesState } from './messages';
 import { UserState, fetchUser, userSlice } from './user';
-import { profileSlice, ProfileState } from './profile';
+import { fetchProfile, profileSlice, ProfileState } from './profile';
 import { Api } from '@/_api/api';
 import { toast } from 'sonner';
 import { navigate } from '@/components/atoms/Link';
@@ -59,8 +59,10 @@ export const logoutUser = (
 ) => {
         try {
             await api.logoutRetrieve();
-            // Assuming fetchUser is correctly typed elsewhere
             dispatch(fetchUser(null));
+            dispatch(fetchChats(null));
+            dispatch(fetchProfile(null));
+            // Just be be sure - Is normally auto removed by the 'Set-Cookie' header
             Cookies.remove("sessionid");
             setTimeout(() => {
                 navigate("/");
