@@ -1,7 +1,7 @@
 export const LOGIN_AS_GUEST = {
-  allowed: true,
-  username: "testUser1",
-  password: "Test123!",
+  allowed: import.meta.env.PUBLIC_ENV__GUEST_LOGIN_ALLOWED,
+  username: import.meta.env.PUBLIC_ENV__GUEST_USERNAME,
+  password: import.meta.env.PUBLIC_ENV__GUEST_PASSWORD,
 }
 
 export enum BT {
