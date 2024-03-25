@@ -19,6 +19,8 @@ jobs:
         working-directory: frontend
         run: |
           cp .env.docs .env.production
+          cd pages
+          rm -rf chat
       - name: Build Frontend
         run: |
           docker compose build frontend
