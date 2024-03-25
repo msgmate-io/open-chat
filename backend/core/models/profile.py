@@ -10,6 +10,10 @@ class UserProfile(models.Model):
     second_name = models.CharField(max_length=50)
     image = models.TextField(null=True, blank=True)
     
+    # Public profiles can be viewed by anyone & receive messages from anyone
+    # With public = False user may only send a message to them if they have been added to their contacts
+    public = models.BooleanField(default=False)
+    
     tracker = FieldTracker()
     last_updated = models.DateTimeField(auto_now_add=True)
     changes = models.ManyToManyField("ChangeHistory", related_name="user_profile_changes", null=True, blank=True)
