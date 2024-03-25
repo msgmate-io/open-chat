@@ -31,6 +31,7 @@ jobs:
       - name: Build Image
         run: |
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ steps.prepare.outputs.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+          cp ./frontend/.env.development ./frontend/.env.production
           docker compose -f docker-compose.pro.yaml build ${{ steps.prepare.outputs.BUILD_TARGET }}
           docker compose -f docker-compose.pro.yaml push ${{ steps.prepare.outputs.BUILD_TARGET }}
   build-frontend:
@@ -60,6 +61,7 @@ jobs:
       - name: Build Image
         run: |
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ steps.prepare.outputs.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+          cp ./frontend/.env.development ./frontend/.env.production
           docker compose -f docker-compose.pro.yaml build ${{ steps.prepare.outputs.BUILD_TARGET }}
           docker compose -f docker-compose.pro.yaml push ${{ steps.prepare.outputs.BUILD_TARGET }}
   deploy:
@@ -67,7 +69,7 @@ jobs:
     needs: [build-backend, build-frontend]
     environment: "registry-public"
     steps:
-      - name: "Trigger helm install"
+      - name: "Request Helm Install"
         run: |
           BACKEND_IMAGE_URL="${{ needs.build-backend.outputs.IMAGE_URL }}"
           FRONTEND_IMAGE_URL="${{ needs.build-frontend.outputs.IMAGE_URL }}"
