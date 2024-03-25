@@ -1,0 +1,64 @@
+name: Build Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      DEPLOYMENT_TARGET:
+        type: choice
+        description: Which deployment configuration to use
+        options:
+          - "staging"
+      BACKEND_IMAGE_URL:
+        type: string
+        description: The tag for the backend image
+      FRONTEND_IMAGE_URL:
+        type: string
+        description: The tag for the frontend image
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: azure/setup-helm@v3
+        with:
+          version: "latest"
+          token: ${{ secrets.BOT_TOKEN }}
+        id: install-helm
+      - uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+        id: install-kubectl
+      - name: Update Dynamic Values
+        id: dynamic-values
+        run: |
+          NAMESPACE=open-chat-${{ github.event.inputs.DEPLOYMENT_TARGET }}
+          echo "${{ secrets.DEPLOYMENT_VALUES_B64 }}" | base64 -d > ./helm/values.yaml
+
+          cat << EOF | while read eval_command; do yq -i eval "$eval_command" ./helm/values.yaml; done
+            .namespace = "$NAMESPACE"
+            .backend.imageURL = "${{ github.event.inputs.BACKEND_IMAGE_URL }}"
+            .backend.env.REDIS_URL = "redis://redis-service.$NAMESPACE.svc.cluster.local:6379"
+            .backend.env.ROOT_URL = "https://${{ secrets.INGRESS_HOST }}"
+            .backend.env.ROOT_HOST = "${{ secrets.INGRESS_HOST }}"
+            .frontend.imageURL = "${{ github.event.inputs.FRONTEND_IMAGE_URL }}"
+            .frontend.env.INTERNAL_BACKEND_ROUTE = "http://backend-service.$NAMESPACE.svc.cluster.local:8000"
+            .frontend.env.PUBLIC_ENV__FRONTNED_BACKEND_ROUTE = "https://${{ secrets.INGRESS_HOST }}"
+            .frontend.env.PUBLIC_ENV__WEBSOCKET_PROTOCOLL = "wss://"
+            .frontend.env.PUBLIC_ENV__WEBSOCKET_HOST = "${{ secrets.INGRESS_HOST }}"
+            .ingress.host = "${{ secrets.INGRESS_HOST }}"
+          EOF
+          
+          echo "NAMESPACE=$NAMESPACE" >> $GITHUB_OUTPUT
+      - name: Helm Install
+        run: |
+          RELEASE_NAME=open-chat-${{ github.event.inputs.DEPLOYMENT_TARGET }}
+          NAMESPACE=${{ steps.dynamic-values.outputs.NAMESPACE }}
+          
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > kubeconfig.yaml
+          KUBECONFIG=./kubeconfig.yaml kubectl create namespace $NAMESPACE || true
+          KUBECONFIG=./kubeconfig.yaml helm upgrade --install $RELEASE_NAME ./helm --namespace $NAMESPACE
