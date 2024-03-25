@@ -22,7 +22,8 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
-        ref: ${{ github.event.inputs.COMMIT_REF }}
+        with:
+          ref: ${{ github.event.inputs.COMMIT_REF }}
       - name: Prepare Environment
         id: prepare
         run: |

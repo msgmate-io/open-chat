@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Install Helm Chart
 
 on:
   workflow_dispatch:
