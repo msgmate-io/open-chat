@@ -136,3 +136,4 @@ GitHub.sublime-settings
 .history
 
 back/static
+frontend/_api/api.ts

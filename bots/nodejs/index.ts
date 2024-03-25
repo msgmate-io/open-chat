@@ -7,7 +7,6 @@ const openai = new OpenAI({
     apiKey: apiKey,
 });
 
-
 function sendCustomEvent(action, payload, socket: WebSocket) {
     socket.send(JSON.stringify({
         type: 'custom',
@@ -57,6 +56,7 @@ function processCustomMessage(action, payload, socket: WebSocket) {
                     }, socket);
                     break;
             }
+            return true
         }
         // 3 - perform default action here just a simple rely using gpt-3.5-turbo
         const chatCompletion = openai.chat.completions.create({
@@ -71,7 +71,6 @@ function processCustomMessage(action, payload, socket: WebSocket) {
                 text: response.choices[0].message.content
             }, socket);
         });
-
         return true
     }
     return false
