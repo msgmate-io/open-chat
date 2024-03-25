@@ -19,6 +19,21 @@ class UserManager(BaseUserManager):
         user.settings = settings
         user.save()
         return user
+    
+    def create_user_profile_settings(self, password, **kwargs):
+        user = self.model(
+            **kwargs,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        profile = UserProfile.objects.create(user=user)
+        settings = UserSetting.objects.create(user=user)
+        user.profile = profile
+        user.settings = settings
+        user.save()
+        return user, profile, settings
+
 
     def create_superuser(self, password, **kwargs):
         kwargs["is_staff"] = True

@@ -5,16 +5,16 @@ from enum import Enum
 @dataclass
 class CreateBotUser:
     codename: str = "create_bot_user"
-    description: str = "Can create a Bot User Account"
+    name: str = "Can create a Bot User Account"
     
 @dataclass
 class CreateBotBridges:
     codename: str = "create_bot_bridges"
-    description: str = "Can create bot briges for message relaying"
+    name: str = "Can create bot briges for message relaying"
 
 class Permissions(Enum):
-    create_bot_user = CreateBotUser()
-    create_bot_bridges = CreateBotBridges()
+    create_bot_user = CreateBotUser
+    create_bot_bridges = CreateBotBridges
     
 class Groups(Enum):
     bot_admin = "Bot Admins"
