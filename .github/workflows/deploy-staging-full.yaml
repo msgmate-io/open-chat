@@ -1,0 +1,80 @@
+name: Deploy Staging Full
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  build-backend:
+    runs-on: ubuntu-22.04
+    environment: "registry-public"
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    outputs:
+      IMAGE_URL: ${{ steps.prepare.outputs.IMAGE_URL }}
+      RANDOM_TAG: ${{ steps.prepare.outputs.RANDOM_TAG }} 
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.COMMIT_REF }}
+      - name: Prepare Environment
+        id: prepare
+        run: |
+          touch .env; rm .env; touch .env
+          RANDOM_TAG=$(openssl rand -hex 4)
+          echo "IMAGE_PREFIX=${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-" > .env
+          echo "IMAGE_TAG=$RANDOM_TAG" >> .env
+          echo "IMAGE_URL=${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-frontend:$RANDOM_TAG" >> $GITHUB_OUTPUT
+          echo "RANDOM_TAG=$RANDOM_TAG" >> $GITHUB_OUTPUT
+          echo "BUILD_TARGET=backend" >> $GITHUB_OUTPUT
+      - name: Build Image
+        run: |
+          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+          docker compose -f docker-compose.pro.yaml build ${{ steps.prepare.outputs.BUILD_TARGET }}
+          docker compose -f docker-compose.pro.yaml push ${{ steps.prepare.outputs.BUILD_TARGET }}
+  build-frontend:
+    runs-on: ubuntu-22.04
+    environment: "registry-public"
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    outputs:
+      IMAGE_URL: ${{ steps.prepare.outputs.IMAGE_URL }}
+      RANDOM_TAG: ${{ steps.prepare.outputs.RANDOM_TAG }} 
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.COMMIT_REF }}
+      - name: Prepare Environment
+        id: prepare
+        run: |
+          touch .env; rm .env; touch .env
+          RANDOM_TAG=$(openssl rand -hex 4)
+          echo "IMAGE_PREFIX=${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-" > .env
+          echo "IMAGE_TAG=$RANDOM_TAG" >> .env
+          echo "IMAGE_URL=${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-frontend:$RANDOM_TAG" >> $GITHUB_OUTPUT
+          echo "RANDOM_TAG=$RANDOM_TAG" >> $GITHUB_OUTPUT
+          echo "BUILD_TARGET=frontend" >> $GITHUB_OUTPUT
+      - name: Build Image
+        run: |
+          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+          docker compose -f docker-compose.pro.yaml build ${{ steps.prepare.outputs.BUILD_TARGET }}
+          docker compose -f docker-compose.pro.yaml push ${{ steps.prepare.outputs.BUILD_TARGET }}
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: [build-backend, build-frontend]
+    environment: "registry-public"
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: "Trigger helm install"
+        run: |
+          BACKEND_IMAGE_URL="${{ needs.build-backend.outputs.IMAGE_URL }}"
+          FRONTEND_IMAGE_URL="${{ needs.build-frontend.outputs.IMAGE_URL }}"
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.REGISTRY_PASSWORD }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/tbscode/django-vike-chat/actions/workflows/install-helm.yaml/dispatches \
+            -d '{"ref": "main", "inputs": {"DEPLOYMENT_TARGET":"'"staging"'", "BACKEND_IMAGE_URL":"'"$BACKEND_IMAGE_URL"'", "FRONTEND_IMAGE_URL":"'"$FRONTEND_IMAGE_URL"'"}}'

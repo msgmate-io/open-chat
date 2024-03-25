@@ -16,7 +16,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
-    environment: "Staging Deployments"
+    environment: "registry-public"
     permissions:
       contents: write
     concurrency:
