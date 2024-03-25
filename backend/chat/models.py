@@ -80,9 +80,13 @@ class ChatSerializer(serializers.ModelSerializer):
         
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        
-        if 'request' in self.context:
+        user = None
+        if 'user' in self.context:
+            user = self.context['user']
+        elif 'request' in self.context:
             user = self.context['request'].user
+        
+        if user:
             partner = instance.get_partner(user)
             profile = management_models.profile.UserProfileSerializer(partner.profile).data
             username = partner.username

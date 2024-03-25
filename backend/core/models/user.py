@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             **kwargs,
         )
-
+        
         user.set_password(password)
         user.save(using=self._db)
         profile = UserProfile.objects.create(user=user)
@@ -59,6 +59,7 @@ class UserSelfSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'uuid', 'email',  'is_staff', 'username', 'is_superuser', 'date_joined', 'last_login', 'automated']
+        
 
 class UserFieldsSeralizer(serializers.ModelSerializer):
     class Meta:

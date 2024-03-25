@@ -2,7 +2,11 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from asgiref.sync import sync_to_async
 from .messages import (
-    MessageTypes, UserWentOffline, UserWentOnline, NewMessage
+    MessageTypes, UserWentOffline, 
+    UserWentOnline, NewMessage,
+    InMarkMessageRead,
+    InSendMessage,
+    IncomingMessageTypes
 )
 from .db_ops import is_staff_or_matching, get_all_chat_user_ids, connect_user, disconnect_user
 from .control import get_user_channel_name
@@ -84,7 +88,18 @@ Every user that connects joins:
         await super().websocket_disconnect(event)
 
     async def receive(self, text_data=None, bytes_data=None):
-        print(f"User {self.user} received message: {text_data}")
+        print(f"User {self.user} received message: {text_data}", flush=True)
+        _data = json.loads(text_data)
+        message_type = _data.get("type", None)
+        assert message_type is not None, "Message type is required!"
+        if message_type == "custom":
+            message_data = _data.get("data", {})
+            message_action = message_data.get("action", None)
+            message_payload = message_data.get("payload", {})
+            if message_action == IncomingMessageTypes.mark_chat_message_read.value:
+                await InMarkMessageRead(**message_payload).perform_action(self.user)
+            elif message_action == IncomingMessageTypes.send_message.value:
+                await InSendMessage(**message_payload).perform_action(self.user)
                     
     async def user_went_online(self, event):
         assert event['type'] == MessageTypes.user_went_online.value

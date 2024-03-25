@@ -1,9 +1,13 @@
 from enum import Enum
+from channels.db import database_sync_to_async
 import json
 from conf.utils import CoolerJson
 from dataclasses import dataclass
 from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async, async_to_sync
+from chat.models import Message, MessageSerializer, Chat, ChatSerializer
+from django.db.models import Q
+from core.models.user import User
 
 class MessageTypes(Enum):
     no_type = "no_type"
@@ -34,6 +38,7 @@ def custom_event(action, payload):
         }
     }
 
+# outgoing messages
 @dataclass
 class MessageBase:
 
@@ -56,6 +61,7 @@ class MessageBase:
     
     def send(self, user_id):
         send_message(user_id, self.type, self.dict_valid())
+        
     
 @dataclass
 class UserWentOnline(MessageBase):
@@ -99,3 +105,84 @@ class NewMessage(MessageBase):
                 "chat": self.chat
             }
         )
+
+# incoming messages ======================
+
+@dataclass
+class IncomingMessageBase:
+    def dict(self):
+        return self.__dict__.copy()
+    
+    def dict_valid(self):
+        return json.loads(json.dumps(self.dict(), cls=CoolerJson))
+    
+    def json(self):
+        return json.dumps(self.dict())
+
+class IncomingMessageTypes(Enum):
+    mark_chat_message_read = "mark_chat_message_read"
+    send_message = "send_message"
+
+@dataclass
+class InSendMessage(IncomingMessageBase):
+    chat_id: str
+    recipient_id: str
+    text: str
+    type: str = "send_message"
+    
+    @database_sync_to_async
+    def perform_action(self, user):
+        sender = user
+        recipient = User.objects.get(uuid=self.recipient_id)
+        
+        chats = Chat.objects.filter(
+            Q(u1=sender, u2=recipient) | Q(u1=recipient, u2=sender),
+            uuid=self.chat_id
+        )
+        if not chats.exists():
+            return {"status": "error", "data": "Chat not found"}
+        chat = chats.first()
+        
+        partner = chat.get_partner(user) 
+        message = Message.objects.create(
+            chat=chat,
+            sender=user,
+            recipient=partner,
+            text=self.text
+        )
+        
+        serialized_message = MessageSerializer(message).data
+        
+        chat_serialized = ChatSerializer(chat, context={
+            "user": user
+        }).data
+        
+        NewMessage(
+            sender_id=str(user.uuid),
+            message=serialized_message,
+            chat=chat_serialized
+        ).send(str(partner.uuid))
+        
+        return {"status": "ok", "data": MessageSerializer(message).data}
+
+@dataclass
+class InMarkMessageRead(IncomingMessageBase):
+    chat_id: str
+    sender_id: str
+    message_id: str
+    type: str = "mark_chat_message_read"
+    
+    @database_sync_to_async
+    def perform_action(self, user):
+        sender = User.objects.get(uuid=self.sender_id)
+        print(f"Marking messages read from {sender} to {user}", flush=True)
+
+        message = Message.objects.filter(
+            sender=sender,
+            recipient=user,
+            read=False
+        )
+        message.update(read=True)
+        message = message.first()
+
+        return {"status": "ok", "data": MessageSerializer(message).data}
