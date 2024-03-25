@@ -9,6 +9,39 @@
  * ---------------------------------------------------------------
  */
 
+export interface AugmentedBotUser {
+  automated?: boolean;
+  /** @format date-time */
+  date_joined?: string;
+  /**
+   * Email address
+   * @format email
+   * @maxLength 254
+   */
+  email?: string;
+  id: number;
+  /**
+   * Staff status
+   * Designates whether the user can log into this admin site.
+   */
+  is_staff?: boolean;
+  /**
+   * Superuser status
+   * Designates that this user has all permissions without explicitly assigning them.
+   */
+  is_superuser?: boolean;
+  /** @format date-time */
+  last_login?: string | null;
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   * @maxLength 150
+   * @pattern ^[\w.@+-]+$
+   */
+  username: string;
+  /** @format uuid */
+  uuid: string;
+}
+
 export interface ChatResult {
   /** @format date-time */
   created: string;
@@ -344,8 +377,8 @@ export class HttpClient<SecurityDataType = unknown> {
           property instanceof Blob
             ? property
             : typeof property === "object" && property !== null
-              ? JSON.stringify(property)
-              : `${property}`,
+            ? JSON.stringify(property)
+            : `${property}`,
         );
         return formData;
       }, new FormData()),
@@ -425,18 +458,18 @@ export class HttpClient<SecurityDataType = unknown> {
       const data = !responseFormat
         ? r
         : await response[responseFormat]()
-          .then((data) => {
-            if (r.ok) {
-              r.data = data;
-            } else {
-              r.error = data;
-            }
-            return r;
-          })
-          .catch((e) => {
-            r.error = e;
-            return r;
-          });
+            .then((data) => {
+              if (r.ok) {
+                r.data = data;
+              } else {
+                r.error = data;
+              }
+              return r;
+            })
+            .catch((e) => {
+              r.error = e;
+              return r;
+            });
 
       if (cancelToken) {
         this.abortControllers.delete(cancelToken);
@@ -456,6 +489,25 @@ export class HttpClient<SecurityDataType = unknown> {
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
+    /**
+     * No description
+     *
+     * @tags bot_login
+     * @name BotLoginCreate
+     * @request POST:/api/bot_login
+     * @secure
+     */
+    botLoginCreate: (data: LoginInfo, params: RequestParams = {}) =>
+      this.request<AugmentedBotUser, any>({
+        path: `/api/bot_login`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * @description Simple Viewset for modifying user profiles
      *

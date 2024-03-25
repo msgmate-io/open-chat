@@ -1,0 +1,37 @@
+# Creating A Bot
+
+A bot is basicly a user with some restrictons and some additonal mangement features.
+
+This repo contans a simple open-ai agent for getting started with the msgmate api.
+
+Checkout `/bots/nodejs` for a simple example of a bot using nodejs.
+
+## Using node js
+
+E.g.: Connect to the client and send a message to a user.
+
+```javascript
+async function main() {
+    const { api, user, socket } = await setupClient({
+        username: "test+msgmate1@msgmate.io",
+        password: "Test123!",
+    });
+
+    socket.on('open', function open() {
+        socket.send(JSON.stringify({
+            type: 'custom',
+            data: {
+                action: 'send_message'
+                payload: {
+                    chat_id: "<some-chat-id>",
+                    recipient_id: "<some-user-id>",
+                    text: "Hello world!"
+                }
+            }
+        }));
+        console.log('connected');
+    })
+}
+
+main();
+```
