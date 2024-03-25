@@ -9,8 +9,6 @@ jobs:
     environment: "registry-public"
     permissions:
       contents: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     outputs:
       IMAGE_URL: ${{ steps.prepare.outputs.IMAGE_URL }}
       RANDOM_TAG: ${{ steps.prepare.outputs.RANDOM_TAG }} 
@@ -38,8 +36,6 @@ jobs:
     environment: "registry-public"
     permissions:
       contents: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     outputs:
       IMAGE_URL: ${{ steps.prepare.outputs.IMAGE_URL }}
       RANDOM_TAG: ${{ steps.prepare.outputs.RANDOM_TAG }} 
@@ -66,8 +62,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [build-backend, build-frontend]
     environment: "registry-public"
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - name: "Trigger helm install"
         run: |
