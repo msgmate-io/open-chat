@@ -4,6 +4,8 @@ import Development from "./pages/Development.mdx";
 import CapacitorDevelopment from "./pages/CapacitorDevelopment.mdx";
 import HelmDeployment from "./pages/HelmDeployment.mdx";
 import GithubActions from "./pages/GithubActions.mdx";
+import Backend from "./pages/Backend.mdx";
+import HelmValuesExampleBase from "./pages/HelmValuesExampleBase.mdx";
 
 
 export const docsConfig = {
@@ -39,8 +41,37 @@ export const docsConfig = {
                 },
             ],
         },
+        {
+            title: "Frontend",
+            baseurl: "/docs",
+            items: [
+                {
+                    title: "Introduction",
+                    href: "/frontend",
+                    items: [],
+                },
+            ],
+        },
+        {
+            title: "Backend",
+            baseurl: "/docs",
+            items: [
+                {
+                    title: "Introduction",
+                    href: "/backend",
+                    items: [],
+                },
+            ],
+        },
     ]
 }
+
+export const detachedPages = [
+    {
+        route: "example-values-helm-install",
+        component: HelmValuesExampleBase
+    }
+]
 
 export const pages = [
     {
@@ -63,4 +94,9 @@ export const pages = [
         route: "workflows",
         component: GithubActions
     },
+    {
+        route: "backend",
+        component: Backend
+    },
+    ...detachedPages
 ]
