@@ -9,7 +9,10 @@ on:
         options:
           - "backend"
           - "frontend"
-
+      COMMIT_REF:
+        type: string
+        description: Commit reference
+        default: "main"
 jobs:
   deploy:
     runs-on: ubuntu-22.04
@@ -19,6 +22,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
+        ref: ${{ github.event.inputs.COMMIT_REF }}
       - name: Prepare Environment
         id: prepare
         run: |
@@ -30,5 +34,5 @@ jobs:
       - name: Build Image
         run: |
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
-          docker compose -f docker-compose.pro.yaml build ${{ github.event.inputs.BUILD_TARGET}}
-          docker compose -f docker-compose.pro.yaml push ${{ github.event.inputs.BUILD_TARGET}}
+          docker compose -f docker-compose.pro.yaml build ${{ github.event.inputs.BUILD_TARGET }}
+          docker compose -f docker-compose.pro.yaml push ${{ github.event.inputs.BUILD_TARGET }}
