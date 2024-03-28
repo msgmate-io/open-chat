@@ -1,0 +1,58 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    image: "backend"
+    environment:
+      DJANGO_DEBUG: 'true'
+      PRODUCTION: 'true'
+      ROOT_URL: 'http://localhost'
+      ROOT_HOST: 't1m.me'
+      EXTRA_TRUSTED_ORIGINS: ''
+      DJANGO_SECRET_KEY: 'SomeSecret'
+      DJANGO_ALLOWED_HOSTS: '*'
+      REDIS_URL: 'redis://redis:6379'
+      USE_NEXTJS_PROXY_ROUTES: 'true'
+      NEXTJS_HOST_URL: 'http://frontend:3000'
+      BASE_ADMIN_USERNAME: 'admin'
+      BASE_ADMIN_USER_PASSWORD: 'password'
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    image: "frontend"
+    ports:
+      - "3000:3000"
+      - "24678:24678"
+    volumes:
+      - ./frontend/:/frontend/
+      - ./docs/:/docs/client/
+  redis:
+    image: redis:5
+    ports:
+      - "6379:6379"
+  ingress:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx
+    depends_on:
+      - backend
+      - frontend
+  openai-bot:
+    image: openai-bot
+    build:
+      context: ./bots/nodejs
+      dockerfile: ./Dockerfile
+    environment:
+      OPENAI_API_KEY: 'SomeKey'
+    depends_on:
+      - backend
