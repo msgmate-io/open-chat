@@ -12,20 +12,8 @@ import { Services } from "@/components/landing_page/Services";
 import { Radar, TriangleAlert } from "lucide-react";
 import { Link } from "../atoms/Link";
 import { Team } from "../landing_page/Team";
-//
-/**
-import { HowItWorks } from "@/components/landing_page/HowItWorks";
-import { Features } from "@/components/landing_page/Features";
-import { FAQ } from "@/components/landing_page/FAQ";
-import { Cta } from "@/components/landing_page/Cta";
-import { Testimonials } from "@/components/landing_page/Testimonials";
-import { Team } from "@/components/landing_page/Team";
-import { Pricing } from "@/components/landing_page/Pricing";
-import { Newsletter } from "@/components/landing_page/Newsletter";
-import { Footer } from "@/components/landing_page/Footer";
- */
 
-export const HoverLink = ({ href, children }) => {
+const HoverLink = ({ href, children }) => {
   return (
     <Link
       className="group bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text transition-all duration-300 ease-in-out"
@@ -45,10 +33,10 @@ const heroCardContents = {
     userName: "WORK IN PROGRESS",
     userTag: "still coding ...",
     comment:
-      "Checkout github for progress information and complete feature list!",
+      "Check out GitHub for progress information and complete feature list!",
   },
   infoCard: {
-    title: "Checkout the creator of this landing page template",
+    title: "Check out the creator of this landing page template",
     description: (
       <>
         <HoverLink href="https://github.com/leoMirandaa">Leo Miranda</HoverLink>{" "}
@@ -60,7 +48,7 @@ const heroCardContents = {
     title: "Open Source",
     priceText: "MIT",
     priceDescription: "",
-    description: "This is build to be build with!",
+    description: "This is built to be built with!",
     badge: null,
     buttonText: "Build & Contribute Now!",
     features: [
@@ -75,7 +63,7 @@ const heroCardContents = {
   userCard: {
     username: "Tim Schupp",
     userDescription: "Full Stack Developer & Founder",
-    info: "I love building stuff, especially with others open source - so I initated this Project!",
+    info: "I love building stuff, especially with others using open source - so I initiated this Project!",
     image:
       "https://pbs.twimg.com/profile_images/1479831065409867781/hZhS0L9m_400x400.jpg",
   },
@@ -122,10 +110,10 @@ const cinematicTitle = (
   </div>
 );
 const heroSubtitle =
-  "Packaged open source fullstack application that can deployed as a (AI-)Chat-Interface or it's individual python packages can be used in any Django project. The REST and Websocket apis are build to be extensible and to be ingeratable with Bots and other apps.";
+  "Packaged open source full-stack application that can be deployed as a (AI-)Chat-Interface or its individual python packages can be used in any Django project. The REST and WebSocket APIs are built to be extensible and to be integratable with Bots and other apps.";
 const githubLink = "https://github.com/tbscode/django-vike-chat";
 const heroToAppButton = {
-  text: "Checkout the Chat",
+  text: "Check out the Chat",
   link: "/chat",
 };
 const sponsorsTitle = "Supported by";
@@ -159,17 +147,17 @@ const servicesTitle = (
 
 const magemateAboutImage = featureDemontrationImage;
 const msgmateAboutSubtitle =
-  "Uses open source tools & libaries and is build with development and build processes in mind";
+  "Uses open source tools & libraries and is built with development and build processes in mind";
 const msgmateAboutHeader = (
   <h2 className="text-3xl md:text-4xl font-bold">
-    Used by <HoverLink href="https://msgmate.io">Msgmate.io</HoverLink>
+    Used and Supported by <HoverLink href="https://msgmate.io">Msgmate.io</HoverLink>
   </h2>
 );
 const servicesList = [
   {
     title: "Django + REST Framework + Channels",
     description:
-      "Includes several other django / python related libaries and tools.",
+      "Includes several other django / python related libraries and tools.",
     icon: <img src={djangoLogo} alt="Django Logo" />,
   },
   {
@@ -191,7 +179,7 @@ const msgmateStatistics = [
   },
   {
     quantity: "5000+",
-    description: "Messages Send",
+    description: "Messages Sent",
   },
   {
     quantity: "200+",
@@ -236,17 +224,17 @@ export function DocsNavbar({ children }) {
   );
 }
 
-
 const howItWorksCinematicTitle = (
   <h2 className="text-3xl md:text-4xl font-bold ">
     Modularized to be{" "}
     <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
       Reusable
     </span>
-  </h2>);
+  </h2>
+);
 
 const howItWorksSubtitle = <>
-  This are the{" "}
+  These are the{" "}
   <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
     planned features and modules
   </span>
@@ -257,13 +245,13 @@ const defaultFeatures: FeatureProps[] = [
     icon: <img src={djangoLogo} className="w-14" alt="Django Logo" />,
     title: <span>'Chat' Chat Module</span>,
     description:
-      "A django app decicated to chat only! Includes models, views, serializers, channels consumer and more. Independent of django user module, fully customizable and extendable.",
+      "A django app dedicated to chat only! Includes models, views, serializers, channels consumer and more.Independent of django user module, fully customizable and extendable.",
   },
   {
     icon: <img src={djangoLogo} className="w-14" alt="Django Logo" />,
     title: <span>'Core' User Management Module</span>,
     description:
-      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model REST apis for any Djange application e.g.: an (AI-)Chat-Application.",
+      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model REST APIs for any Django application e.g.: an (AI-)Chat-Application.",
   },
   {
     icon: <>
@@ -275,45 +263,48 @@ const defaultFeatures: FeatureProps[] = [
     </>,
     title: <span>Scalable Packaged AI-Chat-Interface</span>,
     description:
-      "Combined with the Vike-React frontent, the two chat modules and the docker or kubernetes deployment the whole thing chan be used as complete self hostable ai chat interface"
+      "Combined with the Vike-React frontend, the two chat modules and the Docker or Kubernetes deployment the whole thing can be used as complete self-hostable AI chat interface"
   },
 ];
 
 const teamSubtitle = "The people behind the project";
-const teamList = [{
-  imageUrl: null,
-  name: "Fabian Rücker",
-  position: "Data Scientist & Fullstack Developer",
-  socialNetworks: [
-    {
-      name: "Github",
-      url: "https://github.com/fruecker89",
-    },
-  ],
-},
-{
-  imageUrl: null,
-  name: "Jannis Tölle",
-  position: "Web-Developer & Informatik Student",
-  socialNetworks: [
-    {
-      name: "Github",
-      url: "https://github.com/JannisToelle",
-    },
-  ],
-},
-{
-  imageUrl: null,
-  name: "Tim Schupp",
-  position: "CTO & Fullstack Developer",
-  socialNetworks: [
-    {
-      name: "Github",
-      url: "https://github.com/tbscode",
-    },
-  ],
-},
+const teamList = [
+  {
+    imageUrl: null,
+    name: "Fabian Rücker",
+    position: "Data Scientist & Fullstack Developer",
+    socialNetworks: [
+      {
+        name: "Github",
+        url: "https://github.com/fruecker89",
+      },
+    ],
+  },
+  {
+    imageUrl: null,
+    name: "Jannis Tölle",
+    position: "Web-Developer & Computer Science Student",
+    socialNetworks: [
+      {
+        name: "Github",
+        url: "https://github.com/JannisToelle",
+      },
+    ],
+  },
+  {
+    imageUrl: null,
+    name: "Tim Schupp",
+    position: "CTO & Fullstack Developer",
+    socialNetworks: [
+      {
+        name: "Github",
+        url: "https://github.com/tbscode",
+      },
+    ],
+  },
 ]
+
+export const showSponsors = false;
 
 
 
@@ -340,9 +331,6 @@ function HomePage() {
         toAppButtonText={heroToAppButton.text}
         toAppLink={heroToAppButton.link}
       />
-      {/** <Sponsors title={sponsorsTitle} sponsors={sponsors} /> */}
-      {/** <HowItWorks /> */}
-      {/** <Features /> */}
       <Services
         sectionId="features"
         title={servicesTitle}
@@ -356,18 +344,12 @@ function HomePage() {
         subtitle={howItWorksSubtitle}
       />
       <Team subtitle={teamSubtitle} teamList={teamList} />
-      {/** <Cta /> */}
-      {/**<Testimonials />**}
-        <Team />
-        {/** <Pricing /> */}
-      {/** <Newsletter /> */}
-      {showSponsorsBanner && <About
+      {showSponsors && <About
         header={msgmateAboutHeader}
-        text="Msgmate.io is a LLM chat & Agent integration for messages and more! This repository is build and maintained by the founder of msgmate.io and is used in production. It is build with the same tools and libaries as msgmate.io."
+        text="Msgmate.io is a LLM chat & Agent integration for messages and more! This repository is built and maintained by the founder of msgmate.io and is used in production. It is built with the same tools and libraries as msgmate.io."
         stats={msgmateStatistics}
         sectionId="msgmate"
       />}
-      {/** <Footer /> */}
       <ScrollToTop />
     </>
   );
