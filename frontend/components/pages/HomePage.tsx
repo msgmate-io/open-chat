@@ -11,6 +11,7 @@ import { ScrollToTop } from "@/components/landing_page/ScrollToTop";
 import { Services } from "@/components/landing_page/Services";
 import { Radar, TriangleAlert } from "lucide-react";
 import { Link } from "../atoms/Link";
+import { Team } from "../landing_page/Team";
 //
 /**
 import { HowItWorks } from "@/components/landing_page/HowItWorks";
@@ -47,11 +48,11 @@ const heroCardContents = {
       "Checkout github for progress information and complete feature list!",
   },
   infoCard: {
-    title: "Checkout the creator of this landing page",
+    title: "Checkout the creator of this landing page template",
     description: (
       <>
         <HoverLink href="https://github.com/leoMirandaa">Leo Miranda</HoverLink>{" "}
-        created the basis for this landing page using react & shadcn
+        created the open template used as basis for this landing page
       </>
     ),
   },
@@ -74,7 +75,7 @@ const heroCardContents = {
   userCard: {
     username: "Tim Schupp",
     userDescription: "Full Stack Developer & Founder",
-    info: "I love building stuff, especially with others open source!",
+    info: "I love building stuff, especially with others open source - so I initated this Project!",
     image:
       "https://pbs.twimg.com/profile_images/1479831065409867781/hZhS0L9m_400x400.jpg",
   },
@@ -86,35 +87,42 @@ const navbarRoutes = [
     label: "Features",
   },
   {
-    href: "#msgmate",
-    label: "About Msgmate",
+    href: "#packages",
+    label: "Packages",
   },
   {
     href: "/docs",
     label: "Docs",
   },
+  {
+    href: "/api/schema/redoc/",
+    label: "API",
+  },
 ];
 const logoTitle = "Open Chat Interface";
 const cinematicTitle = (
-  <>
+  <div className="flex flex-col" >
+    <h1 className="inline mb-10 text-5xl">
+      Open Chat
+    </h1>
     <h1 className="inline">
-      Chat{" "}
+      Modularized{" "}
       <span className="inline bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">
-        Interface
+        Chat-Interface and API
       </span>{" "}
     </h1>
 
     <h2 className="inline">
       for{" "}
       <span className="inline bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text">
-        AI Agent/Bot
+        (AI-)Chat
       </span>{" "}
       users and developers
     </h2>
-  </>
+  </div>
 );
 const heroSubtitle =
-  "Open source chat full stack interface build with open source frameworks and libaries. Build to be self deployable and extendable with development and build processes in mind.";
+  "Packaged open source fullstack application that can deployed as a (AI-)Chat-Interface or it's individual python packages can be used in any Django project. The REST and Websocket apis are build to be extensible and to be ingeratable with Bots and other apps.";
 const githubLink = "https://github.com/tbscode/django-vike-chat";
 const heroToAppButton = {
   text: "Checkout the Chat",
@@ -141,6 +149,7 @@ const servicesTitle = (
       <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
         All in one{" "}
       </span>
+      (AI-)Chat-App{" "}
     </h2>
     <h2 className="text-3xl md:text-4xl font-bold">
       Backend + Frontend + Bot API
@@ -254,19 +263,58 @@ const defaultFeatures: FeatureProps[] = [
     icon: <img src={djangoLogo} className="w-14" alt="Django Logo" />,
     title: <span>'Core' User Management Module</span>,
     description:
-      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model and views to complete a full stack (AI-)Chat-Application.",
+      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model REST apis for any Djange application e.g.: an (AI-)Chat-Application.",
   },
   {
     icon: <>
       <img src={djangoLogo} className="w-14" alt="Django Logo" />
       +
       <img src={k8sLogo} className="w-14" alt="Kubernetes Logo" />
+      +
+      <img src={vikeLogo} alt="Vike Logo" className="w-10" />
     </>,
     title: <span>Scalable Packaged AI-Chat-Interface</span>,
     description:
-      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model and views to complete a full stack (AI-)Chat-Application.",
+      "Combined with the Vike-React frontent, the two chat modules and the docker or kubernetes deployment the whole thing chan be used as complete self hostable ai chat interface"
   },
 ];
+
+const teamSubtitle = "The people behind the project";
+const teamList = [{
+  imageUrl: null,
+  name: "Fabian Rücker",
+  position: "Data Scientist & Fullstack Developer",
+  socialNetworks: [
+    {
+      name: "Github",
+      url: "https://github.com/fruecker89",
+    },
+  ],
+},
+{
+  imageUrl: null,
+  name: "Jannis Tölle",
+  position: "Web-Developer & Informatik Student",
+  socialNetworks: [
+    {
+      name: "Github",
+      url: "https://github.com/JannisToelle",
+    },
+  ],
+},
+{
+  imageUrl: null,
+  name: "Tim Schupp",
+  position: "CTO & Fullstack Developer",
+  socialNetworks: [
+    {
+      name: "Github",
+      url: "https://github.com/tbscode",
+    },
+  ],
+},
+]
+
 
 
 export function HomeNavbar() {
@@ -307,6 +355,7 @@ function HomePage() {
         features={defaultFeatures}
         subtitle={howItWorksSubtitle}
       />
+      <Team subtitle={teamSubtitle} teamList={teamList} />
       {/** <Cta /> */}
       {/**<Testimonials />**}
         <Team />

@@ -62,7 +62,7 @@ export const HowItWorks = (
     >
       {cinematicTitle}
       <p className="md:w-3/4 mx-auto mt-4 mb-8 text-xl text-muted-foreground">{subtitle}</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
         {features.map(({ icon, title, description }: FeatureProps) => (
           <Card
             key={title}
@@ -72,7 +72,7 @@ export const HowItWorks = (
               <CardTitle className="flex gap-4 items-center content-center justify-center">
                 {icon}
               </CardTitle>
-              <CardTitle className="flex gap-4 place-items-center">
+              <CardTitle className="flex gap-4 items-center content-center justify-center">
                 {title}
               </CardTitle>
             </CardHeader>
