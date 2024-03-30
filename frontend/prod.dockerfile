@@ -1,11 +1,9 @@
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
 WORKDIR /frontend
-COPY . .
-
+COPY [^node_modules]* .
 RUN npm install
 RUN npm run build
-
 ENV NODE_ENV=production
 
-ENTRYPOINT ["node", "./server"]
+CMD ["node", "./server"]

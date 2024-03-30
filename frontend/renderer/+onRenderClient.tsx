@@ -1,7 +1,7 @@
 export default render;
-import ReactDOM from "react-dom/client";
+import { getStore } from "@/store/store";
 import React from "react";
-import { fetchPageProps, getStore } from "../store/store";
+import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import "./index.css";
 

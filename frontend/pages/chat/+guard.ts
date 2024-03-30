@@ -1,24 +1,13 @@
 export { guard }
 
-import type { GuardAsync } from 'vike/types'
-import { redirect } from 'vike/abort'
-import { getApi } from '@/_api/client2'
 import Cookies from 'js-cookie'
+import { redirect } from 'vike/abort'
+import type { GuardAsync } from 'vike/types'
 
-const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
-    const isServer = typeof window === "undefined";
-    if (!isServer) {
-        // The guard is meant for servier side only!
+const guard: GuardAsync = async (pk): ReturnType<GuardAsync> => {
+    if (typeof window !== undefined && Cookies.get("clientAuthorized")) {
         return
-    }
-    const xcsrfToken = isServer ? pageContext.xcsrfToken : Cookies.get("csrftoken")
-    const api = getApi({
-        cookie: isServer ? pageContext.cookies : null,
-        xcsrfToken,
-    })
-    try {
-        const user = await api.userRetrieve()
-    } catch (e) {
-        throw redirect(`/login?next=${pageContext.urlOriginal}`)
+    } else if (!pk.sessionId) {
+        throw redirect(`/login?next=${pk.urlOriginal}`)
     }
 }

@@ -1,17 +1,17 @@
 export default LoginPage;
-import { useApi } from "@/_api/client2";
-import { useState } from "react";
-import { ErrorResult } from "@/_api/apiTypes";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/sonner"
 import { LoginInfo } from "@/_api/api";
-import { processErrorRespose } from "@/_api/apiUtils";
-import { toast } from "sonner"
+import { ErrorResult } from "@/_api/apiTypes";
+import { useApi } from "@/_api/client2";
+import { navigate } from "@/components/atoms/Link";
 import LoginHero from "@/components/hero/login";
 import { LoginNavbar } from "@/components/pages/HomePage";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Toaster } from "@/components/ui/sonner";
 import { fetchUser } from "@/store/user";
+import Cookies from "js-cookie";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { navigate } from "@/components/atoms/Link";
+import { toast } from "sonner";
 
 const cinematicTitle = (
     <>
@@ -64,6 +64,7 @@ function LoginPage({
             const user = await api.loginCreate(loginData)
             await dispatch(fetchUser(user))
             toast.success("Logged in as " + data.username)
+            Cookies.set("clientAuthorized", true)
             setTimeout(() => {
                 setIsFetching(false)
                 navigate("/chat")
