@@ -107,7 +107,6 @@ def create_or_reset_test_users(amount=20):
         users.append(user)
 
     def setup_profiles():
-        total_messages = 0
         for i in range(0, amount):
             print(f"Creating test user profile {i}")
             set_user_profile(users[i], user_infos[i]["profile"])
