@@ -87,7 +87,7 @@ const navbarRoutes = [
     label: "API",
   },
 ];
-const logoTitle = "Open Chat Interface";
+const logoTitle = "Open Chat";
 const cinematicTitle = (
   <div className="flex flex-col" >
     <h1 className="inline mb-10 text-5xl">
