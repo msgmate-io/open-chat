@@ -18,6 +18,7 @@ docker compose up --build
 
 ## Documentation & Preview
 
+- [the staging chat server](https://staging-open-chat.msgmate.io/)
 - [the documentation](https://tbscode.github.io/django-vike-chat/docs)
 
 ### About
