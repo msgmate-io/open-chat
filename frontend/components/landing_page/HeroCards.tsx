@@ -5,13 +5,13 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
-import { Check, Linkedin, TriangleAlert } from "lucide-react";
-import { LightBulbIcon } from "./Icons";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { Check, Linkedin } from "lucide-react";
+import { LightBulbIcon } from "./Icons";
 export const defaultCardContents = {
   comment: {
     image: "",
@@ -182,7 +182,7 @@ export const HeroCards = ({
       </Card>
 
       {/* Service */}
-      <Card className="absolute w-[370px] right-[70px] bottom-[45px]  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute w-[370px] right-[70px] bottom-[0px]  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
           <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
             <LightBulbIcon />
