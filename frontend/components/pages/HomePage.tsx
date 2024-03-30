@@ -1,9 +1,11 @@
 export default HomePage;
 import djangoLogo from "@/assets/_external_logos/django.png";
+import k8sLogo from "@/assets/_external_logos/kubernetes.svg";
 import vikeLogo from "@/assets/_external_logos/vike.svg";
 import featureDemontrationImage from "@/assets/feature-demonstration.svg";
 import { About } from "@/components/landing_page/About";
 import { Hero } from "@/components/landing_page/Hero";
+import { HowItWorks } from "@/components/landing_page/HowItWorks";
 import { Navbar } from "@/components/landing_page/Navbar";
 import { ScrollToTop } from "@/components/landing_page/ScrollToTop";
 import { Services } from "@/components/landing_page/Services";
@@ -188,6 +190,8 @@ const msgmateStatistics = [
   },
 ];
 
+const showSponsorsBanner = false;
+
 export function LoginNavbar() {
   return (
     <Navbar
@@ -223,6 +227,48 @@ export function DocsNavbar({ children }) {
   );
 }
 
+
+const howItWorksCinematicTitle = (
+  <h2 className="text-3xl md:text-4xl font-bold ">
+    Modularized to be{" "}
+    <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
+      Reusable
+    </span>
+  </h2>);
+
+const howItWorksSubtitle = <>
+  This are the{" "}
+  <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
+    planned features and modules
+  </span>
+</>
+
+const defaultFeatures: FeatureProps[] = [
+  {
+    icon: <img src={djangoLogo} className="w-14" alt="Django Logo" />,
+    title: <span>'Chat' Chat Module</span>,
+    description:
+      "A django app decicated to chat only! Includes models, views, serializers, channels consumer and more. Independent of django user module, fully customizable and extendable.",
+  },
+  {
+    icon: <img src={djangoLogo} className="w-14" alt="Django Logo" />,
+    title: <span>'Core' User Management Module</span>,
+    description:
+      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model and views to complete a full stack (AI-)Chat-Application.",
+  },
+  {
+    icon: <>
+      <img src={djangoLogo} className="w-14" alt="Django Logo" />
+      +
+      <img src={k8sLogo} className="w-14" alt="Kubernetes Logo" />
+    </>,
+    title: <span>Scalable Packaged AI-Chat-Interface</span>,
+    description:
+      "Independent of chat offers authentication and user management if you don't want to use django's default user module or provide your own. Comes with Profile and Settings model and views to complete a full stack (AI-)Chat-Application.",
+  },
+];
+
+
 export function HomeNavbar() {
   return (
     <Navbar
@@ -256,17 +302,22 @@ function HomePage() {
         subtitle={msgmateAboutSubtitle}
         services={servicesList}
       />
+      <HowItWorks
+        cinematicTitle={howItWorksCinematicTitle}
+        features={defaultFeatures}
+        subtitle={howItWorksSubtitle}
+      />
       {/** <Cta /> */}
       {/**<Testimonials />**}
         <Team />
         {/** <Pricing /> */}
       {/** <Newsletter /> */}
-      <About
+      {showSponsorsBanner && <About
         header={msgmateAboutHeader}
         text="Msgmate.io is a LLM chat & Agent integration for messages and more! This repository is build and maintained by the founder of msgmate.io and is used in production. It is build with the same tools and libaries as msgmate.io."
         stats={msgmateStatistics}
         sectionId="msgmate"
-      />
+      />}
       {/** <Footer /> */}
       <ScrollToTop />
     </>
