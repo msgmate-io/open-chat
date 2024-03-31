@@ -7,6 +7,7 @@ import LoginHero from "@/components/hero/login";
 import { LoginNavbar } from "@/components/pages/HomePage";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/sonner";
+import { LOGIN_AS_GUEST } from "@/renderer/constants";
 import { fetchUser } from "@/store/user";
 import Cookies from "js-cookie";
 import { useState } from "react";
@@ -75,6 +76,8 @@ function LoginPage({
             setIsFetching(false)
         }
     };
+
+    console.log("GUEST", LOGIN_AS_GUEST)
 
     return <div className="h-screen w-screen flex flex-col">
         <LoginNavbar />

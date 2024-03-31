@@ -1,5 +1,5 @@
-import { EyeOff, EyeIcon } from 'lucide-react';
-import { ReloadIcon } from "@radix-ui/react-icons"
+import { ErrorResult } from '@/api/apiTypes';
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -7,23 +7,22 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod"
-import CenterDiv from "@/components/layout/CenterDiv";
-import { useEffect, useState } from "react"
-import { Input } from "@/components/ui/input"
-import { z } from "zod"
-import { useForm, FormProvider } from "react-hook-form"
-import { LOGIN_AS_GUEST } from '@/renderer/constants';
+} from "@/components/ui/card";
 import {
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { ErrorResult } from '@/api/apiTypes';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LOGIN_AS_GUEST } from '@/renderer/constants';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { EyeIcon, EyeOff } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -129,7 +128,7 @@ export default function LoginHero({
                         {isFetching && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
                         Login
                     </Button>
-                    {LOGIN_AS_GUEST.allowed && (
+                    {(LOGIN_AS_GUEST?.allowed || false) && (
                         <Button variant="outline" type="submit" className="w-full mt-4" form="login-form" onClick={() => {
                             form.setValue('username', LOGIN_AS_GUEST.username)
                             form.setValue('password', LOGIN_AS_GUEST.password)

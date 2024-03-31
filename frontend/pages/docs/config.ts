@@ -1,11 +1,10 @@
-import { lazy } from "react";
-import Intro from "./pages/Intro.mdx";
-import Development from "./pages/Development.mdx";
-import CapacitorDevelopment from "./pages/CapacitorDevelopment.mdx";
-import HelmDeployment from "./pages/HelmDeployment.mdx";
-import GithubActions from "./pages/GithubActions.mdx";
 import Backend from "./pages/Backend.mdx";
+import CapacitorDevelopment from "./pages/CapacitorDevelopment.mdx";
+import Development from "./pages/Development.mdx";
+import GithubActions from "./pages/GithubActions.mdx";
+import HelmDeployment from "./pages/HelmDeployment.mdx";
 import HelmValuesExampleBase from "./pages/HelmValuesExampleBase.mdx";
+import Intro from "./pages/Intro.mdx";
 
 
 export const docsConfig = {
