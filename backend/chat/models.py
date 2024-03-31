@@ -3,14 +3,15 @@ from django.db.models import Q
 from rest_framework import serializers
 from django.core.paginator import Paginator
 from core import models as management_models
+from django.conf import settings
 from uuid import uuid4
 
 class Chat(models.Model):
     
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     
-    u1 = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="u1")
-    u2 = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="u2")
+    u1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="u1")
+    u2 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="u2")
     
     created = models.DateTimeField(auto_now_add=True)
     
@@ -109,8 +110,8 @@ class Message(models.Model):
     
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     
-    sender = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="message_sender")
-    recipient = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="message_recipient")
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="message_sender")
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="message_recipient")
     
     text = models.TextField()
     
@@ -169,13 +170,13 @@ class OpenAiChatSerializer(serializers.ModelSerializer):
         
         
 class ChatSessions(models.Model):
-    user = models.ForeignKey("core.User", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 
 class ChatConnections(models.Model):
     
-    user = models.ForeignKey("core.User", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_online = models.BooleanField(default=False)
     last_seen = models.DateTimeField(auto_now=True)
     time_created = models.DateTimeField(auto_now_add=True)

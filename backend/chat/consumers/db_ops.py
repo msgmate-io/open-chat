@@ -1,5 +1,4 @@
 from channels.db import database_sync_to_async
-from core.models.user import User
 from django.utils import timezone
 from chat.models import Chat, ChatConnections, ChatSessions
 

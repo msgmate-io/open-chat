@@ -7,7 +7,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async, async_to_sync
 from chat.models import Message, MessageSerializer, Chat, ChatSerializer
 from django.db.models import Q
-from core.models.user import User
+from django.contrib.auth import get_user_model
 
 class MessageTypes(Enum):
     no_type = "no_type"
@@ -133,7 +133,7 @@ class InSendMessage(IncomingMessageBase):
     @database_sync_to_async
     def perform_action(self, user):
         sender = user
-        recipient = User.objects.get(uuid=self.recipient_id)
+        recipient = get_user_model().objects.get(uuid=self.recipient_id)
         
         chats = Chat.objects.filter(
             Q(u1=sender, u2=recipient) | Q(u1=recipient, u2=sender),
@@ -174,7 +174,7 @@ class InMarkMessageRead(IncomingMessageBase):
     
     @database_sync_to_async
     def perform_action(self, user):
-        sender = User.objects.get(uuid=self.sender_id)
+        sender = get_user_model().objects.get(uuid=self.sender_id)
         print(f"Marking messages read from {sender} to {user}", flush=True)
 
         message = Message.objects.filter(

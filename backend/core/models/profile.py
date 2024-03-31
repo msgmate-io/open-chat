@@ -3,9 +3,10 @@ from core.models.history import ChangeHistory
 from model_utils import FieldTracker
 from django.utils import timezone
 from rest_framework import serializers
+from django.conf import settings
 
 class UserProfile(models.Model):
-    user = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="user_profile_user")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_profile_user")
     first_name = models.CharField(max_length=50)
     second_name = models.CharField(max_length=50)
     image = models.TextField(null=True, blank=True)
@@ -13,6 +14,11 @@ class UserProfile(models.Model):
     # Public profiles can be viewed by anyone & receive messages from anyone
     # With public = False user may only send a message to them if they have been added to their contacts
     public = models.BooleanField(default=False)
+    
+    # A secret that can be used to authenticate the user
+    # with `public=True` & `contact_secret=null` Any user can contact this user
+    # with e.g.: `contact_sectet = "Activate msgmate"` only users that know this secret may contact this user
+    contact_secret = models.CharField(max_length=50, null=True, blank=True)
     
     tracker = FieldTracker()
     last_updated = models.DateTimeField(auto_now_add=True)
@@ -48,7 +54,7 @@ class UserProfile(models.Model):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['first_name', 'second_name', 'last_updated']
+        fields = ['first_name', 'second_name', 'last_updated', 'public']
         
     def validate(self, attrs):
         return super().validate(attrs)

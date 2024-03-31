@@ -1,21 +1,16 @@
 from rest_framework_dataclasses.serializers import DataclassSerializer
-import asyncio
-from core.models.user import User, UserSelfSerializer
-from typing import Literal, Optional, List, Dict
-from datetime import datetime
+from django.contrib.auth import get_user_model
+from core.models.user import UserSelfSerializer
 from django.contrib.auth import logout
 from drf_spectacular.utils import extend_schema
 from dataclasses import dataclass
 from django.middleware.csrf import get_token
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, throttle_classes
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.contrib.auth import authenticate, login
-from core import tools
-from core.api.user import UpdateUserViewset
 
 
 @dataclass
@@ -58,7 +53,7 @@ class AugmentedBotUserSerializer(UserSelfSerializer):
     sessionid: str = "sessionid"
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = UserSelfSerializer.Meta.fields
         
     def to_representation(self, instance):

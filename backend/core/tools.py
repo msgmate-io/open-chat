@@ -1,13 +1,13 @@
 from django.conf import settings
-from core.models.user import User
+from django.contrib.auth import get_user_model
 
 def base_admin_exists():
-    return User.objects.filter(username=settings.BASE_ADMIN_USERNAME).exists()
+    return get_user_model().objects.filter(username=settings.BASE_ADMIN_USERNAME).exists()
 
 def get_or_create_base_admin():
-    user = User.objects.filter(username=settings.BASE_ADMIN_USERNAME)
+    user = get_user_model().objects.filter(username=settings.BASE_ADMIN_USERNAME)
     if not user.exists():
-        user = User.objects.create_superuser(
+        user = get_user_model().objects.create_superuser(
             username=settings.BASE_ADMIN_USERNAME,
             password=settings.BASE_ADMIN_USER_PASSWORD
         )

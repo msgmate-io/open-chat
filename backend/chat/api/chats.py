@@ -2,27 +2,31 @@ from rest_framework import serializers, viewsets, status
 from rest_framework import response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from chat.models import Chat, ChatSerializer, ChatInModelSerializer
+from django.db.models import Case, CharField, Value, When
 from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, AugmentedPagination, DetailedPaginationMixin
 from drf_spectacular.utils import inline_serializer
+from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
 from chat.api.viewsets import PaginatedResponseSerializer, PaginatedResponseData, PaginatedResponseDataBase
-from core.models.profile import UserProfileSerializer
 from chat.models import MessageSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from django.db.models import Max
+from core.models.profile import UserProfileSerializer, UserProfile
 
 def chat_res_seralizer(many=True):
+    fields = {
+        "uuid": serializers.UUIDField(),
+        "created": serializers.DateTimeField(),
+        'newest_message': MessageSerializer(many=False),
+        'unread_count': serializers.IntegerField(),
+        "partner": UserProfileSerializer(many=False),
+    }
+
     return inline_serializer(
         name='ChatResult',
-        fields={
-            "uuid": serializers.UUIDField(),
-            "created": serializers.DateTimeField(),
-            'newest_message': MessageSerializer(many=False),
-            'unread_count': serializers.IntegerField(),
-            "partner": UserProfileSerializer(many=False),
-        },
+        fields=fields,
         many=many,
     )
 
@@ -48,7 +52,7 @@ class ChatsModelViewSet(viewsets.ModelViewSet):
         return Chat.objects.annotate(
             newest_message_time=Max('message__created'),
         ).filter(Q(u1 = self.request.user) | Q(u2 = self.request.user)).order_by('-newest_message_time')
-    
+        
 
     @extend_schema(responses={200: chat_res_seralizer(many=False)})
     @action(detail=False, methods=['post'])

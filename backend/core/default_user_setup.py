@@ -1,4 +1,4 @@
-from core.models.user import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from core.permissions import Permissions, Groups
 from core.tools import get_or_create_base_admin
@@ -8,7 +8,7 @@ from chat.models import Chat, Message
 
 def get_or_create_user(username, email, password):
     try:
-        user = User.objects.create(
+        user = get_user_model().objects.create(
             username=username,
             email=email,
             password=password,

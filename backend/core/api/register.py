@@ -3,6 +3,7 @@ from rest_framework_dataclasses.serializers import DataclassSerializer
 from typing import Literal, Optional, List, Dict
 from datetime import datetime
 from drf_spectacular.utils import extend_schema
+from django.contrib.auth import get_user_model
 from dataclasses import dataclass
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, throttle_classes
@@ -11,7 +12,6 @@ from rest_framework import status
 from rest_framework.serializers import EmailField, ValidationError
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.contrib.auth import authenticate, login
-from core.models.user import User
 
 
 @dataclass
@@ -55,7 +55,7 @@ def register_user(request):
     if data.password != data.password_confirm:
         raise ValidationError({field: "Passwords do not match" for field in [
                               "password", "password_confirm"]})
-    usr = User.objects.create(username=data.email, password=data.password)
+    usr = get_user_model().objects.create(username=data.email, password=data.password)
 
     return Response(
         RegisterResponseSuccess(
