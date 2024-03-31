@@ -27,7 +27,7 @@ jobs:
           REGISTRY_HOST=ghcr.io
           echo "IMAGE_PREFIX=$REGISTRY_HOST/tbscode/django-vike-chat/open-chat-" > .env
           echo "IMAGE_TAG=$RANDOM_TAG" >> .env
-          echo "IMAGE_URL=$REGISTRY_HOST/tbscode/django-vike-chat/open-chat-frontend:$RANDOM_TAG" >> $GITHUB_OUTPUT
+          echo "IMAGE_URL=$REGISTRY_HOST/tbscode/django-vike-chat/open-chat-backend:$RANDOM_TAG" >> $GITHUB_OUTPUT
           echo "RANDOM_TAG=$RANDOM_TAG" >> $GITHUB_OUTPUT
           echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_OUTPUT
           echo "BUILD_TARGET=backend" >> $GITHUB_OUTPUT
