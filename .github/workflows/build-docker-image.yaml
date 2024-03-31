@@ -36,6 +36,5 @@ jobs:
       - name: Build Image
         run: |
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
-          cp ./frontend/.env.development ./frontend/.env.production
           docker compose -f docker-compose.pro.yaml build ${{ github.event.inputs.BUILD_TARGET }}
           docker compose -f docker-compose.pro.yaml push ${{ github.event.inputs.BUILD_TARGET }}
