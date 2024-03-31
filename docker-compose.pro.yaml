@@ -23,8 +23,16 @@ services:
       context: ./frontend
       dockerfile: ./prod.dockerfile
     environment:
-      ROOT_URL: 'http://localhost'
-      WEBSOCKET_PROTOCOL: 'ws://'
+      PUBLIC_ENV__BUILD_TYPE: 'web'
+      PUBLIC_ENV__GUEST_LOGIN_ALLOWED: 'true'
+      PUBLIC_ENV__GUEST_USERNAME: 'test+msgmate9@msgmate.io'
+      PUBLIC_ENV__GUEST_PASSWORD: 'Test123!'
+      PUBLIC_ENV__FRONTNED_BACKEND_ROUTE: 'http://localhost'
+      PUBLIC_ENV__ROUTE_PREFIX: ''
+      PUBLIC_ENV__WEBSOCKET_PROTOCOLL: 'ws://'
+      PUBLIC_ENV__WEBSOCKET_HOST: 'localhost'
+      PUBLIC_ENV__WEBSOCKET_PATH: '/api/core/ws'
+      INTERNAL_BACKEND_ROUTE: 'http://backend:8000'
     ports:
       - "3000:3000"
       - "24678:24678"
