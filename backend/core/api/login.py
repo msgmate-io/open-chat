@@ -75,7 +75,11 @@ def bot_login(request):
     data = serializer.save()
     
     user = authenticate(username=data.username, password=data.password)
-    # TODO: raise error if user is not a bot
+    
+    if not user.profile.is_bot:
+        return Response({
+            'non_field_errors': ['Only bots can login here.']
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     if user is None:
         return Response({

@@ -20,6 +20,11 @@ class UserProfile(models.Model):
     # with e.g.: `contact_sectet = "Activate msgmate"` only users that know this secret may contact this user
     contact_secret = models.CharField(max_length=50, null=True, blank=True)
     
+    is_bot = models.BooleanField(default=False)
+    
+    description_title = models.TextField(default="About Me:")
+    description = models.TextField(default="Hello there I'm using open-chat!")
+    
     tracker = FieldTracker()
     last_updated = models.DateTimeField(auto_now_add=True)
     changes = models.ManyToManyField("ChangeHistory", related_name="user_profile_changes", null=True, blank=True)
@@ -54,7 +59,7 @@ class UserProfile(models.Model):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['first_name', 'second_name', 'last_updated', 'public']
+        fields = ['first_name', 'second_name', 'last_updated', 'public', 'description_title', 'description', 'image', 'is_bot']
         
     def validate(self, attrs):
         return super().validate(attrs)
