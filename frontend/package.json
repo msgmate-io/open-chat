@@ -38,6 +38,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
+    "embla-carousel-react": "^8.0.0",
     "eslint": "^8.47.0",
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",

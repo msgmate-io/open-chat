@@ -1,14 +1,16 @@
-import * as toolkitRaw from '@reduxjs/toolkit';
-const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
-import { chatsSlice, ChatState, fetchChats } from './chats';
-import { Dispatch } from 'redux';
-import Cookies from "js-cookie";
-import { messagesSlice, MessagesState } from './messages';
-import { UserState, fetchUser, userSlice } from './user';
-import { fetchProfile, profileSlice, ProfileState } from './profile';
 import { Api } from '@/_api/api';
-import { toast } from 'sonner';
 import { navigate } from '@/components/atoms/Link';
+import * as toolkitRaw from '@reduxjs/toolkit';
+import Cookies from "js-cookie";
+import { Dispatch } from 'redux';
+import { toast } from 'sonner';
+import { chatsSlice, ChatState, fetchChats } from './chats';
+import { contactsSlice, ContactsState } from './contacts';
+import { messagesSlice, MessagesState } from './messages';
+import { fetchProfile, profileSlice, ProfileState } from './profile';
+import { PublicProfilesSlice, PublicProfilesState } from './publicProfiles';
+import { fetchUser, userSlice, UserState } from './user';
+const { createSlice, configureStore, combineReducers } = toolkitRaw.default ?? toolkitRaw;
 
 const frontendSlice = createSlice({
     name: 'frontend',
@@ -42,7 +44,9 @@ const rootReducer = combineReducers({
     pageProps: pagePropsSlice.reducer,
     chats: chatsSlice.reducer,
     messages: messagesSlice.reducer,
+    contacts: contactsSlice.reducer,
     profile: profileSlice.reducer,
+    publicProfiles: PublicProfilesSlice.reducer,
 })
 
 export function getStore(initalReduxState) {
@@ -62,6 +66,8 @@ export const logoutUser = (
             dispatch(fetchUser(null));
             dispatch(fetchChats(null));
             dispatch(fetchProfile(null));
+            // remove helper 'clientAuthorized' flag so +guard.js may be executed client side
+            Cookies.remove("clientAuthorized");
             // Just be be sure - Is normally auto removed by the 'Set-Cookie' header
             Cookies.remove("sessionid");
             setTimeout(() => {
@@ -79,5 +85,7 @@ export interface RootState {
     messages: MessagesState,
     profile: ProfileState,
     pageProps: any,
+    contacts: ContactsState,
+    publicProfiles: PublicProfilesState,
     frontend: any,
 }

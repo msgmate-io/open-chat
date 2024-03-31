@@ -52,6 +52,13 @@ export interface ChatResult {
   uuid: string;
 }
 
+export interface ChatsContactsListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
+}
+
 export interface ChatsListParams {
   /** A page number within the paginated result set. */
   page?: number;
@@ -171,18 +178,42 @@ export interface PaginatedMessageList {
 }
 
 export interface PaginatedUserProfileList {
-  /** @example 123 */
-  count?: number;
   /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=4"
+   * The first page number
+   * @format int32
+   * @example "1"
    */
-  next?: string | null;
+  first_page?: number;
   /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=2"
+   * The total number of items
+   * @format int32
+   * @example "1"
    */
-  previous?: string | null;
+  items_total?: number;
+  /**
+   * The next page number
+   * @format int32
+   * @example "2"
+   */
+  next_page?: number;
+  /**
+   * The number of items per page
+   * @format int32
+   * @example "40"
+   */
+  page_size?: number;
+  /**
+   * The total number of pages
+   * @format int32
+   * @example "1"
+   */
+  pages_total?: number;
+  /**
+   * The previous page number
+   * @format int32
+   * @example "1"
+   */
+  previous_page?: number;
   results?: UserProfile[];
 }
 
@@ -198,10 +229,15 @@ export interface PatchedMessage {
 }
 
 export interface PatchedUserProfile {
+  description?: string;
+  description_title?: string;
   /** @maxLength 50 */
   first_name?: string;
+  image?: string | null;
+  is_bot?: boolean;
   /** @format date-time */
   last_updated?: string;
+  public?: boolean;
   /** @maxLength 50 */
   second_name?: string;
 }
@@ -220,6 +256,13 @@ export interface ProfilesListParams {
   page_size?: number;
 }
 
+export interface PublicProfilesListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
+}
+
 export interface RegisterResponseSuccess {
   message: string;
   user_hash: string;
@@ -230,10 +273,15 @@ export interface SendMessage {
 }
 
 export interface UserProfile {
+  description?: string;
+  description_title?: string;
   /** @maxLength 50 */
   first_name: string;
+  image?: string | null;
+  is_bot?: boolean;
   /** @format date-time */
   last_updated: string;
+  public?: boolean;
   /** @maxLength 50 */
   second_name: string;
 }
@@ -377,8 +425,8 @@ export class HttpClient<SecurityDataType = unknown> {
           property instanceof Blob
             ? property
             : typeof property === "object" && property !== null
-            ? JSON.stringify(property)
-            : `${property}`,
+              ? JSON.stringify(property)
+              : `${property}`,
         );
         return formData;
       }, new FormData()),
@@ -458,18 +506,18 @@ export class HttpClient<SecurityDataType = unknown> {
       const data = !responseFormat
         ? r
         : await response[responseFormat]()
-            .then((data) => {
-              if (r.ok) {
-                r.data = data;
-              } else {
-                r.error = data;
-              }
-              return r;
-            })
-            .catch((e) => {
-              r.error = e;
-              return r;
-            });
+          .then((data) => {
+            if (r.ok) {
+              r.data = data;
+            } else {
+              r.error = data;
+            }
+            return r;
+          })
+          .catch((e) => {
+            r.error = e;
+            return r;
+          });
 
       if (cancelToken) {
         this.abortControllers.delete(cancelToken);
@@ -504,6 +552,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags chats
+     * @name ChatsContactsList
+     * @request GET:/api/chats/contacts
+     * @secure
+     */
+    chatsContactsList: (query: ChatsContactsListParams, params: RequestParams = {}) =>
+      this.request<PaginatedUserProfileList, any>({
+        path: `/api/chats/contacts`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -848,6 +914,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags public_profiles
+     * @name PublicProfilesList
+     * @request GET:/api/public_profiles
+     * @secure
+     */
+    publicProfilesList: (query: PublicProfilesListParams, params: RequestParams = {}) =>
+      this.request<PaginatedUserProfileList, any>({
+        path: `/api/public_profiles`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
