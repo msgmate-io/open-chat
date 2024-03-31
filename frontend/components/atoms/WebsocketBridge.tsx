@@ -1,9 +1,9 @@
+import { WEBSOCKET_URL } from "@/renderer/constants";
+import { updateNewestMessage } from "@/store/chats";
+import { insertMessage } from "@/store/messages";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { WEBSOCKET_URL } from "@/renderer/constants";
-import { insertMessage } from "@/store/messages";
-import { updateNewestMessage } from "@/store/chats";
 
 const useCustomEventHandler = (dispatch) => {
   return {
@@ -42,9 +42,8 @@ const WebsocketBridge = () => {
 
   const dispatch = useDispatch();
   const customEventHandler = useCustomEventHandler(dispatch);
-  const [socketUrl, setSocketUrl] = useState(WEBSOCKET_URL);
   const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState } = useWs("ws://localhost/api/core/ws");
+  const { sendMessage, lastMessage, readyState } = useWs(WEBSOCKET_URL);
 
   const handleIncomingMessage = (message) => {
     if (message.type === "custom") {
