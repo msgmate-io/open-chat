@@ -62,6 +62,7 @@ OPENAI_KEY = os.environ.get(
 if DEBUG:
     CSRF_TRUSTED_ORIGINS = ["https://t1m.me", "http://host.docker.internal:8000", "http://localhost:80", "http://localhost:80"]
 else:
+    CORS_ALLOWED_ORIGINS = []
     CSRF_TRUSTED_ORIGINS = []
 
 if os.environ.get("ROOT_HOST", "") != "":
@@ -71,6 +72,7 @@ if os.environ.get("ROOT_HOST", "") != "":
 if os.environ.get("EXTRA_TRUSTED_ORIGINS", "") != "":
     EXTRA_HOSTS = os.environ.get("EXTRA_TRUSTED_ORIGINS", "").split(",")
     CSRF_TRUSTED_ORIGINS += EXTRA_HOSTS
+    CORS_ALLOWED_ORIGINS += EXTRA_HOSTS
 
 DB_ENGINE = os.environ.get("DB_ENGINE", "django_prometheus.db.backends.sqlite3")
 DATABASES = {

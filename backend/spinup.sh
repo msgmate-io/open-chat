@@ -1,4 +1,5 @@
-python3 manage.py migrate
+python3 manage.py migrate --noinput
+python3 manage.py collectstatic --noinput
 python3 manage.py shell --command 'from core.tools import before_backend_startup; before_backend_startup()'
 
 if [ $PRODUCTION = "true" ]; then
