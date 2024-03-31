@@ -1,13 +1,13 @@
-import { mdx } from "@cyco130/vite-plugin-mdx";
+import path from "path";
 import react from "@vitejs/plugin-react";
 import { builtinModules } from "module";
-import path from "path";
 import tailwindcss from "tailwindcss";
 import vike from "vike/plugin";
+import { mdx } from "@cyco130/vite-plugin-mdx";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    base: "/",
+    base: "https://tbscode.github.io/django-vike-chat/",
     plugins: [react(), vike({
         prerender: true
     }), mdx(), tailwindcss()],

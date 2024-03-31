@@ -4,6 +4,7 @@
     "prod": "npm run build && npm run server:prod",
     "build": "vite build --config vite.config.js",
     "build:docs": "vite build --mode production --config vite.static.config.js && cp -r ./dist/* ../docs/",
+    "build:static": "vite build --config vite.config.js",
     "server:dev": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server",
     "lint": "eslint . --max-warnings 0",
