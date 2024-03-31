@@ -29,7 +29,7 @@ docker compose up --build
 
 This project was initiated and built by @tbscode, with the intention of becoming an open, self-hostable AI chat interface. It offers several Django packages that can be integrated into a Django app for chat and user management features.
 
-The app and interface will also provide a way to integrate with AI-bots/agents or other applications. You will be able to either run the Chat locally and run the included bots with some API keys, or you can self-host models with them using means like localai.io and connect them using Bots or Agents. Alternatively, you can enter AI-Chat service API keys to your bots or use the bots and interfaces of services such as [`msgmate.io`](https://msgmate.io).
+The app and interface will also provide a way to integrate with AI-bots/agents or other applications. You will be able to either run the Chat locally and [run the included bots](todo) with some API keys, or you can self-host models with them using means like [`localai.io`](https://localai.io) and connect them using Bots or Agents. Alternatively, you can enter AI-Chat service API keys to your bots or use the bots and interfaces of services such as [`msgmate.io`](https://msgmate.io).
 
 There is copyrighted static content present in this repo at: `./frontend/assets`. This includes, for example, the msgmate.io logo, other external logos ( `./frontend/assets/_external_logos` ) and other landing page assets (please replace/delete them if you intend to publish/fork).
 
