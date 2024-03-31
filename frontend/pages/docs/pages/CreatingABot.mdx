@@ -1,20 +1,34 @@
 # Creating A Bot
 
+> WIP this section is incomplete and subjet to change.
+
 A bot is basicly a user with some restrictons and some additonal mangement features.
 
 This repo contans a simple open-ai agent for getting started with the msgmate api.
 
 Checkout `/bots/nodejs` for a simple example of a bot using nodejs.
 
-## Using node js
+## Deploying the included OpenAI bot
+
+1. Start the backend `docker compose up`
+2. Setup `bots/docker-compose.yaml:environment.` with your openai api key
+3. Start the bot `docker compose -f bots/docker-compose.yaml up`
+
+
+## Building a node js bot
 
 E.g.: Connect to the client and send a message to a user.
+
+Not the you can connect to *any* deployed or localcal open chat Api, just set `host`, `httpProtocol` and `wsProtocol` to the appropriate values.
 
 ```javascript
 async function main() {
     const { api, user, socket } = await setupClient({
         username: "test+msgmate1@msgmate.io",
         password: "Test123!",
+        host: "localhost",
+        wsProtocol: "ws://",
+        httpProtocol: "http://",
     });
 
     socket.on('open', function open() {
@@ -35,3 +49,4 @@ async function main() {
 
 main();
 ```
+import { Api } from "@/_api/api"

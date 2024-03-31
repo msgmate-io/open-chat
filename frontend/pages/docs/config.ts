@@ -1,10 +1,12 @@
 import Backend from "./pages/Backend.mdx";
 import CapacitorDevelopment from "./pages/CapacitorDevelopment.mdx";
+import BotApi from "./pages/CreatingABot.mdx";
 import Development from "./pages/Development.mdx";
 import GithubActions from "./pages/GithubActions.mdx";
 import HelmDeployment from "./pages/HelmDeployment.mdx";
 import HelmValuesExampleBase from "./pages/HelmValuesExampleBase.mdx";
 import Intro from "./pages/Intro.mdx";
+import Frontend from "./pages/VikeReactFrontend.mdx";
 
 
 export const docsConfig = {
@@ -62,6 +64,17 @@ export const docsConfig = {
                 },
             ],
         },
+        {
+            title: "Bot Api",
+            baseurl: "/docs",
+            items: [
+                {
+                    title: "Introduction",
+                    href: "/bot-api",
+                    items: [],
+                },
+            ],
+        },
     ]
 }
 
@@ -96,6 +109,14 @@ export const pages = [
     {
         route: "backend",
         component: Backend
+    },
+    {
+        route: "frontend",
+        component: Frontend
+    },
+    {
+        route: "bot-api",
+        component: BotApi
     },
     ...detachedPages
 ]
