@@ -8,12 +8,15 @@ This repo contans a simple open-ai agent for getting started with the msgmate ap
 
 Checkout `/bots/nodejs` for a simple example of a bot using nodejs.
 
-## Deploying the included OpenAI bot
+## Deploy Mixtral-13B-Chat Locally and connect it as a open-chat bot
+
+> WIP: process is outlined, unfinshed
 
 1. Start the backend `docker compose up`
-2. Setup `bots/docker-compose.yaml:environment.` with your openai api key
-3. Start the bot `docker compose -f bots/docker-compose.yaml up`
-
+2. Start localai `docker run -p 8080:8080 --name local-ai -ti localai/localai:latest-aio-cpu`
+3. Edit `bots/docker-compose.yaml:environment` with the localai connection details
+4. Start the bot `docker compose -f bots/docker-compose.yaml up`
+5. Login with another user and start messaging the bot user you connected.
 
 ## Building a node js bot
 

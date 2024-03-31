@@ -2,22 +2,22 @@ import { Link } from "@/components/atoms/Link"
 
 # Github Actions CI/CD
 
-> This section is WIP
+> This section is WIP.
 
-A collection of github actions and a k8s cluster maybe be used to manage the CI/CD process.
+A collection of GitHub Actions and a K8s cluster may be used to manage the CI/CD process.
 
 ## Running workflows locally using `act`
 
-1) Fill `.secrets`
+1) Fill in `.secrets`.
 
-Depending on the workflow you might need to add `GITHUB_TOKEN` - scoped depending on your task objective - to the `.env` file.
+Depending on the workflow, you may need to add `GITHUB_TOKEN` - scoped depending on your task objective - to the `.env` file.
 
 2) `act workflow_dispatch --secret-file .env -W .github/workflows/<workflow>.yml`
 
-Incase you require to provide dispatch params, create a `event.json` and use the `--eventpath` flag.
-But most of the time just using `--input` should be sufficient.
+In case you need to provide dispatch parameters, create an `event.json` file and use the `--eventpath` flag.
+In most cases, just using `--input` should be sufficient.
 
-e.g.: this will install the open-chat helm chart to any kubernetes cluster:
+For example, this will install the open-chat Helm chart to any Kubernetes cluster:
 
 `.secrets`:
 
@@ -30,7 +30,7 @@ DEPLOYMENT_VALUES_B64="change me"
 INGRESS_HOST="change me"
 ```
 
-> <Link href="/docs/example-values-helm-install">see here</Link> for an exmple `values.yaml` setup, use `base64 -w 0` to encode it.
+> <Link href="/docs/example-values-helm-install">See here</Link> for an example `values.yaml` setup; use `base64 -w 0` to encode it.
 
 ```bash
 act workflow_dispatch --input BUILD_TARGET=backend --secret-file .secrets -W .github/workflows/build-docker-image.yaml
@@ -40,23 +40,23 @@ act workflow_dispatch --input DEPLOYMENT_TARGET=staging --input FRONTEND_IMAGE_U
 
 # Open Chat Repo CI/CD
 
-Section discusses how the CI/CD process is managed for the open-chat repo / how it can be managed in a fork.
+This section discusses how the CI/CD process is managed for the open-chat repo and how it can be managed in a fork.
 
 ## Setting up environment
 
-> As this is a public repo it has access to [github environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
-> If you are using this in context of a private repo you may need to adjust the github actions.
+> As this is a public repo, it has access to [GitHub environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment).
+> If you are using this in the context of a private repo, you may need to adjust the GitHub Actions.
 
 ### Environment Secrets
 
 You are required to configure the following:
 
-- `KUBECONFIG_B64`: a base64 encoded kubeconfig file
-- `REGISTRY_PASSWORD`: a docker registry password
-- `REGISTRY_HOST`: a docker registry host
-- `REGISTRY_USER`: a docker registry user
-- `DEPLOYMENT_VALUES_B64`: a base64 encoded helm values file ( can be deleted after installation )
-- `BOT_TOKEN`: a scoped github token of bot account
-- `INGRESS_HOST`: the ingress host for the k8s cluster
+- `KUBECONFIG_B64`: a base64 encoded kubeconfig file.
+- `REGISTRY_PASSWORD`: a Docker registry password.
+- `REGISTRY_HOST`: a Docker registry host.
+- `REGISTRY_USER`: a Docker registry user.
+- `DEPLOYMENT_VALUES_B64`: a base64 encoded Helm values file (can be deleted after installation).
+- `BOT_TOKEN`: a scoped GitHub token of the bot account.
+- `INGRESS_HOST`: the ingress host for the K8s cluster.
 
-Since they are environment scoped, all workflows accessing this enviroment require prior approval of <Link href="https://github.com/tbscode" target="_blank">tbscode</Link> or another autorized maintainer.
+Since they are environment scoped, all workflows accessing this environment require prior approval from <Link href="https://github.com/tbscode" target="_blank">tbscode</Link> or another authorized maintainer.
