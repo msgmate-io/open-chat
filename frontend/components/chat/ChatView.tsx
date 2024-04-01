@@ -1,14 +1,9 @@
+import { useApi } from "@/_api/client2";
+import logo from "@/assets/logo.png";
+import ThemeSelector from "@/components/atoms/ThemeSelector";
 import {
     Card,
-} from "@/components/ui/card"
-import logo from "@/assets/logo.png";
-import { navigate, navigateSearch } from "../atoms/Link";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
-import { ChatItem } from "./chat";
-import ProfileLoader from "../loaders/ProfileLoader";
-import { Button } from "@/components/ui/button"
-import { logoutUser } from "@/store/store";
+} from "@/components/ui/card";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,9 +12,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuShortcut,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useApi } from "@/_api/client2";
-import ThemeSelector from "@/components/atoms/ThemeSelector";
+} from "@/components/ui/dropdown-menu";
+import { AppDispatch, RootState, logoutUser } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { navigateSearch } from "../atoms/Link";
+import ProfileLoader from "../loaders/ProfileLoader";
+import { ChatItem, PendingChatItem } from "./chat";
 
 function NewChatCard() {
 
@@ -88,7 +86,7 @@ export function ChatsList() {
     return <div className="flex flex-col gap-0 h-full">
         <NewChatCard />
         <div className="flex flex-col flex-grow gap-2 overflow-y-scroll py-2">{
-            chats ? chats.results?.map(chat => <ChatItem chat={chat} key={`chat_${chat.uuid}`} isSelected={chat.uuid === chatId} />) : <div>Loading...</div>
+            chats ? chats.results?.map(chat => <ChatItem chat={chat} key={`chat_${chat.uuid}`} isSelected={chat.uuid === chatId} />) : Array.from({ length: 5 }).map((_, i) => <PendingChatItem key={`chat_${i}`} />)
         }</div>
         <ProfileMenu />
     </div>

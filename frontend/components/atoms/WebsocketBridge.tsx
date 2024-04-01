@@ -1,6 +1,8 @@
 import { WEBSOCKET_URL } from "@/renderer/constants";
-import { updateNewestMessage } from "@/store/chats";
+import { updateNewestMessage, updatePartnerOnlineStatus } from "@/store/chats";
+import { updateContactsOnlineStatus } from "@/store/contacts";
 import { insertMessage } from "@/store/messages";
+import { updatePublicProfilesOnlineStatus } from "@/store/publicProfiles";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
@@ -8,10 +10,36 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 const useCustomEventHandler = (dispatch) => {
   return {
     userWentOnline: (payload) => {
+      const { userId } = payload;
       console.debug("User went online", payload);
+      dispatch(updatePartnerOnlineStatus({
+        userId: userId,
+        isOnline: true
+      }));
+      dispatch(updateContactsOnlineStatus({
+        userId: userId,
+        isOnline: true
+      }));
+      dispatch(updatePublicProfilesOnlineStatus({
+        userId: userId,
+        isOnline: true
+      }));
     },
     userWentOffline: (payload) => {
+      const { userId } = payload;
       console.debug("User went offline", payload);
+      dispatch(updatePartnerOnlineStatus({
+        userId: userId,
+        isOnline: false
+      }));
+      dispatch(updateContactsOnlineStatus({
+        userId: userId,
+        isOnline: false
+      }));
+      dispatch(updatePublicProfilesOnlineStatus({
+        userId: userId,
+        isOnline: false
+      }));
     },
     newMessage: (payload) => {
       const { chat, message, senderId } = payload;
