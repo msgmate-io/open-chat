@@ -42,6 +42,22 @@ export interface AugmentedBotUser {
   uuid: string;
 }
 
+export interface Chat {
+  /** @format uuid */
+  u1: string;
+  /** @format uuid */
+  u2: string;
+  /** @format date-time */
+  created: string;
+  /** @format uuid */
+  uuid: string;
+}
+
+export interface ChatCreationResponse {
+  chat: Chat;
+  message: Message;
+}
+
 export interface ChatResult {
   /** @format date-time */
   created: string;
@@ -50,6 +66,13 @@ export interface ChatResult {
   unread_count: number;
   /** @format uuid */
   uuid: string;
+}
+
+export interface ChatsContactsListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface ChatsListParams {
@@ -171,18 +194,42 @@ export interface PaginatedMessageList {
 }
 
 export interface PaginatedUserProfileList {
-  /** @example 123 */
-  count?: number;
   /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=4"
+   * The first page number
+   * @format int32
+   * @example "1"
    */
-  next?: string | null;
+  first_page?: number;
   /**
-   * @format uri
-   * @example "http://api.example.org/accounts/?page=2"
+   * The total number of items
+   * @format int32
+   * @example "1"
    */
-  previous?: string | null;
+  items_total?: number;
+  /**
+   * The next page number
+   * @format int32
+   * @example "2"
+   */
+  next_page?: number;
+  /**
+   * The number of items per page
+   * @format int32
+   * @example "40"
+   */
+  page_size?: number;
+  /**
+   * The total number of pages
+   * @format int32
+   * @example "1"
+   */
+  pages_total?: number;
+  /**
+   * The previous page number
+   * @format int32
+   * @example "1"
+   */
+  previous_page?: number;
   results?: UserProfile[];
 }
 
@@ -198,12 +245,23 @@ export interface PatchedMessage {
 }
 
 export interface PatchedUserProfile {
+  description?: string;
+  description_title?: string;
   /** @maxLength 50 */
   first_name?: string;
+  image?: string | null;
+  is_bot?: boolean;
+  /** @default false */
+  is_online?: boolean;
   /** @format date-time */
   last_updated?: string;
+  public?: boolean;
+  /** @default false */
+  reqires_contact_password?: boolean;
   /** @maxLength 50 */
   second_name?: string;
+  /** @format uuid */
+  uuid?: string;
 }
 
 export interface Person {
@@ -213,11 +271,46 @@ export interface Person {
   password_confirm: string;
 }
 
+export interface ProfileRetrieve2Params {
+  /** The secret to reveal the user profile */
+  reveal_secret?: string;
+  userUuid: string;
+}
+
 export interface ProfilesListParams {
   /** A page number within the paginated result set. */
   page?: number;
   /** Number of results to return per page. */
   page_size?: number;
+}
+
+export interface PublicProfilesListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
+}
+
+export interface RegisterBot {
+  /** @default "password" */
+  contact_password?: string;
+  /** @default "Hello there I'm a bot" */
+  description?: string;
+  /** @default "About the bot:" */
+  description_title?: string;
+  /** @default "Bot" */
+  first_name?: string;
+  password: string;
+  password_confirm: string;
+  /** @default false */
+  public?: boolean;
+  /** @default false */
+  requires_contact_password?: boolean;
+  /** @default "password" */
+  reveal_secret?: string;
+  /** @default "Bot" */
+  second_name?: string;
+  username: string;
 }
 
 export interface RegisterResponseSuccess {
@@ -230,12 +323,23 @@ export interface SendMessage {
 }
 
 export interface UserProfile {
+  description?: string;
+  description_title?: string;
   /** @maxLength 50 */
   first_name: string;
+  image?: string | null;
+  is_bot?: boolean;
+  /** @default false */
+  is_online: boolean;
   /** @format date-time */
   last_updated: string;
+  public?: boolean;
+  /** @default false */
+  reqires_contact_password: boolean;
   /** @maxLength 50 */
   second_name: string;
+  /** @format uuid */
+  uuid: string;
 }
 
 export interface UserSelf {
@@ -509,6 +613,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags bot_register
+     * @name BotRegisterCreate
+     * @request POST:/api/bot_register
+     * @secure
+     */
+    botRegisterCreate: (data: RegisterBot, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/bot_register`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags chats
+     * @name ChatsContactsList
+     * @request GET:/api/chats/contacts
+     * @secure
+     */
+    chatsContactsList: (query: ChatsContactsListParams, params: RequestParams = {}) =>
+      this.request<PaginatedUserProfileList, any>({
+        path: `/api/chats/contacts`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Simple Viewset for modifying user profiles
      *
      * @tags chats
@@ -725,6 +866,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileCreateChatCreate
+     * @request POST:/api/profile/{user_uuid}/create_chat
+     * @secure
+     */
+    profileCreateChatCreate: (userUuid: string, data: SendMessage, params: RequestParams = {}) =>
+      this.request<ChatCreationResponse, any>({
+        path: `/api/profile/${userUuid}/create_chat`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Simple Viewset for modifying user profiles
      *
      * @tags profile
@@ -755,6 +915,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<UserProfile, any>({
         path: `/api/profile`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileRetrieve2
+     * @request GET:/api/profile/{user_uuid}/
+     * @secure
+     */
+    profileRetrieve2: ({ userUuid, ...query }: ProfileRetrieve2Params, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile/${userUuid}/`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -848,6 +1026,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags public_profiles
+     * @name PublicProfilesList
+     * @request GET:/api/public_profiles
+     * @secure
+     */
+    publicProfilesList: (query: PublicProfilesListParams, params: RequestParams = {}) =>
+      this.request<PaginatedUserProfileList, any>({
+        path: `/api/public_profiles`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),

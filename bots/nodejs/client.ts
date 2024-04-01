@@ -1,5 +1,5 @@
-import { Api, AugmentedBotUser } from "./api";
 import WebSocket from 'ws';
+import { Api, AugmentedBotUser } from "./api";
 
 export async function setupClient({
     username = "",
@@ -7,6 +7,7 @@ export async function setupClient({
     host = "localhost:8000",
     httpProtocol = "http://",
     wsProtocol = "ws://",
+    adminLogin = false,
 }): Promise<{
     api: typeof Api.prototype.api,
     user: AugmentedBotUser,
@@ -20,6 +21,7 @@ export async function setupClient({
             baseUrl: `${httpProtocol}${host}`,
             baseApiParams: {
                 headers: {
+                    "X-CSRFToken": csrfToken,
                     cookie: `sessionid=${sessionId}; csrftoken=${csrfToken}`,
                 }
             },
