@@ -52,9 +52,6 @@ class Chat(models.Model):
             return chat
         else:
             return cls.objects.create(u1=user1, u2=user2)
-        
-    def get_past_messages_openai(self, message_depth):
-        return OpenAiChatSerializer(self, message_depth=message_depth).data
 
 class ChatInModelSerializer(serializers.ModelSerializer):
     
@@ -74,10 +71,12 @@ class ChatInModelSerializer(serializers.ModelSerializer):
     
 
 class ChatSerializer(serializers.ModelSerializer):
+    u1 = serializers.UUIDField()
+    u2 = serializers.UUIDField()
     
     class Meta:
         model = Chat
-        fields = ['id', 'uuid', 'u1', 'u2', 'created']
+        fields = ['uuid', 'u1', 'u2', 'created']
         
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -89,7 +88,10 @@ class ChatSerializer(serializers.ModelSerializer):
         
         if user:
             partner = instance.get_partner(user)
-            profile = management_models.profile.UserProfileSerializer(partner.profile).data
+            if not 'request' in self.context:
+                profile = management_models.profile.UserProfileSerializer(partner.profile).data
+            else:
+                profile = management_models.profile.UserProfileSerializer(partner.profile, context={'request': self.context['request']}).data
             username = partner.username
             profile['uuid'] = str(partner.uuid)
             representation['partner'] = profile
@@ -136,39 +138,6 @@ class MessageSerializer(serializers.ModelSerializer):
         return representation
     
     
-class OpenAiMessageSerializer(serializers.ModelSerializer): 
-    
-    class Meta:
-        model = Message
-        fields = ['uuid']
-        
-    def to_representation(self, instance):
-        
-        representation = super().to_representation(instance)
-        
-        representation['role'] = "assistant" if instance.sender.automated else "user"
-        representation['content'] = instance.text
-        del representation['uuid']
-        
-        return representation
-
-class OpenAiChatSerializer(serializers.ModelSerializer): 
-
-    class Meta:
-        model = Chat
-        fields = ['uuid', 'u1', 'u2', 'created']
-        
-    def __init__(self, *args, message_depth=5, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.message_depth = message_depth
-        
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-
-        messages = instance.get_messages()
-        representation['messages'] = OpenAiMessageSerializer(Paginator(messages, self.message_depth).page(1), many=True).data
-        
-        
 class ChatSessions(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_time = models.DateTimeField()

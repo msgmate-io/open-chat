@@ -15,10 +15,9 @@ class UserProfile(models.Model):
     # With public = False user may only send a message to them if they have been added to their contacts
     public = models.BooleanField(default=False)
     
-    # A secret that can be used to authenticate the user
-    # with `public=True` & `contact_secret=null` Any user can contact this user
-    # with e.g.: `contact_sectet = "Activate msgmate"` only users that know this secret may contact this user
     contact_secret = models.CharField(max_length=50, null=True, blank=True)
+    
+    reveal_secret = models.CharField(max_length=50, default="password")
     
     is_bot = models.BooleanField(default=False)
     
@@ -57,9 +56,23 @@ class UserProfile(models.Model):
             
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    
+    is_online = serializers.BooleanField(read_only=True, default=False)
+    uuid = serializers.UUIDField(source='user.uuid', read_only=True)
+    reqires_contact_password = serializers.BooleanField(read_only=True, default=False)
+
     class Meta:
         model = UserProfile
-        fields = ['first_name', 'second_name', 'last_updated', 'public', 'description_title', 'description', 'image', 'is_bot']
+        fields = ['first_name', 'second_name', 'last_updated', 'public', 'description_title', 'description', 'image', 'is_bot', 'is_online', 'uuid', 'reqires_contact_password']
         
     def validate(self, attrs):
         return super().validate(attrs)
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        if 'request' in self.context:
+            from chat.models import ChatConnections
+            rep["is_online"] = ChatConnections.is_user_online(instance.user)
+            
+        rep["reqires_contact_password"] = instance.contact_secret is not None
+        return rep

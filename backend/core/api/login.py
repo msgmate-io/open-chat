@@ -76,7 +76,9 @@ def bot_login(request):
     
     user = authenticate(username=data.username, password=data.password)
     
-    if not user.profile.is_bot:
+    if not (user.profile.is_bot or user.is_staff):
+        # bot AND admins may use the bot loging api
+        # TODO: intoduce special user permission for this
         return Response({
             'non_field_errors': ['Only bots can login here.']
         }, status=status.HTTP_400_BAD_REQUEST)

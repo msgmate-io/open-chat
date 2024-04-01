@@ -7,11 +7,14 @@ from django.contrib.auth import get_user_model
 from dataclasses import dataclass
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes, throttle_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import serializers
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework import status
 from rest_framework.serializers import EmailField, ValidationError
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.contrib.auth import authenticate, login
+from core.models.profile import UserProfileSerializer
 
 
 @dataclass
@@ -62,3 +65,53 @@ def register_user(request):
             message="User created successfully",
             user_hash=str(usr.hash)),
         status=status.HTTP_200_OK)
+    
+class RegisterBotSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+    password_confirm = serializers.CharField()
+    first_name = serializers.CharField(default="Bot")
+    second_name = serializers.CharField(default="Bot")
+    public = serializers.BooleanField(default=False)
+    description = serializers.CharField(default="Hello there I'm a bot")
+    description_title = serializers.CharField(default="About the bot:")
+    reveal_secret = serializers.CharField(default="password")
+    requires_contact_password = serializers.BooleanField(default=False)
+    contact_password = serializers.CharField(default="password")
+
+@extend_schema(
+    request=RegisterBotSerializer(many=False),
+    responses={200: UserProfileSerializer(many=False)},
+    auth=None,
+)
+@permission_classes([IsAuthenticated])
+@throttle_classes([AnonRateThrottle])
+@api_view(['POST'])
+def register_bot(request):
+
+    serializer = RegisterBotSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    data = serializer.data
+
+    # TODO: also allow users that have bot creation permsission should be allowed
+    if not request.user.is_staff:
+        return Response({"error": "Only staff users can create bots"}, status=status.HTTP_403_FORBIDDEN)
+    
+    usr = get_user_model().objects.filter(username=data['username'])
+    if usr.exists():
+        return Response({"error": "User with that username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    usr = get_user_model().objects.create(username=data['username'], password=data['password'])
+    usr.profile.is_bot = True
+    usr.profile.public = data['public']
+    usr.profile.description = data['description']
+    usr.profile.first_name = data['first_name']
+    usr.profile.second_name = data['second_name']
+    usr.profile.reveal_secret = data['reveal_secret']
+    usr.profile.description_title = data['description_title']
+    if data['requires_contact_password']:
+        usr.profile.contact_password = data['contact_password']
+    usr.profile.save()
+    
+    return Response(UserProfileSerializer(usr.profile).data, status=status.HTTP_200_OK)
