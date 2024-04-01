@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-import { useMediaQuery } from 'react-responsive';
 import { useEffect, useState } from "react";
+import { useMediaQuery } from 'react-responsive';
 
 const screens = {
   sm: "640px",
@@ -25,7 +25,7 @@ const breakpoints = screens;
 type BreakpointKey = keyof typeof breakpoints;
 
 export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
-  const [queryResult, setQueryResult] = useState(false);
+  const [queryResult, setQueryResult] = useState(true);
   // https://stackoverflow.com/a/71098593
   const bool = useMediaQuery({
     query: `(min-width: ${breakpoints[breakpointKey]})`,

@@ -11,9 +11,9 @@
 //  - HatTip (https://github.com/hattipjs/hattip)
 //    - You can use Bati (https://batijs.github.io/) to scaffold a Vike + HatTip app. Note that Bati generates apps that use the V1 design (https://vike.dev/migration/v1-design) and Vike packages (https://vike.dev/vike-packages)
 
-import express from "express";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import express from "express";
 import { renderPage } from "vike/server";
 import { root } from "./root.js";
 
@@ -62,8 +62,11 @@ async function startServer() {
       cookies: req.headers.cookie,
       themeCookie: req.cookies["theme"] || null,
       xcsrfToken: req.cookies["csrftoken"],
+      resizableLayout: req.cookies['react-resizable-panels-layout'] || null,
       sessionId: req.cookies["sessionid"] || null,
     };
+
+    console.log("COOKIES", JSON.stringify(req.cookies))
 
     const pageContext = await renderPage(pageContextInit);
     const { httpResponse } = pageContext;

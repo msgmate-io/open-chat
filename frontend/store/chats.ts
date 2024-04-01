@@ -1,7 +1,7 @@
 import { ChatResult, PaginatedChatResultList } from '@/_api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
-const { createSlice } = toolkitRaw.default ?? toolkitRaw;
 import { RootState } from './store';
+const { createSlice } = toolkitRaw.default ?? toolkitRaw;
 
 export interface ChatState {
     value: null | PaginatedChatResultList;
@@ -18,6 +18,13 @@ export const chatsSlice = createSlice({
         fetchChats: (state, action) => {
             state.value = action.payload;
         },
+        insertChat: (state, action) => {
+            const { chat } = action.payload;
+            if (state.value) {
+                state.value.results = [chat, ...state.value.results.filter(c => c.uuid !== chat.uuid)];
+                state.value.results = orderChats(state.value.results);
+            }
+        },
         updateNewestMessage: (state, action) => {
             const { chatId, message } = action.payload;
             if (state.value) {
@@ -28,6 +35,16 @@ export const chatsSlice = createSlice({
                 state.value.results = orderChats(state.value.results);
             }
         },
+        updatePartnerOnlineStatus: (state, action) => {
+            const { userId, isOnline } = action.payload;
+            if (state.value) {
+                state.value.results.forEach(chat => {
+                    if (chat.partner.uuid === userId) {
+                        chat.partner.is_online = isOnline;
+                    }
+                });
+            }
+        }
     }
 });
 
@@ -45,5 +62,7 @@ export const getChatByChatId = (state: RootState, chatId: string) => {
 
 export const {
     fetchChats,
-    updateNewestMessage
+    insertChat,
+    updateNewestMessage,
+    updatePartnerOnlineStatus
 } = chatsSlice.actions;

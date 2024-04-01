@@ -17,9 +17,20 @@ export const PublicProfilesSlice = createSlice({
         fetchPublicProfiles: (state, action) => {
             state.value = action.payload;
         },
+        updatePublicProfilesOnlineStatus: (state, action) => {
+            const { userId, isOnline } = action.payload;
+            if (state.value) {
+                state.value.results.forEach(profile => {
+                    if (profile.uuid === userId) {
+                        profile.is_online = isOnline;
+                    }
+                });
+            }
+        }
     }
 });
 
 export const {
     fetchPublicProfiles,
+    updatePublicProfilesOnlineStatus,
 } = PublicProfilesSlice.actions;

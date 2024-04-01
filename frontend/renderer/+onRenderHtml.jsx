@@ -2,13 +2,12 @@ export default onRenderHtml;
 // See https://vike.dev/data-fetching
 import { renderToString } from "react-dom/server";
 
-import React from "react";
-import { escapeInject, dangerouslySkipEscape } from "vike/server";
-import logoUrl from "./logo.svg";
-import { getStore } from "../store/store";
-import { Provider } from "react-redux";
-import { BASE_PAGE_TITLE } from "./constants";
 import favicon from '@/assets/logo.png';
+import React from "react";
+import { Provider } from "react-redux";
+import { dangerouslySkipEscape, escapeInject } from "vike/server";
+import { getStore } from "../store/store";
+import { BASE_PAGE_TITLE } from "./constants";
 
 import "./index.css";
 
@@ -25,6 +24,7 @@ async function onRenderHtml(pageContext) {
       sessionId: sessionIdExists,
       xcsrfToken: pageContext.xcsrfToken,
       routeParams: pageContext.routeParams,
+      resizableLayout: pageContext.resizableLayout,
     },
     pageProps: {
       routeParams: pageContext.routeParams,

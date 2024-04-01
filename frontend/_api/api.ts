@@ -42,6 +42,22 @@ export interface AugmentedBotUser {
   uuid: string;
 }
 
+export interface Chat {
+  /** @format uuid */
+  u1: string;
+  /** @format uuid */
+  u2: string;
+  /** @format date-time */
+  created: string;
+  /** @format uuid */
+  uuid: string;
+}
+
+export interface ChatCreationResponse {
+  chat: Chat;
+  message: Message;
+}
+
 export interface ChatResult {
   /** @format date-time */
   created: string;
@@ -235,11 +251,17 @@ export interface PatchedUserProfile {
   first_name?: string;
   image?: string | null;
   is_bot?: boolean;
+  /** @default false */
+  is_online?: boolean;
   /** @format date-time */
   last_updated?: string;
   public?: boolean;
+  /** @default false */
+  reqires_contact_password?: boolean;
   /** @maxLength 50 */
   second_name?: string;
+  /** @format uuid */
+  uuid?: string;
 }
 
 export interface Person {
@@ -247,6 +269,20 @@ export interface Person {
   email: string;
   password: string;
   password_confirm: string;
+}
+
+export interface ProfileCreateChatCreateParams {
+  /** The secret to reveal the user profile */
+  contact_secret?: string;
+  /** The secret to reveal the user profile */
+  reveal_secret?: string;
+  userUuid: string;
+}
+
+export interface ProfileRetrieve2Params {
+  /** The secret to reveal the user profile */
+  reveal_secret?: string;
+  userUuid: string;
 }
 
 export interface ProfilesListParams {
@@ -261,6 +297,28 @@ export interface PublicProfilesListParams {
   page?: number;
   /** Number of results to return per page. */
   page_size?: number;
+}
+
+export interface RegisterBot {
+  /** @default "password" */
+  contact_password?: string;
+  /** @default "Hello there I'm a bot" */
+  description?: string;
+  /** @default "About the bot:" */
+  description_title?: string;
+  /** @default "Bot" */
+  first_name?: string;
+  password: string;
+  password_confirm: string;
+  /** @default false */
+  public?: boolean;
+  /** @default false */
+  requires_contact_password?: boolean;
+  /** @default "password" */
+  reveal_secret?: string;
+  /** @default "Bot" */
+  second_name?: string;
+  username: string;
 }
 
 export interface RegisterResponseSuccess {
@@ -279,11 +337,17 @@ export interface UserProfile {
   first_name: string;
   image?: string | null;
   is_bot?: boolean;
+  /** @default false */
+  is_online: boolean;
   /** @format date-time */
   last_updated: string;
   public?: boolean;
+  /** @default false */
+  reqires_contact_password: boolean;
   /** @maxLength 50 */
   second_name: string;
+  /** @format uuid */
+  uuid: string;
 }
 
 export interface UserSelf {
@@ -425,8 +489,8 @@ export class HttpClient<SecurityDataType = unknown> {
           property instanceof Blob
             ? property
             : typeof property === "object" && property !== null
-              ? JSON.stringify(property)
-              : `${property}`,
+            ? JSON.stringify(property)
+            : `${property}`,
         );
         return formData;
       }, new FormData()),
@@ -506,18 +570,18 @@ export class HttpClient<SecurityDataType = unknown> {
       const data = !responseFormat
         ? r
         : await response[responseFormat]()
-          .then((data) => {
-            if (r.ok) {
-              r.data = data;
-            } else {
-              r.error = data;
-            }
-            return r;
-          })
-          .catch((e) => {
-            r.error = e;
-            return r;
-          });
+            .then((data) => {
+              if (r.ok) {
+                r.data = data;
+              } else {
+                r.error = data;
+              }
+              return r;
+            })
+            .catch((e) => {
+              r.error = e;
+              return r;
+            });
 
       if (cancelToken) {
         this.abortControllers.delete(cancelToken);
@@ -548,6 +612,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     botLoginCreate: (data: LoginInfo, params: RequestParams = {}) =>
       this.request<AugmentedBotUser, any>({
         path: `/api/bot_login`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags bot_register
+     * @name BotRegisterCreate
+     * @request POST:/api/bot_register
+     * @secure
+     */
+    botRegisterCreate: (data: RegisterBot, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/bot_register`,
         method: "POST",
         body: data,
         secure: true,
@@ -791,6 +874,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileCreateChatCreate
+     * @request POST:/api/profile/{user_uuid}/create_chat
+     * @secure
+     */
+    profileCreateChatCreate: (
+      { userUuid, ...query }: ProfileCreateChatCreateParams,
+      data: SendMessage,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChatCreationResponse, any>({
+        path: `/api/profile/${userUuid}/create_chat`,
+        method: "POST",
+        query: query,
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Simple Viewset for modifying user profiles
      *
      * @tags profile
@@ -821,6 +928,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<UserProfile, any>({
         path: `/api/profile`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileRetrieve2
+     * @request GET:/api/profile/{user_uuid}/
+     * @secure
+     */
+    profileRetrieve2: ({ userUuid, ...query }: ProfileRetrieve2Params, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile/${userUuid}/`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
