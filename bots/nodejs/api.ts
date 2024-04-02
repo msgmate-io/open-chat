@@ -271,6 +271,14 @@ export interface Person {
   password_confirm: string;
 }
 
+export interface ProfileCreateChatCreateParams {
+  /** The secret to reveal the user profile */
+  contact_secret?: string;
+  /** The secret to reveal the user profile */
+  reveal_secret?: string;
+  userUuid: string;
+}
+
 export interface ProfileRetrieve2Params {
   /** The secret to reveal the user profile */
   reveal_secret?: string;
@@ -304,8 +312,6 @@ export interface RegisterBot {
   password_confirm: string;
   /** @default false */
   public?: boolean;
-  /** @default false */
-  requires_contact_password?: boolean;
   /** @default "password" */
   reveal_secret?: string;
   /** @default "Bot" */
@@ -873,10 +879,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/profile/{user_uuid}/create_chat
      * @secure
      */
-    profileCreateChatCreate: (userUuid: string, data: SendMessage, params: RequestParams = {}) =>
+    profileCreateChatCreate: (
+      { userUuid, ...query }: ProfileCreateChatCreateParams,
+      data: SendMessage,
+      params: RequestParams = {},
+    ) =>
       this.request<ChatCreationResponse, any>({
         path: `/api/profile/${userUuid}/create_chat`,
         method: "POST",
+        query: query,
         body: data,
         secure: true,
         type: ContentType.Json,

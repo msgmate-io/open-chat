@@ -15,6 +15,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "engine.io-client": "^6.5.3",
     "openai": "^4.29.2",
     "ws": "^8.16.0"

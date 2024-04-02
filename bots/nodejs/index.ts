@@ -1,18 +1,38 @@
+import dotenv from 'dotenv';
 import OpenAI from 'openai';
 import { Api } from './api';
 import { setupClient } from "./client";
 
-const apiKey = "...";
-const botManagerUsername = "admin";
-const botManagerPassword = "password";
+dotenv.config();
 
-const botUsername = "msgmatebot2";
-const botPassword = "Test123!";
-const botContactPassword = "password"
+const botManagerUsername = process.env.BOT_MANAGER_USERNAME || "admin";
+const botManagerPassword = process.env.BOT_MANAGER_PASSWORD || "password";
+const botUsername = process.env.BOT_USERNAME || "msgmatebot2";
+const botPassword = process.env.BOT_PASSWORD || "Test123!";
+const botContactPassword = process.env.BOT_CONTACT_PASSWORD || null;
 
-const serverHost = "localhost";
-const serverWsProtocol = "ws://";
-const serverHttpProtocol = "http://";
+const serverHost = process.env.SERVER_HOST || "localhost";
+const serverWsProtocol = process.env.SERVER_WS_PROTOCOL || "ws://";
+const serverHttpProtocol = process.env.SERVER_HTTP_PROTOCOL || "http://";
+console.log('serverHost', serverHost, 'serverWsProtocol', serverWsProtocol, 'serverHttpProtocol', serverHttpProtocol);
+
+const modelApiServer = process.env.MODEL_API_SERVER || "";
+const modelApiToken = process.env.MODEL_API_TOKEN || ""
+
+const botFirstName = process.env.BOT_FIRST_NAME || "NodeJS";
+const botSecondName = process.env.BOT_SECOND_NAME || "Bot";
+
+const botDescription = process.env.BOT_DESCRIPTION || "General example for an AI-Bot using nodejs";
+const botDescriptionTitle = process.env.BOT_DESCRIPTION_TITLE || "NodeJS Bot"
+
+const botIsPublic = (process.env.BOT_IS_PUBLIC == "true") || false;
+const botRevealSecret = process.env.BOT_REVEAL_SECRET || "";
+const botRequiresContactPassword = (process.env.BOT_REQUIRES_CONTACT_PASSWORD == "true") || false;
+
+const openai = new OpenAI({
+    apiKey: modelApiToken,
+    baseURL: modelApiServer
+});
 
 const DB = {
     chats: null,
@@ -58,9 +78,6 @@ const getOpenAiMessageHistory = (chat, message, maxMessageContext = 4) => {
 
 }
 
-const openai = new OpenAI({
-    apiKey: apiKey,
-});
 
 function sendCustomEvent(action, payload, socket: WebSocket) {
     socket.send(JSON.stringify({
@@ -122,7 +139,7 @@ function processCustomMessage(action, payload, api: typeof Api.prototype.api, so
         console.log('historyQuery', historyQuery);
         const chatCompletion = openai.chat.completions.create({
             messages: historyQuery,
-            model: 'gpt-3.5-turbo',
+            model: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
         });
         chatCompletion.then((response) => {
             // TODO: register api usage
@@ -155,14 +172,13 @@ async function setupBot() {
             username: botUsername,
             password: botPassword,
             password_confirm: botPassword,
-            first_name: "GPT-3.5",
-            second_name: "Turbo",
-            public: false,
-            reveal_secret: "TurboBot",
-            requires_contact_password: true,
+            first_name: botFirstName,
+            second_name: botSecondName,
+            public: botIsPublic,
+            reveal_secret: botRevealSecret,
             contact_password: botContactPassword,
-            description: "GPT-3.5 Turbo Bot",
-            description_title: "OpenAI Bot:",
+            description: botDescription,
+            description_title: botDescriptionTitle
         }).catch((err) => {
             console.error('failed to create bot account', err);
         });
