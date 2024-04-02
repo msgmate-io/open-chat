@@ -312,8 +312,6 @@ export interface RegisterBot {
   password_confirm: string;
   /** @default false */
   public?: boolean;
-  /** @default false */
-  requires_contact_password?: boolean;
   /** @default "password" */
   reveal_secret?: string;
   /** @default "Bot" */

@@ -76,8 +76,7 @@ class RegisterBotSerializer(serializers.Serializer):
     description = serializers.CharField(default="Hello there I'm a bot")
     description_title = serializers.CharField(default="About the bot:")
     reveal_secret = serializers.CharField(default="password")
-    requires_contact_password = serializers.BooleanField(default=False)
-    contact_password = serializers.CharField(default="password")
+    contact_password = serializers.CharField(default="password", required=False, allow_blank=True, allow_null=True)
 
 @extend_schema(
     request=RegisterBotSerializer(many=False),
@@ -110,8 +109,8 @@ def register_bot(request):
     usr.profile.second_name = data['second_name']
     usr.profile.reveal_secret = data['reveal_secret']
     usr.profile.description_title = data['description_title']
-    if data['requires_contact_password']:
-        usr.profile.contact_password = data['contact_password']
+    if 'contact_password' in data:
+        usr.profile.contact_secret = data['contact_password']
     usr.profile.save()
     
     return Response(UserProfileSerializer(usr.profile).data, status=status.HTTP_200_OK)
