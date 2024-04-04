@@ -3,7 +3,7 @@ services:
     build:
       context: ./nodejs
       dockerfile: ./Dockerfile
-    image: "open-chat-bot/node"
+    image: "${IMAGE_PREFIX-}bot-mixtral:${IMAGE_TAG-latest}"
     environment:
       BOT_MANAGER_USERNAME: ${BOT_MANAGER_USERNAME:-admin}
       BOT_MANAGER_PASSWORD: ${BOT_MANAGER_PASSWORD:-password}
@@ -28,7 +28,7 @@ services:
     build:
       context: ./nodejs
       dockerfile: ./Dockerfile
-    image: "open-chat-bot-explorer/node:explorer"
+    image: "${IMAGE_PREFIX-}bot-exporer:${IMAGE_TAG-latest}"
     entrypoint: [ "npx", "tsx", "setupBotAccessUser.ts" ]
     environment:
       BOT_MANAGER_USERNAME: ${BOT_MANAGER_USERNAME:-admin}
