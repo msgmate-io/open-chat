@@ -52,6 +52,17 @@ class ChatsModelViewSet(viewsets.ModelViewSet):
         return Chat.objects.annotate(
             newest_message_time=Max('message__created'),
         ).filter(Q(u1 = self.request.user) | Q(u2 = self.request.user)).order_by('-newest_message_time')
+
+    @extend_schema(responses={200: chat_res_seralizer(many=True)})
+    @action(detail=False, methods=['post'])
+    def get_chats_with_user(self, request, user_uuid=None):
+        if not user_uuid:
+            return Response({'error': 'user_uuid is required'}, status=400)
+        
+        chats = self.get_queryset().filter(Q(u1__uuid=user_uuid, u2=request.user) | Q(u1=request.user, u2__uuid=user_uuid))
+        return Response(chat_res_seralizer(many=True)(chats, context={
+            'request': request,
+        }).data)
         
 
     @extend_schema(responses={200: chat_res_seralizer(many=False)})

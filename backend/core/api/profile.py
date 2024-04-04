@@ -25,11 +25,8 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class UpdateProfileViewset(UserStaffRestricedModelViewsetMixin, viewsets.ModelViewSet):
-    """
-    Simple Viewset for modifying user profiles
-    """
     allow_user_list = False
-    not_user_editable = ["last_updated"]
+    not_user_editable = ["last_updated", "uuid", "user", "is_bot"]
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = StandardResultsSetPagination
@@ -46,6 +43,37 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name="reveal_secret", type=str, required=False, location=OpenApiParameter.QUERY, description="The secret to reveal the user profile"),
+            OpenApiParameter(name="username", type=str, required=False, location=OpenApiParameter.QUERY, description="The username of the user to fetch")
+        ],
+        responses={200: UserProfileSerializer(many=False)}
+    )
+    @action(detail=False, methods=['get'])
+    def reveal_profile(self, request):
+        reveal_secret = request.query_params.get("reveal_secret", None)
+        username = request.query_params.get("username", None)
+        
+        if not username:
+            return Response({"status": "error", "data": "Username required"}, status=400)
+        
+        user = get_user_model().objects.get(username=username)
+        if (not reveal_secret) and (not user.profile.public):
+            return Response({"status": "error", "data": "Reveal secret required"}, status=400)
+        elif (not reveal_secret) and (user.profile.public):
+            return Response(UserProfileSerializer(user.profile, context={
+                'request': request,
+            }).data)
+        
+        if reveal_secret and (user.profile.reveal_secret == reveal_secret):
+            return Response(UserProfileSerializer(user.profile, context={
+                'request': request,
+            }).data)
+        return Response({"status": "error", "data": "Invalid reveal secret"}, status=400)
+
+        
 
     @extend_schema(
         parameters=[
