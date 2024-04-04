@@ -24,6 +24,3 @@ def before_backend_startup():
 
     # 2 - Create or reset the base admin user
     create_or_reset_admin_user()
-    
-    # 3 - Create or reset test users
-    create_or_reset_test_users(20)

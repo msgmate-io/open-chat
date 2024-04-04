@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django_prometheus'
 ]
 MIDDLEWARE = [
-        "ddrr.middleware.DebugRequestsResponses",
+    "ddrr.middleware.DebugRequestsResponses",
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -74,7 +74,7 @@ if os.environ.get("EXTRA_TRUSTED_ORIGINS", "") != "":
     CSRF_TRUSTED_ORIGINS += EXTRA_HOSTS
     CORS_ALLOWED_ORIGINS += EXTRA_HOSTS
 
-DB_ENGINE = os.environ.get("DB_ENGINE", "django_prometheus.db.backends.sqlite3")
+DB_ENGINE = "django.db.backends." + os.environ.get("DB_ENGINE", "sqlite3")
 DATABASES = {
     'default': {
         'ENGINE': DB_ENGINE,
@@ -86,7 +86,7 @@ DATABASES = {
             'HOST': os.environ['DB_HOST'],
             'PORT': os.environ['DB_PORT'],
             **{'OPTIONS': {'sslmode': 'require'} if (not (os.environ.get("DB_NO_SSL", "false") == "true")) else {}}
-        } if 'postgresql' in os.environ.get("DB_ENGINE", "") else {})
+        } if 'postgresql' in DB_ENGINE else {})
     }
 }
 

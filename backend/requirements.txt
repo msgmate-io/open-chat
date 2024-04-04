@@ -14,15 +14,13 @@ drf-spectacular[sidecar]
 django_nextjs
 ipython
 django-jazzmin
-psycopg2-binary
 uvicorn[standard]
 whitenoise
 jinja2
-psycopg2-binary
 django-model-utils
 requests
 django-prometheus
 bs4
 ddrr
 django-revproxy
-openai
+psycopg2-binary
