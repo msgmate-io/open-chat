@@ -37,6 +37,8 @@ const openai = new OpenAI({
 const DB = {
     chats: null,
     messages: {},
+    selectedModels: {},
+    defaultModel: 'gpt-3.5-turbo',
     bot: null
 }
 
@@ -89,6 +91,13 @@ function sendCustomEvent(action, payload, socket: WebSocket) {
     }));
 }
 
+const COMMAND_OVERVIEW = `
+/model - Get or set the selected model
+/model <model-name> - Select a model
+/ping - Test if the bot is alive
+/profile - Get the bot profile
+`
+
 function processCustomMessage(action, payload, api: typeof Api.prototype.api, socket: WebSocket) {
     if (action === 'newMessage') {
         const { senderId, chat, message } = payload;
@@ -109,37 +118,71 @@ function processCustomMessage(action, payload, api: typeof Api.prototype.api, so
         // 2 - check if it's a command
         if (message.text.startsWith('/')) {
             const command = message.text.slice(1);
-            switch (command) {
-                case 'ping':
+            if (command.startsWith('help')) {
+                sendCustomEvent('send_message', {
+                    chat_id: chat.uuid,
+                    recipient_id: senderId,
+                    text: "```" + COMMAND_OVERVIEW + "```"
+                }, socket);
+            }
+            else if (command.startsWith('ping')) {
+                sendCustomEvent('send_message', {
+                    chat_id: chat.uuid,
+                    recipient_id: senderId,
+                    text: 'Pong!'
+                }, socket);
+            }
+            else if (command.startsWith('profile')) {
+                sendCustomEvent('send_message', {
+                    chat_id: chat.uuid,
+                    recipient_id: senderId,
+                    text: "```json\n" + JSON.stringify(chat.partner, null, 2) + "\n```"
+                }, socket);
+            }
+            else if (command.startsWith('model')) {
+                const modelName = command.split(' ')[1];  // Get the model name (if any)
+                if (modelName) {
+                    DB.selectedModels[chat.uuid] = modelName;
                     sendCustomEvent('send_message', {
                         chat_id: chat.uuid,
                         recipient_id: senderId,
-                        text: 'Pong!'
+                        text: `Selected model: ${DB.selectedModels[chat.uuid]}`
                     }, socket);
-                    break;
-                case 'profile':
+                } else if (!modelName && DB.selectedModels[chat.uuid]) {
                     sendCustomEvent('send_message', {
                         chat_id: chat.uuid,
                         recipient_id: senderId,
-                        text: "```json\n" + JSON.stringify(chat.partner, null, 2) + "\n```"
+                        text: `Selected model: ${DB.selectedModels[chat.uuid]}`
                     }, socket);
-                    break;
-                default:
+                }
+                else {
                     sendCustomEvent('send_message', {
                         chat_id: chat.uuid,
                         recipient_id: senderId,
-                        text: `Unknown command: ${command}`
+                        text: `No model selected model using default ${DB.defaultModel}. Use /model <model-name> to select a model`
                     }, socket);
-                    break;
+                }
+            }
+            else {
+                sendCustomEvent('send_message', {
+                    chat_id: chat.uuid,
+                    recipient_id: senderId,
+                    text: `Unknown command: ${command}`
+                }, socket);
             }
             return true
         }
         // 3 - perform default action here just a simple rely using gpt-3.5-turbo
         const historyQuery = getOpenAiMessageHistory(chat, message, 10);
         console.log('historyQuery', historyQuery);
+        let model = DB.defaultModel;
+
+        if (chat.uuid in DB.selectedModels) {
+            model = DB.selectedModels[chat.uuid];
+        }
         const chatCompletion = openai.chat.completions.create({
             messages: historyQuery,
-            model: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
+            model: model,
         });
         chatCompletion.then((response) => {
             // TODO: register api usage

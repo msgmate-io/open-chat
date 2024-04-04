@@ -17,6 +17,7 @@ services:
       NEXTJS_HOST_URL: 'http://frontend:3000'
       BASE_ADMIN_USERNAME: 'admin'
       BASE_ADMIN_USER_PASSWORD: 'password'
+      CREATE_TEST_USERS: 'true'
     ports:
       - "8000:8000"
     volumes:
