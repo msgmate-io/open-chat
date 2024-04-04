@@ -55,3 +55,5 @@ postgresql:
     username: "admin"
     password: "password"
     database: "openchat"
+mixtral:
+  use: false

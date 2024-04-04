@@ -23,7 +23,30 @@ postgres:
     database: "openchat"
 ```
 
-### Example Values for postgresql included deployment
+### All-In-One Local example
+
+setup local `.env`
+
+```bash
+IMAGE_PREFIX="localhost:32000/open-chat-"
+IMAGE_TAG="latest"
+```
+
+setup `bots/.env`
+
+```bash
+IMAGE_PREFIX="localhost:32000/open-chat-"
+IMAGE_TAG="latest"
+```
+
+```bash
+docker compose -f docker-compose.pro.yaml build
+docker compose -f docker-compose.pro.yaml push
+
+cd bots
+docker compose -f docker-compose.yaml build mixtral
+docker compose -f docker-compose.yaml push mixtral
+```
 
 ```yaml
 namespace: default
@@ -60,13 +83,6 @@ backend:
     NEXTJS_HOST_URL: "http://frontend-service.default.svc.cluster.local:3000"
     BASE_ADMIN_USERNAME: "admin"
     BASE_ADMIN_USER_PASSWORD: "password"
-    DB_ENGINE: "postgresql_psycopg2"
-    DB_NAME: "openchat"
-    DB_USER: "admin"
-    DB_PASSWORD: "password"
-    DB_HOST: "open-chat-postgresql.default.svc.cluster.local"
-    DB_PORT: "5432"
-    DB_NO_SSL: "true"
 frontend:
   replicas: 1
   imageURL: localhost:32000/open-chat-frontend:latest
@@ -84,10 +100,40 @@ frontend:
     PUBLIC_ENV__WEBSOCKET_PATH: "/api/core/ws"
     PUBLIC_ENV__STATIC_EXPORT: "false"
     PUBLIC_ENV__ROUTE_PREFIX: ""
+    DB_ENGINE: "postgresql_psycopg2"
+    DB_NAME: "openchat"
+    DB_USERNAME: "admin"
+    DB_PASSWORD: "password"
+    DB_HOST: "http://primary.default.svc.cluster.local:3000"
+    DB_PORT: "5432"
+    DB_NO_SSL: "true"
 postgresql:
   use: true
   auth:
     username: "admin"
     password: "password"
     database: "openchat"
+mixtral:
+  use: true
+  imageURL: localhost:32000/open-chat-bot-mixtral:latest
+  registry:
+    authRequired: false
+  env:
+    BOT_MANAGER_USERNAME: "admin"
+    BOT_MANAGER_PASSWORD: "password"
+    BOT_USERNAME: "testbot"
+    BOT_PASSWORD: "password"
+    BOT_FIRST_NAME: "Test"
+    BOT_SECOND_NAME: "Bot"
+    BOT_CONTACT_PASSWORD: "password"
+    SERVER_HOST: "backend-service.default.svc.cluster.local:8000"
+    SERVER_WS_PROTOCOL: "ws://"
+    SERVER_HTTP_PROTOCOL: "http://"
+    MODEL_API_SERVER: ""
+    MODEL_API_TOKEN: ""
+    BOT_DESCRIPTION: "Hello"
+    BOT_DESCRIPTION_TITLE: "Test"
+    BOT_IS_PUBLIC: "true"
+    BOT_REVEAL_SECRET: "show"
+    BOT_REQUIRES_CONTACT_PASSWORD: "false"
 ```

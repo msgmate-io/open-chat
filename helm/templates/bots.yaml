@@ -1,0 +1,31 @@
+{{- if .Values.mixtral.use }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mixtral
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: mixtral
+spec:
+  containers:
+    - name: mixtral
+      image: {{ .Values.mixtral.imageURL }}
+      envFrom:
+        - secretRef:
+            name: mixtral-secret
+  {{- if .Values.mixtral.registry.authRequired }}
+  imagePullSecrets:
+    - name: {{ .Values.mixtral.registry.secretName }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mixtral-secret
+  namespace: {{ .Values.namespace }}
+type: Opaque
+data:
+{{- range $key, $value := .Values.mixtral.env }}
+  {{ $key }}: {{ $value | b64enc }}
+{{- end }}
+{{- end }}
