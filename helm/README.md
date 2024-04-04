@@ -32,6 +32,13 @@ IMAGE_PREFIX="localhost:32000/open-chat-"
 IMAGE_TAG="latest"
 ```
 
+or for remote host:
+
+```
+IMAGE_PREFIX="ghcr.io/tbscode/django-vike-chat/open-chat-"
+IMAGE_TAG="latest"
+```
+
 setup `bots/.env`
 
 ```bash

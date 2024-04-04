@@ -38,7 +38,7 @@ docker compose -f docker-compose.pro.yaml push
 4) Check default helm `values.yaml` (This should be fine)
 
 ```bash
-microk8s helm install -f ./helm/values.yaml open-chat ./helm
+microk8s helm upgrade --install -f ./helm/values.yaml open-chat ./helm
 ```
 
 #### Service Deployment Individually

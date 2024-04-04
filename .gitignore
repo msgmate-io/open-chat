@@ -137,3 +137,5 @@ GitHub.sublime-settings
 
 back/static
 frontend/_api/api.ts
+.secrets
+helm/values.yaml
