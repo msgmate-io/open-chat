@@ -1,3 +1,31 @@
+# Open Chat Helm Charts
+
+Install and deploy open chat anywhere any time on kubernetes.
+
+## Using the postgresql dependancy
+
+```yaml
+namespace: "default"
+backend:
+  env:
+    DB_ENGINE: "postgresql_psycopg2"
+    DB_NAME: "openchat"
+    DB_USERNAME: "admin"
+    DB_PASSWORD: "password"
+    DB_HOST: "http://primary.default.svc.cluster.local:3000"
+    DB_PORT: "5432"
+    DB_NO_SSL: "true"
+postgres:
+  use: true
+  auth:
+    username: "admin"
+    password: "password"
+    database: "openchat"
+```
+
+### Example Values for postgresql included deployment
+
+```yaml
 namespace: default
 registry:
   use: false
@@ -32,6 +60,13 @@ backend:
     NEXTJS_HOST_URL: "http://frontend-service.default.svc.cluster.local:3000"
     BASE_ADMIN_USERNAME: "admin"
     BASE_ADMIN_USER_PASSWORD: "password"
+    DB_ENGINE: "postgresql_psycopg2"
+    DB_NAME: "openchat"
+    DB_USER: "admin"
+    DB_PASSWORD: "password"
+    DB_HOST: "open-chat-postgresql.default.svc.cluster.local"
+    DB_PORT: "5432"
+    DB_NO_SSL: "true"
 frontend:
   replicas: 1
   imageURL: localhost:32000/open-chat-frontend:latest
@@ -50,8 +85,9 @@ frontend:
     PUBLIC_ENV__STATIC_EXPORT: "false"
     PUBLIC_ENV__ROUTE_PREFIX: ""
 postgresql:
-  use: false
+  use: true
   auth:
     username: "admin"
     password: "password"
     database: "openchat"
+```

@@ -4,3 +4,8 @@ description: Open Source Chat Interface
 type: application
 version: 0.1.0
 appVersion: '1.16.0'
+dependencies:
+  - name: postgresql
+    version: "15.2.2"
+    repository: oci://registry-1.docker.io/bitnamicharts
+    condition: postgresql.use
