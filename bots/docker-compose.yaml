@@ -1,5 +1,5 @@
 services:
-  node:
+  mixtral:
     build:
       context: ./nodejs
       dockerfile: ./Dockerfile
@@ -22,5 +22,26 @@ services:
       BOT_IS_PUBLIC: ${BOT_IS_PUBLIC:-true}
       BOT_REVEAL_SECRET: ${BOT_REVEAL_SECRET:-password}
       BOT_REQUIRES_CONTACT_PASSWORD: ${BOT_REQUIRES_CONTACT_PASSWORD:-false}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  bot-explorer:
+    build:
+      context: ./nodejs
+      dockerfile: ./Dockerfile
+    image: "open-chat-bot-explorer/node:explorer"
+    entrypoint: [ "npx", "tsx", "setupBotAccessUser.ts" ]
+    environment:
+      BOT_MANAGER_USERNAME: ${BOT_MANAGER_USERNAME:-admin}
+      BOT_MANAGER_PASSWORD: ${BOT_MANAGER_PASSWORD:-password}
+      SERVER_HOST: ${SERVER_HOST:-host.docker.internal}
+      SERVER_WS_PROTOCOL: ${SERVER_WS_PROTOCOL:-ws://}
+      SERVER_HTTP_PROTOCOL: ${SERVER_HTTP_PROTOCOL:-http://}
+      BOT_EXPLORER_USERNAME: ${BOT_EXPLORER_USERNAME:-bot-explorer}
+      BOT_EXPLORER_PASSWORD: ${BOT_EXPLORER_PASSWORD:-BotExplore123!}
+      BOT_EXPLORER_FIRST_NAME: ${BOT_EXPLORER_FIRST_NAME:-Bot}
+      BOT_EXPLORER_SECOND_NAME: ${BOT_EXPLORER_SECOND_NAME:-Explorer}
+      BOT_USERNAMES: ${BOT_USERNAMES:-["testBot1"]}
+      BOT_REVEAL_SECRETS: ${BOT_REVEAL_SECRETS:-["password"]}
+      BOT_CONTACT_SECRETS: ${BOT_CONTACT_SECRETS:-[null]}
     extra_hosts:
       - "host.docker.internal:host-gateway"

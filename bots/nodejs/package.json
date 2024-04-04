@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tsx index.ts"
+    "dev": "npx tsx index.ts",
+    "bot-explorer": "npx tsx setupBotAccessUser.ts"
   },
   "author": "Tim Schupp",
   "license": "MIT",

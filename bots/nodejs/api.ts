@@ -285,11 +285,11 @@ export interface ProfileRetrieve2Params {
   userUuid: string;
 }
 
-export interface ProfilesListParams {
-  /** A page number within the paginated result set. */
-  page?: number;
-  /** Number of results to return per page. */
-  page_size?: number;
+export interface ProfileRevealRetrieveParams {
+  /** The secret to reveal the user profile */
+  reveal_secret?: string;
+  /** The username of the user to fetch */
+  username?: string;
 }
 
 export interface PublicProfilesListParams {
@@ -301,7 +301,7 @@ export interface PublicProfilesListParams {
 
 export interface RegisterBot {
   /** @default "password" */
-  contact_password?: string;
+  contact_password?: string | null;
   /** @default "Hello there I'm a bot" */
   description?: string;
   /** @default "About the bot:" */
@@ -896,7 +896,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
+     * No description
      *
      * @tags profile
      * @name ProfilePartialUpdate
@@ -915,7 +915,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
+     * No description
      *
      * @tags profile
      * @name ProfileRetrieve
@@ -950,16 +950,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
+     * No description
      *
-     * @tags profiles
-     * @name ProfilesList
-     * @request GET:/api/profiles/
+     * @tags profile
+     * @name ProfileRevealRetrieve
+     * @request GET:/api/profile/reveal/
      * @secure
      */
-    profilesList: (query: ProfilesListParams, params: RequestParams = {}) =>
-      this.request<PaginatedUserProfileList, any>({
-        path: `/api/profiles/`,
+    profileRevealRetrieve: (query: ProfileRevealRetrieveParams, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile/reveal/`,
         method: "GET",
         query: query,
         secure: true,
@@ -968,62 +968,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags profiles
-     * @name ProfilesPartialUpdate
-     * @request PATCH:/api/profiles/{id}/
-     * @secure
-     */
-    profilesPartialUpdate: (id: string, data: PatchedUserProfile, params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profiles/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags profiles
-     * @name ProfilesRetrieve
-     * @request GET:/api/profiles/{id}/
-     * @secure
-     */
-    profilesRetrieve: (id: string, params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profiles/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
-     *
-     * @tags profiles
-     * @name ProfilesUpdate
-     * @request PUT:/api/profiles/{id}/
-     * @secure
-     */
-    profilesUpdate: (id: string, data: UserProfile, params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profiles/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset for modifying user profiles
+     * No description
      *
      * @tags profile
      * @name ProfileUpdate
