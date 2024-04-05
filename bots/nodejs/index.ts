@@ -18,6 +18,8 @@ console.log('serverHost', serverHost, 'serverWsProtocol', serverWsProtocol, 'ser
 
 const modelApiServer = process.env.MODEL_API_SERVER || "";
 const modelApiToken = process.env.MODEL_API_TOKEN || ""
+const modelApiDefaultModel = process.env.MODEL_API_DEFAULT_MODEL || "gpt-3.5-turbo"
+const modelApiAllowModelSelection = (process.env.MODEL_API_ALLOW_MODEL_SELECTION == "true") || false;
 
 const botFirstName = process.env.BOT_FIRST_NAME || "NodeJS";
 const botSecondName = process.env.BOT_SECOND_NAME || "Bot";
@@ -27,7 +29,6 @@ const botDescriptionTitle = process.env.BOT_DESCRIPTION_TITLE || "NodeJS Bot"
 
 const botIsPublic = (process.env.BOT_IS_PUBLIC == "true") || false;
 const botRevealSecret = process.env.BOT_REVEAL_SECRET || "";
-const botRequiresContactPassword = (process.env.BOT_REQUIRES_CONTACT_PASSWORD == "true") || false;
 
 const openai = new OpenAI({
     apiKey: modelApiToken,
@@ -38,7 +39,7 @@ const DB = {
     chats: null,
     messages: {},
     selectedModels: {},
-    defaultModel: 'gpt-3.5-turbo',
+    defaultModel: modelApiDefaultModel,
     bot: null
 }
 
@@ -92,8 +93,8 @@ function sendCustomEvent(action, payload, socket: WebSocket) {
 }
 
 const COMMAND_OVERVIEW = `
-/model - Get or set the selected model
-/model <model-name> - Select a model
+${modelApiAllowModelSelection ? '/model - Get or set the selected model\n' : ''}
+${modelApiAllowModelSelection ? '/model <model-name> - Select a model\n' : ''}
 /ping - Test if the bot is alive
 /profile - Get the bot profile
 `
@@ -139,7 +140,7 @@ function processCustomMessage(action, payload, api: typeof Api.prototype.api, so
                     text: "```json\n" + JSON.stringify(chat.partner, null, 2) + "\n```"
                 }, socket);
             }
-            else if (command.startsWith('model')) {
+            else if (command.startsWith('model') && modelApiAllowModelSelection) {
                 const modelName = command.split(' ')[1];  // Get the model name (if any)
                 if (modelName) {
                     DB.selectedModels[chat.uuid] = modelName;
@@ -219,7 +220,7 @@ async function setupBot() {
             second_name: botSecondName,
             public: botIsPublic,
             reveal_secret: botRevealSecret,
-            contact_password: botContactPassword,
+            contact_password: botContactPassword, // optional
             description: botDescription,
             description_title: botDescriptionTitle
         }).catch((err) => {
