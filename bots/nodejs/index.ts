@@ -30,6 +30,8 @@ const botDescriptionTitle = process.env.BOT_DESCRIPTION_TITLE || "NodeJS Bot"
 const botIsPublic = (process.env.BOT_IS_PUBLIC == "true") || false;
 const botRevealSecret = process.env.BOT_REVEAL_SECRET || "";
 
+const botMessageStreamingDefault = (process.env.BOT_MESSAGE_STREAMING_DEFAULT == "true") || false;
+
 const openai = new OpenAI({
     apiKey: modelApiToken,
     baseURL: modelApiServer
@@ -39,6 +41,7 @@ const DB = {
     chats: null,
     messages: {},
     selectedModels: {},
+    chatMessageSteaming: {},
     defaultModel: modelApiDefaultModel,
     bot: null
 }
@@ -92,9 +95,40 @@ function sendCustomEvent(action, payload, socket: WebSocket) {
     }));
 }
 
-const COMMAND_OVERVIEW = `
-${modelApiAllowModelSelection ? '/model - Get or set the selected model\n' : ''}
-${modelApiAllowModelSelection ? '/model <model-name> - Select a model\n' : ''}
+async function performStreamedReponse(api: typeof Api.prototype.api, socket, chat, senderId, message, model) {
+    const historyQuery = getOpenAiMessageHistory(chat, message, 10);
+    const chatCompletion = await openai.chat.completions.create({
+        messages: historyQuery,
+        model: model,
+        stream: true
+    });
+    let fullResponse = '';
+    for await (const completion of chatCompletion) {
+        const [choice] = completion.choices;
+        const { content } = choice.delta;
+        console.log('streamed response', content);
+        if (content === null || content === undefined) {
+            continue;
+        }
+        fullResponse += content;
+        await sendCustomEvent('partial_message', {
+            chat_id: chat.uuid,
+            recipient_id: senderId,
+            text: fullResponse
+        }, socket);
+    }
+
+    sendCustomEvent('send_message', {
+        chat_id: chat.uuid,
+        recipient_id: senderId,
+        text: fullResponse
+    }, socket);
+
+    return fullResponse;
+}
+
+const COMMAND_OVERVIEW = `${modelApiAllowModelSelection ? '/model - Get or set the selected model\n' : ''}${modelApiAllowModelSelection ? '/model <model-name> - Select a model\n' : ''}
+/steaming ('on' or 'off') - Toggle streaming mode
 /ping - Test if the bot is alive
 /profile - Get the bot profile
 `
@@ -125,6 +159,24 @@ function processCustomMessage(action, payload, api: typeof Api.prototype.api, so
                     recipient_id: senderId,
                     text: "```" + COMMAND_OVERVIEW + "```"
                 }, socket);
+            } else if (command.startsWith('steaming')) {
+                const onOrOff = command.split(' ')[1];  // Get the model name (if any)
+                if (!onOrOff) {
+                    const chatSteamingFlag = chat.uuid in DB.chatMessageSteaming ? DB.chatMessageSteaming[chat.uuid] : botMessageStreamingDefault;
+                    sendCustomEvent('send_message', {
+                        chat_id: chat.uuid,
+                        recipient_id: senderId,
+                        text: `Message streaming for this chat is ${chatSteamingFlag ? '`enabled`' : '`disabled`'}`
+                    }, socket);
+                } else {
+                    const flag = onOrOff === 'on';
+                    DB.chatMessageSteaming[chat.uuid] = flag;
+                    sendCustomEvent('send_message', {
+                        chat_id: chat.uuid,
+                        recipient_id: senderId,
+                        text: `Update chat steaming flag ${flag ? '`enabled`' : '`disabled`'}`
+                    }, socket);
+                }
             }
             else if (command.startsWith('ping')) {
                 sendCustomEvent('send_message', {
@@ -181,22 +233,30 @@ function processCustomMessage(action, payload, api: typeof Api.prototype.api, so
         if (chat.uuid in DB.selectedModels) {
             model = DB.selectedModels[chat.uuid];
         }
-        const chatCompletion = openai.chat.completions.create({
-            messages: historyQuery,
-            model: model,
-        });
-        chatCompletion.then((response) => {
-            // TODO: register api usage
-            console.log('response', response);
-            api.messagesSendCreate(chat.uuid, {
-                text: response.choices[0].message.content
-            }).then((message) => {
-                console.log('sent message', message);
-                insertMessageIntoDB(api, chat, message);
-            }).catch((err) => {
-                console.error('failed to send message', err);
+
+        const chatSteamingFlag = chat.uuid in DB.chatMessageSteaming ? DB.chatMessageSteaming[chat.uuid] : botMessageStreamingDefault;
+        if (!chatSteamingFlag) {
+            const chatCompletion = openai.chat.completions.create({
+                messages: historyQuery,
+                model: model,
             });
-        });
+            chatCompletion.then((response) => {
+                // TODO: register api usage
+                console.log('response', response);
+                api.messagesSendCreate(chat.uuid, {
+                    text: response.choices[0].message.content
+                }).then((message) => {
+                    console.log('sent message', message);
+                    insertMessageIntoDB(api, chat, message);
+                }).catch((err) => {
+                    console.error('failed to send message', err);
+                });
+            });
+        } else {
+            performStreamedReponse(api, socket, chat, senderId, message, model).then((fullResponse) => {
+                // TODO:  insertMessageIntoDB(api, chat, message);
+            });
+        }
         return true
     }
     return false
