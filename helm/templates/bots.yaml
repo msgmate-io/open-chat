@@ -45,6 +45,7 @@ spec:
   containers:
     - name: {{ .name }}
       image: {{ .imageURL }}
+      imagePullPolicy: Always
       envFrom:
         - secretRef:
             name: {{ .name }}-secret
