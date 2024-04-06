@@ -35,6 +35,8 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
   name: {{ .name }}
   namespace: {{ $.Values.namespace }}
   labels:
