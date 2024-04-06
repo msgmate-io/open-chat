@@ -7,6 +7,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async, async_to_sync
 from chat.models import Message, MessageSerializer, Chat, ChatSerializer
 from django.db.models import Q
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 class MessageTypes(Enum):
@@ -105,6 +106,23 @@ class NewMessage(MessageBase):
                 "chat": self.chat
             }
         )
+        
+@dataclass
+class NewPartialMessage(MessageBase):
+    sender_id: str
+    message: dict
+    chat: dict
+    type: str = MessageTypes.new_partial_message.value
+    
+    def build_event(self):
+        return custom_event(
+            "newPartialMessage",
+            {
+                "senderId": self.sender_id,
+                "message": self.message,
+                "chat": self.chat
+            }
+        )
 
 # incoming messages ======================
 
@@ -122,6 +140,48 @@ class IncomingMessageBase:
 class IncomingMessageTypes(Enum):
     mark_chat_message_read = "mark_chat_message_read"
     send_message = "send_message"
+    partial_message = "partial_message"
+    
+@dataclass
+class InPartialMessage(IncomingMessageBase):
+    chat_id: str
+    recipient_id: str
+    text: str
+    type: str = "partial_message"
+    
+    @database_sync_to_async
+    def perform_action(self, user):
+        sender = user
+        recipient = get_user_model().objects.get(uuid=self.recipient_id)
+        chats = Chat.objects.filter(
+            Q(u1=sender, u2=recipient) | Q(u1=recipient, u2=sender),
+            uuid=self.chat_id
+        )
+        if not chats.exists():
+            return {"status": "error", "data": "Chat not found"}
+        chat = chats.first()
+        
+        partner = chat.get_partner(user) 
+        tmp_message = {
+            "chat": chat.uuid,
+            "created": timezone.now().isoformat(),
+            "sender": str(sender.uuid),
+            "recipient": str(partner.uuid),
+            "text": self.text,
+            "uuid": "tmp"
+        }
+
+        chat_serialized = ChatSerializer(chat, context={
+            "user": user
+        }).data
+        
+        NewPartialMessage(
+            sender_id=str(user.uuid),
+            message=tmp_message,
+            chat=chat_serialized
+        ).send(str(partner.uuid))
+        
+        return {"status": "ok", "data": tmp_message}
 
 @dataclass
 class InSendMessage(IncomingMessageBase):
