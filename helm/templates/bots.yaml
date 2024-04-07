@@ -35,6 +35,8 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
   name: {{ .name }}
   namespace: {{ $.Values.namespace }}
   labels:
@@ -43,6 +45,7 @@ spec:
   containers:
     - name: {{ .name }}
       image: {{ .imageURL }}
+      imagePullPolicy: Always
       envFrom:
         - secretRef:
             name: {{ .name }}-secret
