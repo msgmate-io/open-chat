@@ -306,20 +306,39 @@ async function main() {
 
     DB.bot = user;
 
+    const asyncQueue = [];
+    let isProcessing = false;
 
     socket.on('open', function open() {
         socket.on('message', function incoming(data) {
+            asyncQueue.push(data);
+            processData();
+        });
+        console.log('connected, listener setup');
+    });
+
+    async function processData() {
+        if (isProcessing || asyncQueue.length === 0) {
+            return;
+        }
+        isProcessing = true;
+        try {
+            const data = asyncQueue.shift();
             const message = JSON.parse(data.toString());
             let processed = false;
             if (message.type === 'custom') {
                 const { action, payload } = message.data;
-                processed = processCustomMessage(action, payload, api, socket);
+                processed = await processCustomMessage(action, payload, api, socket);
             }
             if (!processed)
                 console.warn('unprocessed', JSON.stringify(message, null, 2));
-        });
-        console.log('connected, listener setup');
-    })
+        } catch (error) {
+            console.error('Error while processing message:', error);
+        } finally {
+            isProcessing = false;
+        }
+        setImmediate(processData);
+    }
 
     api.chatsList({ page_size: 20 }).then((chats) => {
         DB.chats = chats;
