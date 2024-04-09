@@ -25,6 +25,7 @@ import { ChatMessagesLoader } from "../loaders/MessagesLoader";
 import PublicProfilesLoader from "../loaders/PublicProfilesLoader";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { OnlineIndicator } from "./chat";
 import { MessageItem } from "./message";
 
@@ -48,6 +49,9 @@ function CreateChatMessageInput() {
     </Card>
 }
 
+
+export default MessageViewInput;
+
 function MessageViewInput({
     chat,
     scrollToBottom = () => { }
@@ -55,8 +59,12 @@ function MessageViewInput({
     chat: ChatResult,
     scrollToBottom: () => void
 }) {
-    const inputRef = useRef<HTMLInputElement>(null)
+    const inputRef = useRef<HTMLTextAreaElement>(null)
+    const [text, setText] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const maxTextAreaHeight = 300
+    const [textAreaHeight, setTextAreaHeight] = useState("auto");
+    const [parentHeight, setParentHeight] = useState("auto");
     const dispatch = useDispatch()
     const api = useApi()
 
@@ -75,14 +83,34 @@ function MessageViewInput({
         })
     }
 
+    useEffect(() => {
+        inputRef.current.style.height = 'inherit';
+        const scrollHeight = inputRef.current.scrollHeight;
+        inputRef.current.style.height = `${scrollHeight}px`;
+    }, [text]);
+
+    const handleTextChange = (e) => {
+        setText(e.target.value);
+    };
+
+
     return <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
         <div className="flex">
             <img src={logo} className="h-12" alt="logo" />
         </div>
-        <div className="flex flex-grow items-center content-center justify-start pr-2">
-            <div className="p-2 flex flex-grow">
-                <Input ref={inputRef} placeholder="Type a message..." disabled={isLoading} />
-            </div>
+        <div
+            className="flex flex-grow items-center content-center justify-start pr-2 relative py-2">
+            <Textarea
+                value={text}
+                placeholder="Type a message..."
+                onChange={handleTextChange}
+                style={{
+                    resize: "none",
+                    height: "auto",
+                    overflow: "auto"
+                }}
+                ref={inputRef}
+            />
             <Button onClick={onSendMessage} disabled={isLoading}  >
                 <div>✍️</div>
                 Send
