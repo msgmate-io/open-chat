@@ -1,4 +1,3 @@
-import { ChatResult } from "@/_api/api";
 import { useApi } from "@/_api/client2";
 import logo from "@/assets/logo.png";
 import { Badge } from "@/components/ui/badge";
@@ -13,10 +12,10 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import { getChatByChatId, insertChat, updateNewestMessage } from "@/store/chats";
-import { getChatPartialMessage, getMessagesByChatId, insertMessage } from "@/store/messages";
+import { getChatByChatId, insertChat, markChatAsRead, updateNewestMessage } from "@/store/chats";
+import { getChatPartialMessage, getMessagesByChatId, insertMessage, markChatMessagesAsRead } from "@/store/messages";
 import { RootState } from "@/store/store";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { navigateSearch } from "../atoms/Link";
@@ -30,94 +29,55 @@ import { OnlineIndicator } from "./chat";
 import { MessageItem } from "./message";
 
 
-function CreateChatMessageInput() {
-    const inputRef = useRef<HTMLInputElement>(null)
-
-    return <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
-        <div className="flex">
-            <img src={logo} className="h-12" alt="logo" />
-        </div>
-        <div className="flex flex-grow items-center content-center justify-start pr-2">
-            <div className="p-2 flex flex-grow">
-                <Input ref={inputRef} placeholder="Type a message..." disabled={false} />
-            </div>
-            <Button onClick={() => { }} disabled={false}  >
-                <div>✍️</div>
-                Send
-            </Button>
-        </div>
-    </Card>
+interface MessageViewInputProps {
+    isLoading?: boolean,
+    onSendMessage?: () => void
 }
 
-
-export default MessageViewInput;
-
-function MessageViewInput({
-    chat,
-    scrollToBottom = () => { }
-}: {
-    chat: ChatResult,
-    scrollToBottom: () => void
-}) {
-    const inputRef = useRef<HTMLTextAreaElement>(null)
-    const [text, setText] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
-    const maxTextAreaHeight = 300
-    const [textAreaHeight, setTextAreaHeight] = useState("auto");
-    const [parentHeight, setParentHeight] = useState("auto");
-    const dispatch = useDispatch()
-    const api = useApi()
-
-    const onSendMessage = () => {
-        setIsLoading(true)
-        api.messagesSendCreate(chat.uuid, { text: inputRef.current?.value }).then((res) => {
-            dispatch(insertMessage({ chatId: chat.uuid, message: res }))
-            dispatch(updateNewestMessage({ chatId: chat.uuid, message: res }))
-            setTimeout(() => {
-                scrollToBottom()
-                setIsLoading(false)
-            }, 50)
-        }).catch((err) => {
-            setIsLoading(false)
-            toast.error(`Failed to send message: ${err}`)
-        })
-    }
+export const MessageViewInput = forwardRef<
+    HTMLTextAreaElement,
+    MessageViewInputProps
+>(({ isLoading = false, onSendMessage = () => { } }, ref) => {
+    const [text, setText] = useState("");
 
     useEffect(() => {
-        inputRef.current.style.height = 'inherit';
-        const scrollHeight = inputRef.current.scrollHeight;
-        inputRef.current.style.height = `${scrollHeight}px`;
-    }, [text]);
+        if (ref.current) {
+            ref.current.style.height = 'inherit';
+            const scrollHeight = ref.current.scrollHeight;
+            ref.current.style.height = `${scrollHeight}px`;
+        }
+    }, [ref, text]);
 
     const handleTextChange = (e) => {
         setText(e.target.value);
     };
 
+    return (
+        <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
+            <div className="flex">
+                <img src={logo} className="h-12" alt="logo" />
+            </div>
+            <div className="flex flex-grow items-center content-center justify-start pr-2 relative py-2">
+                <Textarea
+                    value={text}
+                    placeholder="Type a message..."
+                    onChange={handleTextChange}
+                    style={{
+                        resize: "none",
+                        height: "auto",
+                        overflow: "auto"
+                    }}
+                    ref={ref}
+                />
+                <Button onClick={onSendMessage} disabled={isLoading}>
+                    <div>✍️</div>
+                    Send
+                </Button>
+            </div>
+        </Card>
+    );
+});
 
-    return <Card className="bg-base-200 hover:bg-base-300 p-0 flex" key={"chatListHeader"}>
-        <div className="flex">
-            <img src={logo} className="h-12" alt="logo" />
-        </div>
-        <div
-            className="flex flex-grow items-center content-center justify-start pr-2 relative py-2">
-            <Textarea
-                value={text}
-                placeholder="Type a message..."
-                onChange={handleTextChange}
-                style={{
-                    resize: "none",
-                    height: "auto",
-                    overflow: "auto"
-                }}
-                ref={inputRef}
-            />
-            <Button onClick={onSendMessage} disabled={isLoading}  >
-                <div>✍️</div>
-                Send
-            </Button>
-        </div>
-    </Card>
-}
 
 function MessageScrollView({ chatId, chat }) {
     const scrollRef = useRef<HTMLDivElement>(null)
@@ -125,6 +85,12 @@ function MessageScrollView({ chatId, chat }) {
     const partialMessage = useSelector((state: RootState) => getChatPartialMessage(state, chatId))
     const user = useSelector((state: RootState) => state.user.value)
     const isLoading = chatId && !messages
+    const inputRef = useRef<HTMLTextAreaElement>(null)
+
+    const [sendIsLoading, setSendIsLoading] = useState(false)
+
+    const api = useApi()
+    const dispatch = useDispatch()
 
     const scrollToBottom = () => {
         if (scrollRef.current) {
@@ -136,6 +102,21 @@ function MessageScrollView({ chatId, chat }) {
         scrollToBottom()
     }, [messages, partialMessage])
 
+    const onSendMessage = () => {
+        setSendIsLoading(true)
+        api.messagesSendCreate(chat.uuid, { text: inputRef.current?.value }).then((res) => {
+            dispatch(insertMessage({ chatId: chat.uuid, message: res }))
+            dispatch(updateNewestMessage({ chatId: chat.uuid, message: res }))
+            setTimeout(() => {
+                scrollToBottom()
+                setSendIsLoading(false)
+            }, 50)
+        }).catch((err) => {
+            setSendIsLoading(false)
+            toast.error(`Failed to send message: ${err}`)
+        })
+    }
+
     return <div className="flex flex-col h-full w-full lg:max-w-[900px] relativ">
         <div ref={scrollRef} className="flex flex-col flex-grow gap-2 items-center content-center overflow-y-scroll">
             {chatId}
@@ -143,7 +124,7 @@ function MessageScrollView({ chatId, chat }) {
             {messages && messages.results.map((message) => <MessageItem key={`msg_${message.uuid}`} message={message} chat={chat} selfIsSender={user?.uuid === message.sender} />).reverse()}
             {partialMessage && <MessageItem key={`msg_${partialMessage.uuid}`} message={partialMessage} chat={chat} selfIsSender={user?.uuid === partialMessage.sender} />}
         </div>
-        <MessageViewInput chat={chat} scrollToBottom={scrollToBottom} />
+        <MessageViewInput isLoading={sendIsLoading || isLoading} onSendMessage={onSendMessage} ref={inputRef} />
     </div>
 }
 
@@ -257,7 +238,7 @@ export function CreateChatCard({ userId }) {
 
     useEffect(() => {
         setIsLoading(true)
-        api.profileRetrieve2({
+        api.profileRetrieve({
             userUuid: userId,
             reveal_secret: revealSecret
         }).then((res) => {
@@ -386,6 +367,17 @@ export function NewChatCard() {
 
 export function MessagesView({ chatId }) {
     const chat = useSelector((state: RootState) => getChatByChatId(state, chatId))
+    const api = useApi()
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        api.messagesReadCreate(chatId).then((res) => {
+            dispatch(markChatMessagesAsRead({ chatId }))
+            dispatch(markChatAsRead({ chatId }))
+        }).catch((err) => {
+            toast.error(`Failed to mark messages as read: ${JSON.stringify(err)}`)
+        })
+    }, [chatId])
 
     return <>
         <ChatMessagesLoader chatId={chatId} />
