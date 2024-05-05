@@ -1,8 +1,8 @@
-import { docsConfig } from "./config"
-import { DocsCommandPallet } from "./DocsCommandPallet"
-import { DocsNavbar, LoginNavbar } from "@/components/pages/HomePage";
-import { DocsSidebarNav } from "./DocsSidebar";
+import { DocsNavbar } from "@open-chat-ui/pages/HomePage";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { DocsCommandPallet } from "./DocsCommandPallet";
+import { DocsSidebarNav } from "./DocsSidebar";
+import { docsConfig } from "./config";
 
 export function DocsLayout({ children, pathname }) {
     return <>

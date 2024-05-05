@@ -1,14 +1,9 @@
 import {
-    Command,
     CommandDialog,
     CommandEmpty,
-    CommandGroup,
     CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator,
-    CommandShortcut,
-} from "@/components/ui/command"
+    CommandList
+} from "@open-chat-ui/ui/command"
 import { useEffect, useState } from "react"
 
 export function DocsCommandPallet() {
