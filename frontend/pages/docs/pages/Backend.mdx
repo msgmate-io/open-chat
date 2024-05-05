@@ -44,3 +44,16 @@ pip install -r ./backend/requirements.txt
 4) make sure you have a linting extension installed in your editor
 
 E.g.: for vscode, you can use `pylint` or `flake8`.
+
+## Generating the python client
+
+```bash
+./venv/bin/openapi-python-client generate --url http://localhost:8000/api/schema/ --meta=setup
+./venv/bin/openapi-python-client update --url http://localhost:8000/api/schema/ --meta=setup
+```
+
+Installing the python client from source:
+
+```bash
+pip3 install --upgrade https://github.com/tbscode/open-chat-api-client/tarball/master
+```
