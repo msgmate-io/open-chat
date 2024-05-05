@@ -12,7 +12,7 @@ function UserLoader() {
     const user = useSelector((state: RootState) => state.user.value);
     useEffect(() => {
         if (!user) {
-            api.userRetrieve().then((user) => {
+            api.userSelfRetrieve().then((user) => {
                 dispatch(fetchUser(user));
             })
         }

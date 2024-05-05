@@ -12,7 +12,7 @@ function ProfileLoader() {
     const profile = useSelector((state: RootState) => state.profile.value);
     useEffect(() => {
         if (!profile) {
-            api.profileRetrieve().then((profile) => {
+            api.profileSelfRetrieve().then((profile) => {
                 dispatch(fetchProfile(profile));
             })
         }

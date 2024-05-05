@@ -1,6 +1,6 @@
 import { useApi } from "@/_api/client2";
-import { RootState } from "@/store/store";
 import { fetchMessages } from "@/store/messages";
+import { RootState } from "@/store/store";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,7 +10,7 @@ export function ChatMessagesLoader({ chatId }) {
     const chatMessages = useSelector((state: RootState) => state.messages.chatMessages);
     useEffect(() => {
         if (chatId && !chatMessages?.[chatId]) {
-            api.messagesList2({
+            api.messagesList({
                 chatUuid: chatId,
                 page_size: 20
             }).then((messages) => {
