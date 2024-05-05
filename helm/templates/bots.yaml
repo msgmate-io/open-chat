@@ -29,3 +29,40 @@ data:
   {{ $key }}: {{ $value | b64enc }}
 {{- end }}
 {{- end }}
+{{- if .Values.multibot.use }}
+{{- range .Values.multibot.bots }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: {{ .name }}
+spec:
+  containers:
+    - name: {{ .name }}
+      image: {{ .imageURL }}
+      imagePullPolicy: Always
+      envFrom:
+        - secretRef:
+            name: {{ .name }}-secret
+  {{- if .registry.authRequired }}
+  imagePullSecrets:
+    - name: {{ .registry.secretName }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .name }}-secret
+  namespace: {{ $.Values.namespace }}
+type: Opaque
+data:
+{{- range $key, $value := .env }}
+  {{ $key }}: {{ $value | b64enc }}
+{{- end }}
+{{- end }}
+{{- end }}

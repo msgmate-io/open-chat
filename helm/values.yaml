@@ -57,3 +57,5 @@ postgresql:
     database: "openchat"
 mixtral:
   use: false
+multibot:
+  use: false

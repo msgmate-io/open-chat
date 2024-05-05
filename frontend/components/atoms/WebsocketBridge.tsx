@@ -1,7 +1,7 @@
 import { WEBSOCKET_URL } from "@/renderer/constants";
 import { updateNewestMessage, updatePartnerOnlineStatus } from "@/store/chats";
 import { updateContactsOnlineStatus } from "@/store/contacts";
-import { insertMessage } from "@/store/messages";
+import { insertMessage, updatePartialMessage } from "@/store/messages";
 import { updatePublicProfilesOnlineStatus } from "@/store/publicProfiles";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -52,7 +52,19 @@ const useCustomEventHandler = (dispatch) => {
         chatId: chat.uuid,
         message: message
       }));
-    }
+    },
+    newPartialMessage: (payload) => {
+      const { chat, message, senderId } = payload;
+      dispatch(
+        updatePartialMessage(
+          {
+            chatId: chat.uuid,
+            message: message
+          }
+        )
+      )
+      console.debug("New partial message", { chat, message, senderId });
+    },
   }
 };
 
