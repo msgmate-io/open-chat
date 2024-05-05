@@ -1,38 +1,23 @@
 export default render;
-import { getStore } from "@open-chat-ui/store/store";
+import { OpenChatContextProvider } from "@open-chat-ui/atoms/OpenChatContextProvider";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
 import "./index.css";
 
 let root;
-let globalStore: null | any = null;
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext;
 
-  if (!globalStore) {
-    globalStore = getStore({
-      ...pageContext.initalReduxState
-    });
-  } else {
-    if (typeof window !== "undefined") {
-      // on client side navigation always update 'pageProps'
-      globalStore = getStore({
-        ...globalStore.getState(),
-        pageProps: {
-          routeParams: pageContext.routeParams,
-          search: pageContext.urlParsed.search
-        }
-      });
-    }
-  }
-
   const page = (
     <React.StrictMode>
-      <Provider store={globalStore}>
+      <OpenChatContextProvider
+        routeParams={pageContext.routeParams}
+        searchParams={pageContext.urlParsed.search}
+        location="client"
+      >
         <Page {...pageProps} />
-      </Provider>
+      </OpenChatContextProvider>
     </React.StrictMode>
   );
   const container = document.getElementById("react-root");
