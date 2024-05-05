@@ -43,27 +43,8 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         return super().list(request, *args, **kwargs)
     
     def get_queryset(self):
-        if not self.request.user.is_staff:
-            return Message.objects.filter(chat__in=Chat.get_chats(self.request.user)).order_by("-created")
-        else:
-            return self.queryset
+        return Message.objects.filter(chat__in=Chat.get_chats(self.request.user)).order_by("-created")
         
-        
-    @action(detail=True, methods=['post'])
-    def read(self, request, pk=None):
-        self.kwargs['pk'] = pk
-        obj = self.get_object()
-
-        if not obj.chat.is_participant(request.user):       
-            return self.resp_chat_403
-        if not ((obj.sender != request.user) and (obj.recipient == request.user)):
-            return Response({'error': 'You can\'t mark this message as read!'}, status=400)
-        
-        obj.read = True
-        obj.save()
-        return Response(self.serializer_class(obj).data, status=200)
-    
-    
     @extend_schema(request=inline_serializer(fields={}, name='MarkChatMessagesRead'))
     @action(detail=False, methods=['post'])
     def mark_chat_messages_read(self, request, chat_uuid=None):
@@ -76,7 +57,6 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
             chat__in=Chat.objects.filter(Q(u1=request.user) | Q(u2=request.user), uuid=chat_uuid), 
             read=False).update(read=True)
         return Response({'status': 'ok'}, status=200)
-
         
     @extend_schema(request=SendMessageSerializer)
     @action(detail=False, methods=['post'])
