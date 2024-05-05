@@ -1,4 +1,4 @@
-import { PaginatedUserProfileList } from '@/_api/api';
+import { PaginatedUserProfileList } from '@open-chat-api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
 const { createSlice } = toolkitRaw.default ?? toolkitRaw;
 

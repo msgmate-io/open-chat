@@ -1,4 +1,4 @@
-import { ChatResult, PaginatedChatResultList } from '@/_api/api';
+import { ChatResult, PaginatedChatResultList } from '@open-chat-api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
 import { RootState } from './store';
 const { createSlice } = toolkitRaw.default ?? toolkitRaw;

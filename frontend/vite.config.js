@@ -14,6 +14,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@open-chat-ui": path.resolve(__dirname + "/components/src"),
+      "@open-chat-api": path.resolve(__dirname + "/_api"),
+      "@assets": path.resolve(__dirname + "/assets"),
     },
   },
   alias: {
