@@ -38,6 +38,14 @@ export const messagesSlice = createSlice({
             const { chatId, message } = action.payload;
             state.partialMessages[chatId] = message;
         },
+        markChatMessagesAsRead: (state: MessagesState, action) => {
+            const { chatId } = action.payload;
+            if (chatId in (state.chatMessages ?? {})) {
+                state.chatMessages[chatId].results.forEach((msg) => {
+                    msg.read = true;
+                });
+            }
+        },
         insertMessage: (state: MessagesState, action) => {
             const { chatId, message } = action.payload;
             if (chatId in (state.chatMessages ?? {})) {
@@ -68,5 +76,6 @@ export const getChatPartialMessage = (state: RootState, chatId: string) => {
 export const {
     fetchMessages,
     insertMessage,
+    markChatMessagesAsRead,
     updatePartialMessage,
 } = messagesSlice.actions;

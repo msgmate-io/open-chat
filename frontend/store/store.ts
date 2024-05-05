@@ -62,7 +62,7 @@ export const logoutUser = (
     dispatch: Dispatch
 ) => {
         try {
-            await api.logoutRetrieve();
+            await api.userLogoutRetrieve();
             dispatch(fetchUser(null));
             dispatch(fetchChats(null));
             dispatch(fetchProfile(null));
