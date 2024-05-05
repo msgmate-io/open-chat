@@ -62,7 +62,7 @@ function LoginPage({
             ...data
         }
         try {
-            const user = await api.loginCreate(loginData)
+            const user = await api.userLoginCreate(loginData)
             await dispatch(fetchUser(user))
             toast.success("Logged in as " + data.username)
             Cookies.set("clientAuthorized", true)
