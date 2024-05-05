@@ -152,7 +152,7 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
         serialized_message = MessageSerializer(message).data
 
         chat_serialized = ChatSerializer(chat, context={
-            "user": request.user
+            "request": request
         }).data
         
         NewMessage(
