@@ -1,19 +1,38 @@
-# Open Chat
+# Msgmate-io Open Chat Fork / Stack
 
->  aka `tims-stack-v5` :warning: This repo is a work in progress!
+This just maintains the seperate frontend pages for msgmate.io.
+All chat related features are a 1:1 for of the open chat repo and will allways be maintained and updated there.
+So the same MIT license applies to this repo as well.
 
-Initiated by [@tbscode](https://github.com/tbscode/)
-Contributions are welcome, please open PR's and issues at any time!
+Only difference is that the `frontend/pages` are maintained in a private sub-repo.
 
-Contributors:
-- @tbscode
-- @JannisToelle
-- @fruecker89
+## TL;DR ( all in one development )
 
-## TL;DR
+Submodules:
+
+- `./frontend/pages` is a private repo with the frontend pages for msgmate.io
+- `./frontend/components` the opensource components [open-chat-ui](https://github.com/msgmate-io/open-chat-ui)
 
 ```bash
+git submodule update --init --recursive
 docker compose up --build
+```
+> changes in subrepos muste be pushed to their respective repos and then the updated submodule hash must be commited to this repo.
+
+Services:
+
+- `backend`: Django backend with chat and user management features
+- `frontend`: Vike.dev frontend with chat and user management features
+- `redis`: Redis for caching and chat
+- `ingress`: Nginx ingress for routing, routes all traffice trough `localhost:80` in development
+
+### Frontend only development ( no backend required pages will work )
+
+```bash
+cd frontend
+npm install
+npm run build
+npm run dev
 ```
 
 ## Documentation & Preview
