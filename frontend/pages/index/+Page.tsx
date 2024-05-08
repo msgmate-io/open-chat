@@ -1,5 +1,5 @@
-import UserLoader from "@/components/loaders/UserLoader";
-import HomePage from "@/components/pages/HomePage";
+import { UserLoader } from "@open-chat-ui/loaders/UserLoader";
+import { HomePage } from "@open-chat-ui/pages/HomePage";
 
 
 export { Page };

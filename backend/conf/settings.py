@@ -99,6 +99,12 @@ REST_FRAMEWORK = {
         'anon': '1000/day',
         'user': '2000/day'
     },
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50
 }
@@ -227,8 +233,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'API docs',
-    'DESCRIPTION': 'API docs',
+    'TITLE': 'Open Chat API',
+    'DESCRIPTION': 'Msgmate / Open Chat API',
     'EXTENSIONS_INFO': {},
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
@@ -237,6 +243,7 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
     'SERVE_INCLUDE_SCHEMA': False,
+    "PARSER_WHITELIST": ["rest_framework.parsers.JSONParser"],
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": False,
         "persistAuthorization": False,

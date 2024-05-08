@@ -1,9 +1,9 @@
-import path from "path";
+import { mdx } from "@cyco130/vite-plugin-mdx";
 import react from "@vitejs/plugin-react";
 import { builtinModules } from "module";
+import path from "path";
 import tailwindcss from "tailwindcss";
 import vike from "vike/plugin";
-import { mdx } from "@cyco130/vite-plugin-mdx";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -13,7 +13,9 @@ export default defineConfig({
   }), mdx(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname),
+      "@open-chat-ui": path.resolve(__dirname + "/components/src"),
+      "@open-chat-api": path.resolve(__dirname + "/_api"),
+      "@assets": path.resolve(__dirname + "/assets"),
     },
   },
   alias: {

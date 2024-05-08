@@ -2,11 +2,10 @@ export default onRenderHtml;
 // See https://vike.dev/data-fetching
 import { renderToString } from "react-dom/server";
 
-import favicon from '@/assets/logo.png';
+import favicon from '@open-chat-ui/assets/logo.png';
+import { OpenChatContextProvider } from "@open-chat-ui/atoms/OpenChatContextProvider";
 import React from "react";
-import { Provider } from "react-redux";
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
-import { getStore } from "../store/store";
 import { BASE_PAGE_TITLE } from "./constants";
 
 import "./index.css";
@@ -15,36 +14,26 @@ async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext;
 
   const theme = pageContext.themeCookie ? pageContext.themeCookie : "light";
-  // TODO: deliberetely don't expose sessionId though I'd like tho know is its insecure to expose it? 
-  // As cookie I seem not th be able to access it in browser js
   const sessionIdExists = pageContext.sessionId ? true : false;
-  const initalReduxState = {
-    frontend: {
-      theme: theme,
-      sessionId: sessionIdExists,
-      xcsrfToken: pageContext.xcsrfToken,
-      routeParams: pageContext.routeParams,
-      resizableLayout: pageContext.resizableLayout,
-    },
-    pageProps: {
-      routeParams: pageContext.routeParams,
-      search: pageContext.urlParsed.search
-    }
-  }
-  console.debug({ initalReduxState })
-  const store = getStore(initalReduxState)
 
   let pageHtml = "";
   if (!Page) {
     // SPA mode
   } else {
     pageHtml = renderToString(
-
       <React.StrictMode>
-        <Provider store={store}>
+        <OpenChatContextProvider
+          theme={theme}
+          sessionIdExists={sessionIdExists}
+          xcsrfToken={pageContext.xcsrfToken}
+          resizableLayout={pageContext.resizableLayout}
+          routeParams={pageContext.routeParams}
+          searchParams={pageContext.urlParsed.search}
+          location="server"
+        >
           <Page {...pageProps} />
-        </Provider>
-      </React.StrictMode>
+        </OpenChatContextProvider>
+      </React.StrictMode >
     );
   }
 
@@ -69,8 +58,8 @@ async function onRenderHtml(pageContext) {
 
   return {
     documentHtml,
-    pageContext: {
+    pageContext: {/** 
       initalReduxState,
-    },
+  */},
   };
 }

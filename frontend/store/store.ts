@@ -1,5 +1,5 @@
-import { Api } from '@/_api/api';
-import { navigate } from '@/components/atoms/Link';
+import { Api } from '@open-chat-api/api';
+import { navigate } from '@open-chat-ui/atoms/Link';
 import * as toolkitRaw from '@reduxjs/toolkit';
 import Cookies from "js-cookie";
 import { Dispatch } from 'redux';
@@ -62,7 +62,7 @@ export const logoutUser = (
     dispatch: Dispatch
 ) => {
         try {
-            await api.logoutRetrieve();
+            await api.userLogoutRetrieve();
             dispatch(fetchUser(null));
             dispatch(fetchChats(null));
             dispatch(fetchProfile(null));

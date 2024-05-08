@@ -38,5 +38,5 @@ jobs:
           echo ${{ secrets.REGISTRY_PASSWORD }} | docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
           docker compose -f docker-compose.pro.yaml build ${{ github.event.inputs.BUILD_TARGET }}
           docker compose -f docker-compose.pro.yaml push ${{ github.event.inputs.BUILD_TARGET }}
-          docker tag ${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-${{ github.event.inputs.BUILD_TARGET }}:$RANDOM_TAG ${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-${{ github.event.inputs.BUILD_TARGET }}:latest
+          docker tag ${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-${{ github.event.inputs.BUILD_TARGET }}:${{ steps.prepare.outputs.RANDOM_TAG }} ${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-${{ github.event.inputs.BUILD_TARGET }}:latest
           docker push ${{ secrets.REGISTRY_HOST }}/tbscode/django-vike-chat/open-chat-${{ github.event.inputs.BUILD_TARGET }}:latest

@@ -11,7 +11,7 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils"
+    "components": "@open-chat-ui",
+    "utils": "@open-chat-ui/lib/utils"
   }
 }

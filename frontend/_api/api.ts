@@ -58,14 +58,25 @@ export interface ChatCreationResponse {
   message: Message;
 }
 
+export interface ChatDeleteResult {
+  success: boolean;
+}
+
 export interface ChatResult {
   /** @format date-time */
   created: string;
   newest_message: Message;
   partner: UserProfile;
+  settings?: ChatSettings;
   unread_count: number;
   /** @format uuid */
   uuid: string;
+}
+
+export interface ChatSettings {
+  config?: any;
+  /** @maxLength 255 */
+  title?: string | null;
 }
 
 export interface ChatsContactsListParams {
@@ -80,6 +91,14 @@ export interface ChatsListParams {
   page?: number;
   /** Number of results to return per page. */
   page_size?: number;
+}
+
+export interface ChatsWithListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
+  userUuid: string;
 }
 
 export interface LoginInfo {
@@ -98,15 +117,8 @@ export interface Message {
   uuid: string;
 }
 
-export interface MessagesList2Params {
-  chatUuid: string;
-  /** A page number within the paginated result set. */
-  page?: number;
-  /** Number of results to return per page. */
-  page_size?: number;
-}
-
 export interface MessagesListParams {
+  chatUuid: string;
   /** A page number within the paginated result set. */
   page?: number;
   /** Number of results to return per page. */
@@ -233,17 +245,6 @@ export interface PaginatedUserProfileList {
   results?: UserProfile[];
 }
 
-export interface PatchedMessage {
-  /** @format date-time */
-  created?: string;
-  read?: boolean;
-  /** @format uuid */
-  sender?: string;
-  text?: string;
-  /** @format uuid */
-  uuid?: string;
-}
-
 export interface PatchedUserProfile {
   description?: string;
   description_title?: string;
@@ -279,7 +280,7 @@ export interface ProfileCreateChatCreateParams {
   userUuid: string;
 }
 
-export interface ProfileRetrieve2Params {
+export interface ProfileRetrieveParams {
   /** The secret to reveal the user profile */
   reveal_secret?: string;
   userUuid: string;
@@ -326,6 +327,11 @@ export interface RegisterResponseSuccess {
 
 export interface SendMessage {
   text: string;
+}
+
+export interface SetChatTitleRequest {
+  config?: any;
+  title?: string;
 }
 
 export interface UserProfile {
@@ -602,14 +608,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags bot_login
+     * @tags bot
      * @name BotLoginCreate
-     * @request POST:/api/bot_login
+     * @request POST:/api/bot/login
      * @secure
      */
     botLoginCreate: (data: LoginInfo, params: RequestParams = {}) =>
       this.request<AugmentedBotUser, any>({
-        path: `/api/bot_login`,
+        path: `/api/bot/login`,
         method: "POST",
         body: data,
         secure: true,
@@ -621,14 +627,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags bot_register
+     * @tags bot
      * @name BotRegisterCreate
-     * @request POST:/api/bot_register
+     * @request POST:/api/bot/register
      * @secure
      */
     botRegisterCreate: (data: RegisterBot, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/bot_register`,
+        path: `/api/bot/register`,
         method: "POST",
         body: data,
         secure: true,
@@ -650,6 +656,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/chats/contacts`,
         method: "GET",
         query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset for modifying user profiles
+     *
+     * @tags chats
+     * @name ChatsDeleteCreate
+     * @request POST:/api/chats/{chat_uuid}/delete/
+     * @secure
+     */
+    chatsDeleteCreate: (chatUuid: string, params: RequestParams = {}) =>
+      this.request<ChatDeleteResult, any>({
+        path: `/api/chats/${chatUuid}/delete/`,
+        method: "POST",
         secure: true,
         format: "json",
         ...params,
@@ -691,16 +714,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Simple Viewset for modifying user profiles
      *
-     * @tags login
-     * @name LoginCreate
-     * @request POST:/api/login
+     * @tags chats
+     * @name ChatsSettingsCreate
+     * @request POST:/api/chats/{chat_uuid}/settings/
      * @secure
      */
-    loginCreate: (data: LoginInfo, params: RequestParams = {}) =>
-      this.request<UserSelf, any>({
-        path: `/api/login`,
+    chatsSettingsCreate: (chatUuid: string, data: SetChatTitleRequest, params: RequestParams = {}) =>
+      this.request<ChatSettings, any>({
+        path: `/api/chats/${chatUuid}/settings/`,
         method: "POST",
         body: data,
         secure: true,
@@ -710,18 +733,37 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Simple Viewset for modifying user profiles
      *
-     * @tags logout
-     * @name LogoutRetrieve
-     * @request GET:/api/logout
+     * @tags chats
+     * @name ChatsSettingsRetrieve
+     * @request GET:/api/chats/{chat_uuid}/settings/
      * @secure
      */
-    logoutRetrieve: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/logout`,
+    chatsSettingsRetrieve: (chatUuid: string, params: RequestParams = {}) =>
+      this.request<ChatSettings, any>({
+        path: `/api/chats/${chatUuid}/settings/`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset for modifying user profiles
+     *
+     * @tags chats
+     * @name ChatsWithList
+     * @request GET:/api/chats/with/{user_uuid}/
+     * @secure
+     */
+    chatsWithList: ({ userUuid, ...query }: ChatsWithListParams, params: RequestParams = {}) =>
+      this.request<PaginatedChatResultList, any>({
+        path: `/api/chats/with/${userUuid}/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
         ...params,
       }),
 
@@ -747,28 +789,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags messages
      * @name MessagesList
-     * @request GET:/api/messages/
-     * @secure
-     */
-    messagesList: (query: MessagesListParams, params: RequestParams = {}) =>
-      this.request<PaginatedMessageList, any>({
-        path: `/api/messages/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
-     * @name MessagesList2
      * @request GET:/api/messages/{chat_uuid}/
      * @secure
      */
-    messagesList2: ({ chatUuid, ...query }: MessagesList2Params, params: RequestParams = {}) =>
+    messagesList: ({ chatUuid, ...query }: MessagesListParams, params: RequestParams = {}) =>
       this.request<PaginatedMessageList, any>({
         path: `/api/messages/${chatUuid}/`,
         method: "GET",
@@ -782,52 +806,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
      *
      * @tags messages
-     * @name MessagesPartialUpdate
-     * @request PATCH:/api/messages/{id}/
-     * @secure
-     */
-    messagesPartialUpdate: (id: string, data: PatchedMessage, params: RequestParams = {}) =>
-      this.request<Message, any>({
-        path: `/api/messages/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
      * @name MessagesReadCreate
-     * @request POST:/api/messages/{id}/read/
+     * @request POST:/api/messages/{chat_uuid}/read/
      * @secure
      */
-    messagesReadCreate: (id: string, data: SendMessage, params: RequestParams = {}) =>
+    messagesReadCreate: (chatUuid: string, params: RequestParams = {}) =>
       this.request<Message, any>({
-        path: `/api/messages/${id}/read/`,
+        path: `/api/messages/${chatUuid}/read/`,
         method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
-     * @name MessagesRetrieve
-     * @request GET:/api/messages/{id}/
-     * @secure
-     */
-    messagesRetrieve: (id: string, params: RequestParams = {}) =>
-      this.request<Message, any>({
-        path: `/api/messages/${id}/`,
-        method: "GET",
         secure: true,
         format: "json",
         ...params,
@@ -845,25 +831,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<Message, any>({
         path: `/api/messages/${chatUuid}/send/`,
         method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
-     *
-     * @tags messages
-     * @name MessagesUpdate
-     * @request PUT:/api/messages/{id}/
-     * @secure
-     */
-    messagesUpdate: (id: string, data: Message, params: RequestParams = {}) =>
-      this.request<Message, any>({
-        path: `/api/messages/${id}/`,
-        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
@@ -899,47 +866,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags profile
-     * @name ProfilePartialUpdate
-     * @request PATCH:/api/profile
-     * @secure
-     */
-    profilePartialUpdate: (data: PatchedUserProfile, params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profile`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags profile
      * @name ProfileRetrieve
-     * @request GET:/api/profile
-     * @secure
-     */
-    profileRetrieve: (params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
-        path: `/api/profile`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags profile
-     * @name ProfileRetrieve2
      * @request GET:/api/profile/{user_uuid}/
      * @secure
      */
-    profileRetrieve2: ({ userUuid, ...query }: ProfileRetrieve2Params, params: RequestParams = {}) =>
+    profileRetrieve: ({ userUuid, ...query }: ProfileRetrieveParams, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
         path: `/api/profile/${userUuid}/`,
         method: "GET",
@@ -971,13 +902,49 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags profile
-     * @name ProfileUpdate
-     * @request PUT:/api/profile
+     * @name ProfileSelfPartialUpdate
+     * @request PATCH:/api/profile/self
      * @secure
      */
-    profileUpdate: (data: UserProfile, params: RequestParams = {}) =>
+    profileSelfPartialUpdate: (data: PatchedUserProfile, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/profile`,
+        path: `/api/profile/self`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileSelfRetrieve
+     * @request GET:/api/profile/self
+     * @secure
+     */
+    profileSelfRetrieve: (params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile/self`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileSelfUpdate
+     * @request PUT:/api/profile/self
+     * @secure
+     */
+    profileSelfUpdate: (data: UserProfile, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile/self`,
         method: "PUT",
         body: data,
         secure: true,
@@ -989,14 +956,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags public_profiles
+     * @tags public
      * @name PublicProfilesList
-     * @request GET:/api/public_profiles
+     * @request GET:/api/public/profiles
      * @secure
      */
     publicProfilesList: (query: PublicProfilesListParams, params: RequestParams = {}) =>
       this.request<PaginatedUserProfileList, any>({
-        path: `/api/public_profiles`,
+        path: `/api/public/profiles`,
         method: "GET",
         query: query,
         secure: true,
@@ -1007,14 +974,49 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags register
-     * @name RegisterCreate
-     * @request POST:/api/register
+     * @tags user
+     * @name UserLoginCreate
+     * @request POST:/api/user/login
      * @secure
      */
-    registerCreate: (data: Person, params: RequestParams = {}) =>
+    userLoginCreate: (data: LoginInfo, params: RequestParams = {}) =>
+      this.request<UserSelf, any>({
+        path: `/api/user/login`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserLogoutRetrieve
+     * @request GET:/api/user/logout
+     * @secure
+     */
+    userLogoutRetrieve: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/user/logout`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserRegisterCreate
+     * @request POST:/api/user/register
+     * @secure
+     */
+    userRegisterCreate: (data: Person, params: RequestParams = {}) =>
       this.request<RegisterResponseSuccess, any>({
-        path: `/api/register`,
+        path: `/api/user/register`,
         method: "POST",
         body: data,
         secure: true,
@@ -1027,13 +1029,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Simple Viewset for modifying user profiles
      *
      * @tags user
-     * @name UserRetrieve
-     * @request GET:/api/user
+     * @name UserSelfRetrieve
+     * @request GET:/api/user/self
      * @secure
      */
-    userRetrieve: (params: RequestParams = {}) =>
+    userSelfRetrieve: (params: RequestParams = {}) =>
       this.request<UserSelf, any>({
-        path: `/api/user`,
+        path: `/api/user/self`,
         method: "GET",
         secure: true,
         format: "json",

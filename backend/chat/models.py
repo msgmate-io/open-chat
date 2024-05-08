@@ -53,6 +53,13 @@ class Chat(models.Model):
         else:
             return cls.objects.create(u1=user1, u2=user2)
 
+class ChatSettings(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_extra_title")
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="chat_settings")
+    title = models.CharField(max_length=255, blank=True, null=True)
+    config = models.JSONField(blank=True, null=True)
+
 class ChatInModelSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -96,14 +103,30 @@ class ChatSerializer(serializers.ModelSerializer):
             profile['uuid'] = str(partner.uuid)
             representation['partner'] = profile
             representation['partner']['username'] = username
+            
+            chat_settings = ChatSettings.objects.filter(user=user, chat=instance)
+            representation['settings'] = ChatSettingsSerializer(chat_settings.first()).data if chat_settings.exists() else None
 
             representation['unread_count'] = instance.get_unread_count(user)
             representation['newest_message'] = MessageSerializer(instance.get_newest_message()).data
+            # no need for the user refs
+            del representation['u1']
+            del representation['u2']
         else:
             representation['u1'] = str(instance.u1.uuid)
             representation['u2'] = str(instance.u2.uuid)
-            
         
+        return representation
+
+
+class ChatSettingsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ChatSettings
+        fields = ['title', 'config']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
         return representation
     
 
@@ -153,3 +176,4 @@ class ChatConnections(models.Model):
     @classmethod
     def is_user_online(cls, user):
         return cls.objects.filter(user=user, is_online=True).exists()
+    

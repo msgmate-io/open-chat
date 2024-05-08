@@ -5,8 +5,10 @@ from .messages import (
     MessageTypes, UserWentOffline, 
     UserWentOnline, NewMessage,
     InMarkMessageRead,
+    NewPartialMessage,
     InSendMessage,
-    IncomingMessageTypes
+    IncomingMessageTypes,
+    InPartialMessage
 )
 from .db_ops import is_staff_or_matching, get_all_chat_user_ids, connect_user, disconnect_user
 from .control import get_user_channel_name
@@ -100,6 +102,12 @@ Every user that connects joins:
                 await InMarkMessageRead(**message_payload).perform_action(self.user)
             elif message_action == IncomingMessageTypes.send_message.value:
                 await InSendMessage(**message_payload).perform_action(self.user)
+            elif message_action == IncomingMessageTypes.partial_message.value:
+                await InPartialMessage(**message_payload).perform_action(self.user)
+                
+    async def new_partial_message(self, event):
+        assert event['type'] == MessageTypes.new_partial_message.value
+        await self.send(text_data=NewPartialMessage(**event).action_json())
                     
     async def user_went_online(self, event):
         assert event['type'] == MessageTypes.user_went_online.value

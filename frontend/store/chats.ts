@@ -1,4 +1,4 @@
-import { ChatResult, PaginatedChatResultList } from '@/_api/api';
+import { ChatResult, PaginatedChatResultList } from '@open-chat-api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
 import { RootState } from './store';
 const { createSlice } = toolkitRaw.default ?? toolkitRaw;
@@ -25,10 +25,35 @@ export const chatsSlice = createSlice({
                 state.value.results = orderChats(state.value.results);
             }
         },
+        deleteChat: (state, action) => {
+            const { chatId } = action.payload;
+            if (state.value) {
+                state.value.results = state.value.results.filter(c => c.uuid !== chatId);
+            }
+        },
+        updateChatSettings: (state, action) => {
+            const { chatId, settings } = action.payload;
+            if (state.value) {
+                const chat = state.value.results.find(chat => chat.uuid == chatId);
+                if (chat) {
+                    chat.settings = settings;
+                }
+            }
+        },
+        markChatAsRead: (state, action) => {
+            const { chatId } = action.payload;
+            if (state.value) {
+                const chat = state.value.results.find(chat => chat.uuid == chatId);
+                chat.unread_count = 0;
+                if (chat) {
+                    chat.newest_message.read = true;
+                }
+            }
+        },
         updateNewestMessage: (state, action) => {
             const { chatId, message } = action.payload;
             if (state.value) {
-                const chat = state.value.results.find(chat => chat.uuid === chatId);
+                const chat = state.value.results.find(chat => chat.uuid == chatId);
                 if (chat) {
                     chat.newest_message = message;
                 }
@@ -62,7 +87,10 @@ export const getChatByChatId = (state: RootState, chatId: string) => {
 
 export const {
     fetchChats,
+    deleteChat,
     insertChat,
+    markChatAsRead,
+    updateChatSettings,
     updateNewestMessage,
     updatePartnerOnlineStatus
 } = chatsSlice.actions;
