@@ -3,7 +3,7 @@ python3 manage.py collectstatic --noinput
 python3 manage.py shell --command 'from core.tools import before_backend_startup; before_backend_startup()'
 
 if [ $CREATE_TEST_USERS = "true" ]; then
-    python3 manage.py shell --command 'from core.default_user_setup import create_or_reset_test_users; create_or_reset_test_users(20)'
+    python3 manage.py shell --command 'from core.default_user_setup import create_or_reset_test_users; create_or_reset_test_users(4)'
 fi
 
 if [ $PRODUCTION = "true" ]; then
