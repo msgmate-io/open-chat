@@ -16,7 +16,7 @@ def get_or_create_base_admin():
     return user
 
 def before_backend_startup():
-    from core.default_user_setup import create_or_reset_test_users, create_or_reset_admin_user
+    from core.default_user_setup import create_or_reset_test_users, create_or_reset_admin_user, create_or_reset_base_bot_users
     from core.setup_base_permissions import setup_base_permissions
 
     # 1 - Setup all server permission models
@@ -24,3 +24,6 @@ def before_backend_startup():
 
     # 2 - Create or reset the base admin user
     create_or_reset_admin_user()
+    
+    # 3 - Create default bot users ( atm only hal9003 )
+    create_or_reset_base_bot_users()

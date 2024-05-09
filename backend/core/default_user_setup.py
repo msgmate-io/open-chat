@@ -4,7 +4,7 @@ from core.permissions import Permissions, Groups
 from core.tools import get_or_create_base_admin
 from dataclasses import dataclass
 from django.db import transaction
-from chat.models import Chat, Message
+from chat.models import Chat, Message, ChatSettings
 
 def get_or_create_user(username, email, password):
     try:
@@ -28,6 +28,18 @@ def get_or_create_ffuser(email, password):
     )
     return user
 
+def set_bot_profile(user, profile):
+    user.profile.public = profile.get("public", False)
+    user.profile.contact_secret = profile.get("contact_secret", None)
+    user.profile.reveal_secret = profile.get("reveal_secret", "password")
+    user.profile.is_bot = profile.get("is_bot", False)
+    user.profile.description_title = profile.get("description_title", "About Me:")
+    user.profile.description = profile.get("description", "Hello there I'm using open-chat!")
+    user.profile.first_name = profile["first_name"]
+    user.profile.second_name = profile["second_name"]
+    user.profile.save()
+    return user
+
 def set_user_profile(user, profile):
     user.profile.first_name = profile["first_name"]
     user.profile.second_name = profile["second_name"]
@@ -42,7 +54,7 @@ def get_deterministic_test_user(id):
     name_id = id % len(FNAMES)
     sname_id = ((len(FNAMES) - id) % len(FNAMES))
     return {
-        "username": f"testUser{id}",
+        "username": f"test{id}",
         "email": f"test+msgmate{id}@msgmate.io",
         "password": "Test123!",
         "profile": {
@@ -86,7 +98,50 @@ def create_or_reset_admin_user():
     bot_admin_permission_group = Group.objects.get(name=Groups.bot_admin) 
     admin = get_or_create_base_admin()
     bot_admin_permission_group.user_set.add(admin)
+    
+def create_or_reset_base_bot_users():
+    bot_user_permission_group = Group.objects.get(name=Groups.bot_user) 
+    bot_info = {
+        "username": f"hal9003",
+        "email": f"hal9003+dev@msgmate.io",
+        "password": "Test123!",
+        "profile": {
+            "first_name": "HAL",
+            "second_name": "9003",
+            "public": True,
+            "contact_secret": None,
+            "is_bot": True,
+            "description_title": "About Bot:",
+            "description": "General Purpose Hal9003 Bot checkout my source at: https://github.com/msgmate-io/msgmate-io-oc-hal9003-bot",
+        },
+    }
 
+    bot = get_or_create_ffuser(
+        email=bot_info["email"],
+        password=bot_info["password"]
+    )
+    bot_user_permission_group.user_set.add(bot)
+    
+    def setup_bot_profile():
+        set_bot_profile(bot, bot_info["profile"])
+
+    transaction.on_commit(setup_bot_profile)
+    
+    def setup_debug_chat():
+        # then we create a default debug chat with the admin user
+        admin = get_or_create_base_admin()
+        chat = Chat.get_or_create_chat(admin, bot)
+        
+        # Then create a 'ChatSettingObject' to attach a title to the chat
+        ChatSettings.objects.update_or_create(
+            chat=chat,
+            user=bot,
+            title="hal9003-debug"
+        )
+        
+    transaction.on_commit(setup_debug_chat)
+    
+    
 def create_or_reset_test_users(amount=20):
 
     ffuser_permission_group = Group.objects.get(name=Groups.ff_user) 

@@ -41,3 +41,11 @@ def setup_base_permissions():
     full_featured_user_group.permissions.set([
         create_bot_user_perm,
     ])
+    
+    # 4 - bot user group
+    bot_user_group, created = Group.objects.get_or_create(
+        name=Groups.bot_user,
+    )
+    
+    # base bot don't have any special permissions
+    bot_user_group.permissions.set([])

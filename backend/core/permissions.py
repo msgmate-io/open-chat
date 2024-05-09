@@ -19,3 +19,4 @@ class Permissions(Enum):
 class Groups(Enum):
     bot_admin = "Bot Admins"
     ff_user = "Fully featured User"
+    bot_user = "Bot User"
