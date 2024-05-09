@@ -8,7 +8,8 @@ from .messages import (
     NewPartialMessage,
     InSendMessage,
     IncomingMessageTypes,
-    InPartialMessage
+    InPartialMessage,
+    InSendMessageChatTitle
 )
 from .db_ops import is_staff_or_matching, get_all_chat_user_ids, connect_user, disconnect_user
 from .control import get_user_channel_name
@@ -104,6 +105,8 @@ Every user that connects joins:
                 await InSendMessage(**message_payload).perform_action(self.user)
             elif message_action == IncomingMessageTypes.partial_message.value:
                 await InPartialMessage(**message_payload).perform_action(self.user)
+            elif message_action == IncomingMessageTypes.send_message_chat_title.value:
+                await InSendMessageChatTitle(**message_payload).perform_action(self.user)
                 
     async def new_partial_message(self, event):
         assert event['type'] == MessageTypes.new_partial_message.value

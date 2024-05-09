@@ -235,7 +235,6 @@ class InSendMessageChatTitle(IncomingMessageBase):
     @database_sync_to_async
     def perform_action(self, user):
         # user = sender
-
         chat = Chat.objects.filter(
             Q(u1=user) | Q(u2=user),            
             chat_settings__title=self.chat_title
@@ -245,12 +244,11 @@ class InSendMessageChatTitle(IncomingMessageBase):
             return {"status": "error", "data": "Chat not found"}
         chat = chat.first()
 
-        serialized_message = MessageSerializer(message).data
         
         chat_serialized = ChatSerializer(chat, context={
             "user": user
         }).data
-
+        
         partner = chat.get_partner(user)
         message = Message.objects.create(
             chat=chat,
@@ -258,6 +256,8 @@ class InSendMessageChatTitle(IncomingMessageBase):
             recipient=partner,
             text=self.text
         )
+
+        serialized_message = MessageSerializer(message).data
 
         NewMessage(
             sender_id=str(user.uuid),
