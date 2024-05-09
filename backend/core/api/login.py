@@ -76,16 +76,16 @@ def bot_login(request):
     
     user = authenticate(username=data.username, password=data.password)
     
+    if user is None:
+        return Response({
+            'non_field_errors': ['Invalid username or password. Please try again.']
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
     if not (user.profile.is_bot or user.is_staff):
         # bot AND admins may use the bot loging api
         # TODO: intoduce special user permission for this
         return Response({
             'non_field_errors': ['Only bots can login here.']
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-    if user is None:
-        return Response({
-            'non_field_errors': ['Invalid username or password. Please try again.']
         }, status=status.HTTP_400_BAD_REQUEST)
 
     login(request, user)
