@@ -6,4 +6,4 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-ENTRYPOINT ["npm", "run", "dev"]
+CMD ["npm", "run", "server:dev"]

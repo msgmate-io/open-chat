@@ -32,7 +32,7 @@ services:
       - "24678:24678"
     volumes:
       - ./frontend/:/frontend/
-      - ./docs/:/docs/client/
+    command: sh -c "npm install && npm run dev"
   redis:
     image: redis:5
     ports:
