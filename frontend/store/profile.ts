@@ -1,5 +1,5 @@
 
-import { UserProfile } from '@open-chat-api/api';
+import { UserProfile } from '#open-chat-api/api';
 import * as toolkitRaw from '@reduxjs/toolkit';
 const { createSlice } = toolkitRaw.default ?? toolkitRaw;
 

@@ -13,7 +13,7 @@ export default defineConfig({
     }), mdx(), tailwindcss()],
     resolve: {
         alias: {
-            "@open-chat-ui": path.resolve(__dirname + "/components/src"),
+            "#open-chat-ui": path.resolve(__dirname + "/components/src"),
         },
     },
     alias: {

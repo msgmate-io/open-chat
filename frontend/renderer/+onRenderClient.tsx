@@ -1,5 +1,5 @@
 export default render;
-import { OpenChatContextProvider } from "@open-chat-ui/atoms/OpenChatContextProvider";
+import { OpenChatContextProvider } from "#open-chat-ui/atoms/OpenChatContextProvider";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";

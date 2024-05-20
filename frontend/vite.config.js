@@ -6,16 +6,18 @@ import tailwindcss from "tailwindcss";
 import vike from "vike/plugin";
 import { defineConfig } from "vite";
 
+
 export default defineConfig({
   base: "/",
   plugins: [react(), vike({
+    prerender: true,
     hydrationCanBeAborted: true,
   }), mdx(), tailwindcss()],
   resolve: {
     alias: {
-      "@open-chat-ui": path.resolve(__dirname + "/components/src"),
-      "@open-chat-api": path.resolve(__dirname + "/_api"),
-      "@assets": path.resolve(__dirname + "/assets"),
+      "#open-chat-ui": path.resolve(__dirname + "/components/src"),
+      "#open-chat-api": path.resolve(__dirname + "/_api"),
+      "#assets": path.resolve(__dirname + "/assets"),
     },
   },
   alias: {

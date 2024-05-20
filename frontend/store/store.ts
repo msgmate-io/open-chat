@@ -1,5 +1,5 @@
-import { Api } from '@open-chat-api/api';
-import { navigate } from '@open-chat-ui/atoms/Link';
+import { Api } from '#open-chat-api/api';
+import { navigate } from '#open-chat-ui/atoms/Link';
 import * as toolkitRaw from '@reduxjs/toolkit';
 import Cookies from "js-cookie";
 import { Dispatch } from 'redux';

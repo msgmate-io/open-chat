@@ -13,7 +13,7 @@ export const BUILD_TYPE: BT = import.meta.env.PUBLIC_ENV__LOGIN_ROUTE || "/login
 export const STATIC_EXPORT = BUILD_TYPE !== BT.WEB;
 export const LOGIN_ROUTE = import.meta.env.PUBLIC_ENV__LOGIN_ROUTE || "/login";
 
-// 'ROUTE_PREFIX' is added on 'navigate' and 'Link' from `@open-chat-ui/atoms/Link`
+// 'ROUTE_PREFIX' is added on 'navigate' and 'Link' from `#open-chat-ui/atoms/Link`
 export const ROUTE_PREFIX = import.meta.env.PUBLIC_ENV__ROUTE_PREFIX || "";
 
 // 'FRONTNED_BACKEND_ROUTE' is used for client side requests

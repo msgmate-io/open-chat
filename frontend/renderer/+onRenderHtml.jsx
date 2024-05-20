@@ -2,8 +2,8 @@ export default onRenderHtml;
 // See https://vike.dev/data-fetching
 import { renderToString } from "react-dom/server";
 
-import favicon from '@open-chat-ui/assets/logo.png';
-import { OpenChatContextProvider } from "@open-chat-ui/atoms/OpenChatContextProvider";
+import favicon from '#open-chat-ui/assets/logo.png';
+import { OpenChatContextProvider } from "#open-chat-ui/atoms/OpenChatContextProvider";
 import React from "react";
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
 import { BASE_PAGE_TITLE } from "./constants";
