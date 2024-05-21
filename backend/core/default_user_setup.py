@@ -8,14 +8,18 @@ from chat.models import Chat, Message, ChatSettings
 
 def get_or_create_user(username, email, password):
     try:
-        user = get_user_model().objects.create(
+        user, created = get_user_model().objects.get_or_create(
             username=username,
             email=email,
             password=password,
         )
+        if created:
+            print(f"Created user: {user}")
         return user
     except Exception as e:
-        print(e)
+        print(f"Could not create user: {e}")
+        user = get_user_model().objects.get(email=email)
+        return user
     return None
 
 def get_or_create_ffuser(email, password):
