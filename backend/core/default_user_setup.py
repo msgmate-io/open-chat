@@ -5,32 +5,36 @@ from core.tools import get_or_create_base_admin
 from dataclasses import dataclass
 from django.db import transaction
 from chat.models import Chat, Message, ChatSettings
+from django.conf import settings
+import os
+import base64
+import json
 
 def get_or_create_user(username, email, password):
-    try:
-        user, created = get_user_model().objects.get_or_create(
+    user = get_user_model().objects.filter(
+        username=username,
+        email=email,
+    )
+    if not user.exists():
+        print(f"Not existing creating user: {user}")
+        user, profile, _ = get_user_model().objects.create_user(
             username=username,
             email=email,
-            password=password,
+            password=password
         )
-        if created:
-            print(f"Created user: {user}")
-        return user
-    except Exception as e:
-        print(f"Could not create user: {e}")
-        user = get_user_model().objects.get(email=email)
-        return user
-    return None
+        return user, profile
+    user = user.first()
+    return user, user.profile
 
 def get_or_create_ffuser(email, password):
     # creates a so-called 'fully featured user'
     # from regular users we expect username == email
-    user = get_or_create_user(
+    user, profile = get_or_create_user(
         email=email,
         username=email,
         password=password,
     )
-    return user
+    return user, profile
 
 def set_bot_profile(user, profile):
     user.profile.public = profile.get("public", False)
@@ -103,28 +107,14 @@ def create_or_reset_admin_user():
     admin = get_or_create_base_admin()
     bot_admin_permission_group.user_set.add(admin)
     
-def create_or_reset_base_bot_users():
+def create_bot_user(bot_info):
     bot_user_permission_group = Group.objects.get(name=Groups.bot_user) 
-    bot_info = {
-        "username": f"hal9003",
-        "email": f"hal9003+dev@msgmate.io",
-        "password": "Test123!",
-        "profile": {
-            "first_name": "HAL",
-            "second_name": "9003",
-            "public": True,
-            "contact_secret": None,
-            "is_bot": True,
-            "description_title": "About Bot:",
-            "description": "General Purpose Hal9003 Bot checkout my source at: https://github.com/msgmate-io/msgmate-io-oc-hal9003-bot",
-        },
-    }
-
-    bot = get_or_create_ffuser(
+    bot, _ = get_or_create_ffuser(
         email=bot_info["email"],
         password=bot_info["password"]
     )
     bot_user_permission_group.user_set.add(bot)
+    print(f"Got bot user: {bot}, profile {bot.profile}")
     
     def setup_bot_profile():
         set_bot_profile(bot, bot_info["profile"])
@@ -140,10 +130,36 @@ def create_or_reset_base_bot_users():
         ChatSettings.objects.update_or_create(
             chat=chat,
             user=bot,
-            title="hal9003-debug"
+            title=f"{bot_info['username']}-debug-chat"
         )
         
     transaction.on_commit(setup_debug_chat)
+    
+def create_or_reset_base_bot_users():
+    
+    BOTS_B64 = os.environ.get("BOTS_B64", None)
+    BOTS = json.loads(base64.b64decode(BOTS_B64.encode("utf-8"))) if BOTS_B64 else []
+    print(f"Creating bots: {BOTS}")
+    
+    if settings.DEBUG and len(BOTS) == 0:
+        BOTS = [{
+            "username": f"hal9003",
+            "email": f"hal9003+dev@msgmate.io",
+            "password": "Test123!",
+            "profile": {
+                "first_name": "HAL",
+                "second_name": "9003",
+                "public": True,
+                "contact_secret": None,
+                "is_bot": True,
+                "description_title": "About Bot:",
+                "description": "General Purpose Hal9003 Bot checkout my source at: https://github.com/msgmate-io/msgmate-io-oc-hal9003-bot",
+            },
+        }]
+
+    for bot_info in BOTS:
+        create_bot_user(bot_info)
+
     
     
 def create_or_reset_test_users(amount=20):
@@ -156,7 +172,7 @@ def create_or_reset_test_users(amount=20):
         print(f"Creating test user {i}")
         user_info = get_deterministic_test_user(i)
         user_infos.append(user_info)
-        user = get_or_create_ffuser(
+        user, pro = get_or_create_ffuser(
             email=user_info["email"],
             password=user_info["password"]
         )

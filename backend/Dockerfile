@@ -10,9 +10,6 @@ RUN pip cache purge
 
 COPY . .
 
-RUN apk add --no-cache git
-
-
 EXPOSE 8000
 
 CMD ["sh", "spinup.sh"]
