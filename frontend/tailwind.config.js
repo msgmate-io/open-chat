@@ -71,6 +71,9 @@ module.exports = {
           DEFAULT: daisyuiColorObj["base-100"],
           foreground: daisyuiColorObj["base-content"],
         },
+        zIndex: {
+          '60': '60'
+        }
       },
       borderRadius: {
         lg: "var(--rounded-btn)",
