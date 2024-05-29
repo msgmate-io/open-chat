@@ -33,8 +33,8 @@ class Chat(models.Model):
         return Message.objects.filter(chat=self).order_by("-created")
     
     @classmethod
-    def get_chat(cls, users):
-        chat = Chat.objects.filter(u1__in=users, u2__in=users).order_by("-created")
+    def get_chat(cls, user1, user2):
+        chat = Chat.objects.filter(Q(u1=user1, u2=user2) | Q(u1=user2, u2=user1))
         if chat.exists():
             return chat.first()
         return None
@@ -47,7 +47,7 @@ class Chat(models.Model):
     
     @classmethod
     def get_or_create_chat(cls, user1, user2):
-        chat = cls.get_chat([user1, user2])
+        chat = cls.get_chat(user1=user1, user2=user2)
         if chat:
             return chat
         else:

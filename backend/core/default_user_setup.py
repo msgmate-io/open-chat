@@ -84,7 +84,7 @@ def random_deterministic_messages(users, id, total_message_count):
         partner_id = (id + i + 1) % len(users)
         amount_of_messages = 30 + i % 20
         partner = users[partner_id]
-        chat = Chat.get_chat([user, partner])
+        chat = Chat.get_chat(user, partner)
         if not chat:
             chat = Chat.get_or_create_chat(user, partner)
         else:
