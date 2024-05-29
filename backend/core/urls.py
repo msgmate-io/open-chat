@@ -1,5 +1,5 @@
 from django.urls import path, include, re_path
-from core.api import profile, register, login, user
+from core.api import profile, register, login, user, bots
 
 profile_api_user = profile.UpdateProfileViewset.as_view({
     'get': 'retrieve',
@@ -28,10 +28,15 @@ public_profiles_create_chat = profile.PublicProfilesViewset.as_view({
     'post': 'create_chat',
 })
 
+list_user_bots = bots.BotsControlViewset.as_view({
+    'get': 'list',
+})
+
 
 urlpatterns = [
     path("api/bot/register", register.register_bot),
     path("api/bot/login", login.bot_login),
+    path("api/bots/list", list_user_bots),
 
     path("api/public/profiles", public_profiles_list),
 
