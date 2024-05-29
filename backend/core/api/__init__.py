@@ -1,6 +1,3 @@
-from . import register
-from . import login
-from . import profile
-from . import user
+from . import register, login, profile, user, bots
 
-__all__ = ["register", "login", "profile", "user"]
+__all__ = ["register", "login", "profile", "user", "bots"]
