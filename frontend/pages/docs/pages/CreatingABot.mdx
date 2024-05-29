@@ -1,0 +1,54 @@
+# Creating A Bot
+
+> WIP this section is incomplete and subjet to change.
+
+A bot is basicly a user with some restrictons and some additonal mangement features.
+
+This repo contans a simple open-ai agent for getting started with the msgmate api.
+
+Checkout `/bots/nodejs` for a simple example of a bot using nodejs.
+
+## Deploy Mixtral-13B-Chat Locally and connect it as a open-chat bot
+
+> WIP: process is outlined, unfinshed
+
+1. Start the backend `docker compose up`
+2. Start localai `docker run -p 8080:8080 --name local-ai -ti localai/localai:latest-aio-cpu`
+3. Edit `bots/docker-compose.yaml:environment` with the localai connection details
+4. Start the bot `docker compose -f bots/docker-compose.yaml up`
+5. Login with another user and start messaging the bot user you connected.
+
+## Building a node js bot
+
+E.g.: Connect to the client and send a message to a user.
+
+Not the you can connect to *any* deployed or localcal open chat Api, just set `host`, `httpProtocol` and `wsProtocol` to the appropriate values.
+
+```javascript
+async function main() {
+    const { api, user, socket } = await setupClient({
+        username: "test+msgmate1@msgmate.io",
+        password: "Test123!",
+        host: "localhost",
+        wsProtocol: "ws://",
+        httpProtocol: "http://",
+    });
+
+    socket.on('open', function open() {
+        socket.send(JSON.stringify({
+            type: 'custom',
+            data: {
+                action: 'send_message'
+                payload: {
+                    chat_id: "<some-chat-id>",
+                    recipient_id: "<some-user-id>",
+                    text: "Hello world!"
+                }
+            }
+        }));
+        console.log('connected');
+    })
+}
+
+main();
+```

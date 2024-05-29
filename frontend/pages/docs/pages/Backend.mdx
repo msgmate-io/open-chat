@@ -1,0 +1,59 @@
+# Backend
+
+The backend is a containerized django app. 
+It serves as:
+
+1. Authentication server
+2. REST API server
+3. Websocket server
+
+## Creating a api
+
+Chat related apis belong in the `chat` app.
+User and profile related apis belong in the `core` app.
+
+Use `@api_view` decorator views for basic apis.
+Use `ModelViewSet` for CRUD apis, 
+combine with `@action` decorator for custom actions.
+
+checkout the folling apis as examples:
+
+- `chat/api/messages.py`: A Model View Set with some basic operations
+- `core/api/login.py`: A simple decorator api view for logging in a user
+
+## Setup Linting for development
+
+1) setup venv
+
+```bash
+python3 -m venv venv
+```
+
+2) activate venv
+
+```bash
+source venv/bin/activate
+```
+
+3) install dependencies
+
+```bash
+pip install -r ./backend/requirements.txt
+```
+
+4) make sure you have a linting extension installed in your editor
+
+E.g.: for vscode, you can use `pylint` or `flake8`.
+
+## Generating the python client
+
+```bash
+./venv/bin/openapi-python-client generate --url http://localhost:8000/api/schema/ --meta=setup
+./venv/bin/openapi-python-client update --url http://localhost:8000/api/schema/ --meta=setup
+```
+
+Installing the python client from source:
+
+```bash
+pip3 install --upgrade https://github.com/tbscode/open-chat-api-client/tarball/master
+```
