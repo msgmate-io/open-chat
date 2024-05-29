@@ -1,5 +1,10 @@
-import LoginPage from "#open-chat-ui/pages/Login";
+import { LoginSection } from "#open-chat-ui/sections/LoginHero";
+import { servicesList } from "../LoginPageStyleConfig";
+import { HomeNavbar } from "../Navigation";
 
 export function Page() {
-  return <LoginPage />;
+  return <>
+    <HomeNavbar />
+    <LoginSection servicesList={servicesList} />
+  </>;
 }
