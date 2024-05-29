@@ -11,10 +11,6 @@ import {
 
 const navbarRoutes = [
     {
-        href: "/docs",
-        label: "Docs",
-    },
-    {
         href: "/api/schema/redoc/",
         label: "API",
     },
