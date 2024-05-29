@@ -107,6 +107,8 @@ Every user that connects joins:
                 await InPartialMessage(**message_payload).perform_action(self.user)
             elif message_action == IncomingMessageTypes.send_message_chat_title.value:
                 await InSendMessageChatTitle(**message_payload).perform_action(self.user)
+        elif message_type == "bot":
+            pass
                 
     async def new_partial_message(self, event):
         assert event['type'] == MessageTypes.new_partial_message.value
