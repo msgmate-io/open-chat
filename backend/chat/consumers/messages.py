@@ -148,6 +148,7 @@ class InPartialMessage(IncomingMessageBase):
     chat_id: str
     recipient_id: str
     text: str
+    tmp_id: str = "tmp"
     type: str = "partial_message"
     
     @database_sync_to_async
@@ -169,7 +170,7 @@ class InPartialMessage(IncomingMessageBase):
             "sender": str(sender.uuid),
             "recipient": str(partner.uuid),
             "text": self.text,
-            "uuid": "tmp"
+            "uuid": self.tmp_id
         }
 
         chat_serialized = ChatSerializer(chat, context={
