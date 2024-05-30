@@ -13,9 +13,10 @@ class BotMessageTypes(Enum):
 
 @dataclass
 class InAiResponseRequested(IncomingMessageBase):
-    sender_id: str
+    chat_id: str
     type: str = BotMessageTypes.ai_response_v1.value
     
     async def perform_action(self, user):
-        pass
+        from msgmate.async_ai import get_ai_response
+        return await get_ai_response(user, self.chat_id)
     

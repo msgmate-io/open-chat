@@ -74,24 +74,25 @@ Every user that connects joins:
             user = getattr(self, 'user', None)
             print(f"{user} disconnected, with code {close_code}", flush=True)
             # we mark the user as 'offline' in the database
-            await disconnect_user(self.user)
+            is_still_online = await disconnect_user(self.user)
 
-            # then we notify all the other users that this user went offline
-            user_ids = await get_all_chat_user_ids(self.user)
-            print(f"Sending offline to {len(user_ids)} users, {user_ids}", flush=True)
-            for user_id in user_ids:
-                if user_id != self.group_name:
-                    await self.channel_layer.group_send(
-                        user_id, UserWentOffline(sender_id=self.group_name).dict())
+            if not is_still_online:
+                # then we notify all the other users that this user went offline
+                user_ids = await get_all_chat_user_ids(self.user)
+                print(f"Sending offline to {len(user_ids)} users, {user_ids}", flush=True)
+                for user_id in user_ids:
+                    if user_id != self.group_name:
+                        await self.channel_layer.group_send(
+                            user_id, UserWentOffline(sender_id=self.group_name).dict())
 
-            # a user has disconnected, we can safly discard that users group ( stored in self.group_name )
-            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+                # a user has disconnected, we can safly discard that users group ( stored in self.group_name )
+                await self.channel_layer.group_discard(self.group_name, self.channel_name)
                     
     async def websocket_disconnect(self, event):
         await super().websocket_disconnect(event)
 
     async def receive(self, text_data=None, bytes_data=None):
-        print(f"User {self.user} received message: {text_data}", flush=True)
+        #print(f"User {self.user} received message: {text_data}", flush=True)
         _data = json.loads(text_data)
         message_type = _data.get("type", None)
         assert message_type is not None, "Message type is required!"
