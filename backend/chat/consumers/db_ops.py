@@ -13,6 +13,7 @@ def connect_user(user):
         connection = connection.first()
         connection.is_online = True
         connection.last_seen = timezone.now()
+        connection.connection_counter += 1
         connection.save()
     else:
         connection = ChatConnections.objects.create(
@@ -25,10 +26,14 @@ def connect_user(user):
 def disconnect_user(user):
     connection = ChatConnections.objects.filter(user=user)
     last_seen = None
+    is_online = True
     if connection.exists():
         connection = connection.first()
         last_seen = connection.last_seen
-        connection.is_online = False
+        connection.connection_counter -= 1
+        if connection.connection_counter <= 0:
+            connection.is_online = False
+            is_online = False
         connection.save()
     else:
         raise Exception("User was not connected, but still disconnected")
@@ -39,6 +44,7 @@ def disconnect_user(user):
         start_time=last_seen,
         end_time=timezone.now()
     )
+    return is_online
 
 @database_sync_to_async
 def get_all_chat_user_ids(user):
