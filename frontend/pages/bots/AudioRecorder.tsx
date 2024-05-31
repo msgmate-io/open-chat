@@ -1,7 +1,14 @@
+import { buildMessage } from "#open-chat-ui/atoms/WebsocketBridge";
 import toWav from 'audiobuffer-to-wav';
 import { useEffect, useRef, useState } from 'react';
 
-export const AudioRecorder = ({ intervalMs = 1000 }) => {
+
+export const AudioRecorder = ({
+    intervalMs = 1000,
+    sendMessage = (text) => { console.log("SEND", text) },
+    chatId = "",
+    recipientId = ""
+}) => {
     const [isRecording, setIsRecording] = useState(false);
     const [audioURLs, setAudioURLs] = useState([]);
     const [concatenatedAudioURL, setConcatenatedAudioURL] = useState(null);
@@ -22,6 +29,15 @@ export const AudioRecorder = ({ intervalMs = 1000 }) => {
         };
     }, [isRecording]);
 
+    const blobToBase64 = (blob) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
+
     const startRecording = async () => {
         audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -32,10 +48,22 @@ export const AudioRecorder = ({ intervalMs = 1000 }) => {
         };
 
         mediaRecorder.onstop = async () => {
-            const blob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+            const audioBuffer = await audioContextRef.current.decodeAudioData(await new Response(new Blob(audioChunksRef.current)).arrayBuffer());
+            const wavData = toWav(audioBuffer);
+            const blob = new Blob([wavData], { type: 'audio/wav' });
+
             audioChunksRef.current = [];
             const url = URL.createObjectURL(blob);
             setAudioURLs((prev) => [...prev, url]);
+
+            const base64EncodedAudio = await blobToBase64(blob);
+            const sizeInMB = blob.size / (1024 * 1024);
+            console.log(`Audio segment size: ${sizeInMB.toFixed(2)} MB`);
+            sendMessage(buildMessage({
+                chat_id: chatId,
+                recipient_id: recipientId,
+                text: `audio:${base64EncodedAudio}`
+            }, 'partial_message'))
         };
 
         mediaRecorder.start();
@@ -81,9 +109,26 @@ export const AudioRecorder = ({ intervalMs = 1000 }) => {
         setConcatenatedAudioURL(url);
     };
 
+    const onStartRecording = () => {
+        if (!isRecording) {
+            sendMessage(buildMessage({
+                chat_id: chatId,
+                recipient_id: recipientId,
+                text: `/start_audio_recording`
+            }, 'send_message'))
+        } else {
+            sendMessage(buildMessage({
+                chat_id: chatId,
+                recipient_id: recipientId,
+                text: `STOP`
+            }, 'send_message'))
+        }
+        setIsRecording((prev) => !prev)
+    }
+
     return (
         <div>
-            <button onClick={() => setIsRecording((prev) => !prev)}>
+            <button onClick={onStartRecording}>
                 {isRecording ? 'Stop Recording' : 'Start Recording'}
             </button>
             <div>
