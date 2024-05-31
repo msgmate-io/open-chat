@@ -8,7 +8,7 @@ export const AudioRecorder = ({
     chatId = "",
     recipientId = ""
 }) => {
-    const { sendMessage, audioSegmentsB64 } = useContext(SocketContext);
+    const { sendMessage, audioSegmentsB64, removeAudioSegegment } = useContext(SocketContext);
 
     const [isRecording, setIsRecording] = useState(false);
     const [audioURLs, setAudioURLs] = useState([]);
@@ -17,6 +17,29 @@ export const AudioRecorder = ({
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
     const intervalIdRef = useRef(null);
+
+    const [audioQueue, setAudioQueue] = useState([]);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    useEffect(() => {
+        if (audioSegmentsB64.length > 0) {
+            // segmensts are of the format {uuid, b64}
+            // 
+            const segegmentUUIDs = audioSegmentsB64.map(segment => segment.uuid);
+            const newSegments = audioSegmentsB64.filter(segment => !audioQueue.some(audio => segegmentUUIDs.includes(audio.uuid)));
+            // need to filter out possible duplicates
+            for (const segment of newSegments) {
+                removeAudioSegegment(segment.uuid);
+            }
+            setAudioQueue((prevQueue) => [...prevQueue, ...newSegments]);
+        }
+    }, [audioSegmentsB64]);
+
+    useEffect(() => {
+        if (audioQueue.length > 0 && !isPlaying) {
+            playAudioQueue();
+        }
+    }, [audioQueue, isPlaying]);
 
     useEffect(() => {
         if (isRecording) {
@@ -29,6 +52,45 @@ export const AudioRecorder = ({
             stopRecording();
         };
     }, [isRecording]);
+
+
+    const playAudioQueue = async () => {
+        if (audioQueue.length === 0) return;
+
+        setIsPlaying(true);
+
+        while (audioQueue.length > 0) {
+            const audioB64 = audioQueue.shift();
+            const audioBlob = base64ToBlob(audioB64.b64, 'audio/wav');
+            const audioURL = URL.createObjectURL(audioBlob);
+
+            const audio = new Audio(audioURL);
+            await new Promise((resolve) => {
+                audio.onended = resolve;
+                audio.play();
+            });
+        }
+
+        setIsPlaying(false);
+    };
+
+
+    const base64ToBlob = (base64, mime) => {
+        const byteCharacters = atob(base64);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, { type: mime });
+    };
 
     const blobToBase64 = (blob) => {
         return new Promise((resolve, reject) => {
