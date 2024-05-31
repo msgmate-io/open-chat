@@ -1,14 +1,15 @@
-import { buildMessage } from "#open-chat-ui/atoms/WebsocketBridge";
+import { SocketContext, buildMessage } from "#open-chat-ui/atoms/WebsocketBridge";
 import toWav from 'audiobuffer-to-wav';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 
 export const AudioRecorder = ({
-    intervalMs = 1000,
-    sendMessage = (text) => { console.log("SEND", text) },
+    intervalMs = 200,
     chatId = "",
     recipientId = ""
 }) => {
+    const { sendMessage, audioSegmentsB64 } = useContext(SocketContext);
+
     const [isRecording, setIsRecording] = useState(false);
     const [audioURLs, setAudioURLs] = useState([]);
     const [concatenatedAudioURL, setConcatenatedAudioURL] = useState(null);
@@ -137,6 +138,9 @@ export const AudioRecorder = ({
                         <a href={url} download={`audio_segment_${index + 1}.wav`}>Download Segment {index + 1}</a>
                     </div>
                 ))}
+            </div>
+            <div>
+                Incoming audio segments: {audioSegmentsB64.length}
             </div>
             <button onClick={concatenateAudio} disabled={audioURLs.length === 0}>Download Concatenated Audio</button>
             {concatenatedAudioURL && (

@@ -1,13 +1,11 @@
-import WebsocketBridge, { SocketContext } from "#open-chat-ui/atoms/WebsocketBridge";
+import WebsocketBridge from "#open-chat-ui/atoms/WebsocketBridge";
 import { MessagesView } from "#open-chat-ui/chat/MessageView";
 import { UserLoader } from "#open-chat-ui/loaders/UserLoader";
 import { RootState } from "#open-chat-ui/store/store";
-import { useContext } from "react";
 import { useSelector } from "react-redux";
 import { AudioRecorder } from "./AudioRecorder";
 
 function PageContent() {
-    const { sendMessage } = useContext(SocketContext);
 
     const chatId = useSelector((state: RootState) => state.pageProps.search?.chatId)
     const botId = useSelector((state: RootState) => state.pageProps.search?.botId)
@@ -16,7 +14,6 @@ function PageContent() {
         <UserLoader />
         <div className="flex flex-row h-screen w-screen">
             <AudioRecorder
-                sendMessage={sendMessage}
                 chatId={chatId}
                 recipientId={botId}
             />
