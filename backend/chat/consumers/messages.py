@@ -143,6 +143,9 @@ class IncomingMessageTypes(Enum):
     partial_message = "partial_message"
     send_message_chat_title = "send_message_chat_title"
     
+
+from typing import Optional
+    
 @dataclass
 class InPartialMessage(IncomingMessageBase):
     chat_id: str
@@ -150,6 +153,7 @@ class InPartialMessage(IncomingMessageBase):
     text: str
     tmp_id: str = "tmp"
     type: str = "partial_message"
+    data_message: Optional[dict] = None # check chat.models.DataMessage for more details
     
     @database_sync_to_async
     def perform_action(self, user):
@@ -172,6 +176,11 @@ class InPartialMessage(IncomingMessageBase):
             "text": self.text,
             "uuid": self.tmp_id
         }
+        
+        if self.data_message:
+            tmp_message["data_message"] = self.data_message
+            if self.data_message.get("hide_message", False):
+                tmp_message["hidden"] = True
 
         chat_serialized = ChatSerializer(chat, context={
             "user": user
