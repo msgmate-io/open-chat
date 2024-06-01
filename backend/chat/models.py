@@ -143,6 +143,35 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
     
     created = models.DateTimeField(auto_now_add=True)
+    
+    data_message = models.OneToOneField('DataMessage', on_delete=models.CASCADE, null=True, blank=True, related_name="message_data_message")
+    
+class DataMessage(models.Model):
+    
+    uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
+    
+    hide_message = models.BooleanField(default=False)
+
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="data_message_message")
+
+    class DataMessageTypes(models.TextChoices):
+        CUSTOM = "custom"
+        AUDIO_B64 = "audio_b64"
+    
+    data_type = models.CharField(max_length=255, choices=DataMessageTypes.choices, default=DataMessageTypes.CUSTOM)
+    
+    data = models.JSONField(default=dict)
+    
+class DataMessageSerializer(serializers.ModelSerializer):
+        
+    class Meta:
+        model = DataMessage
+        fields = ['data_type', 'data', 'uuid']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        return representation
 
 
     
@@ -157,6 +186,14 @@ class MessageSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['sender'] = str(instance.sender.uuid)
+        
+        if instance.data_message:
+            representation['data_message'] = DataMessageSerializer(instance.data_message).data
+            
+            if instance.data_message.hide_message:
+                representation['hidden'] = True
+        else:
+            representation['data_message'] = None
         
         return representation
     
