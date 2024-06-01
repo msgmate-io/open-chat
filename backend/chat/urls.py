@@ -51,6 +51,10 @@ chat_settings_api_user = api.chats.ChatsModelViewSet.as_view({
     'post': 'update_chat_settings',
 })
 
+messages_api_user_send_data_message = api.messages.MessagesModelViewSet.as_view({
+    'post': 'send_data_message',
+})
+
 
 urlpatterns = [
     path("api/chats/", chat_api_user_list),
@@ -63,6 +67,7 @@ urlpatterns = [
 
     path("api/messages/<str:chat_uuid>/all_read/", chat_mark_as_read),
     path("api/messages/<str:chat_uuid>/send/", messages_api_user_send),
+    path("api/messages/<str:chat_uuid>/send_data/", messages_api_user_send_data_message),
     path("api/messages/<str:chat_uuid>/read/", messages_api_user_read),
     path("api/messages/<str:chat_uuid>/", messages_api_user_list),
 ]
