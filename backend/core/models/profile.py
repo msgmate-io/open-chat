@@ -26,7 +26,7 @@ class UserProfile(models.Model):
     
     tracker = FieldTracker()
     last_updated = models.DateTimeField(auto_now_add=True)
-    changes = models.ManyToManyField("ChangeHistory", related_name="user_profile_changes", null=True, blank=True)
+    changes = models.ManyToManyField("ChangeHistory", related_name="user_profile_changes", blank=True)
     
     def save(self, *args, **kwargs):
         changed = self.tracker.changed()
