@@ -8,7 +8,7 @@ export const AudioRecorder = ({
     chatId = "",
     recipientId = ""
 }) => {
-    const { sendMessage, audioSegmentsB64, removeAudioSegegment } = useContext(SocketContext);
+    const { sendMessage, dataMessages, removeDataMessage } = useContext(SocketContext);
 
     const [isRecording, setIsRecording] = useState(false);
     const [audioURLs, setAudioURLs] = useState([]);
@@ -22,18 +22,24 @@ export const AudioRecorder = ({
     const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        if (audioSegmentsB64.length > 0) {
+        if (dataMessages.length > 0) {
             // segmensts are of the format {uuid, b64}
             // 
-            const segegmentUUIDs = audioSegmentsB64.map(segment => segment.uuid);
-            const newSegments = audioSegmentsB64.filter(segment => !audioQueue.some(audio => segegmentUUIDs.includes(audio.uuid)));
+            const segegmentUUIDs = dataMessages.map(segment => segment.uuid);
+            const newSegments = dataMessages.filter(segment => !audioQueue.some(audio => segegmentUUIDs.includes(audio.uuid)));
             // need to filter out possible duplicates
             for (const segment of newSegments) {
-                removeAudioSegegment(segment.uuid);
+                removeDataMessage(segment.uuid);
             }
-            setAudioQueue((prevQueue) => [...prevQueue, ...newSegments]);
+            const b64AudioSegments = newSegments.map(segment => {
+                return {
+                    b64: segment.data_message.data['audio'],
+                    uuid: segment.uuid
+                }
+            });
+            setAudioQueue((prevQueue) => [...prevQueue, ...b64AudioSegments]);
         }
-    }, [audioSegmentsB64]);
+    }, [dataMessages]);
 
     useEffect(() => {
         if (audioQueue.length > 0 && !isPlaying) {
@@ -121,11 +127,19 @@ export const AudioRecorder = ({
 
             const base64EncodedAudio = await blobToBase64(blob);
             const sizeInMB = blob.size / (1024 * 1024);
+            const timestamp = new Date().toISOString();
             console.log(`Audio segment size: ${sizeInMB.toFixed(2)} MB`);
             sendMessage(buildMessage({
                 chat_id: chatId,
                 recipient_id: recipientId,
-                text: `audio:${base64EncodedAudio}`
+                text: `Audio segemnt send at: ${timestamp}`,
+                data_message: {
+                    hide_message: true,
+                    data_type: 'audio_b64',
+                    data: {
+                        audio: base64EncodedAudio
+                    }
+                },
             }, 'partial_message'))
         };
 
@@ -177,13 +191,27 @@ export const AudioRecorder = ({
             sendMessage(buildMessage({
                 chat_id: chatId,
                 recipient_id: recipientId,
-                text: `/start_audio_recording`
+                text: `Send message to start recording`,
+                data_message: {
+                    hide_message: true,
+                    data_type: 'signal',
+                    data: {
+                        signal: 'start-recording'
+                    }
+                }
             }, 'send_message'))
         } else {
             sendMessage(buildMessage({
                 chat_id: chatId,
                 recipient_id: recipientId,
-                text: `STOP`
+                text: `Send message to stop recording`,
+                data_message: {
+                    hide_message: true,
+                    data_type: 'signal',
+                    data: {
+                        signal: 'stop-recording'
+                    }
+                }
             }, 'send_message'))
         }
         setIsRecording((prev) => !prev)
@@ -202,7 +230,7 @@ export const AudioRecorder = ({
                 ))}
             </div>
             <div>
-                Incoming audio segments: {audioSegmentsB64.length}
+                Incoming data messages {dataMessages.length}
             </div>
             <button onClick={concatenateAudio} disabled={audioURLs.length === 0}>Download Concatenated Audio</button>
             {concatenatedAudioURL && (
