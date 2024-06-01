@@ -1,7 +1,7 @@
 from rest_framework import serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from chat.models import Message, MessageSerializer, Chat, ChatSerializer
+from chat.models import Message, MessageSerializer, Chat, ChatSerializer, DataMessage
 from rest_framework.pagination import PageNumberPagination
 from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, DetailedPaginationMixin
 from rest_framework.decorators import action
@@ -17,7 +17,12 @@ class StandardResultsSetPagination(PageNumberPagination):
     
 class SendMessageSerializer(serializers.Serializer):
     text = serializers.CharField()
-
+    
+class SendDataMessageSerializer(serializers.Serializer):
+    text = serializers.CharField()
+    hide_message = serializers.BooleanField()
+    data = serializers.JSONField()
+    data_type = serializers.ChoiceField(choices=DataMessage.DataMessageTypes.choices)
 
 class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelViewSet):
     """
@@ -81,6 +86,56 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
             recipient=partner,
             text=serializer.data['text']
         )
+        
+        serialized_message = self.serializer_class(message).data
+        
+        chat_serialized = ChatSerializer(chat, context={
+            "user": request.user
+        }).data
+        
+        NewMessage(
+            sender_id=str(request.user.uuid),
+            message=serialized_message,
+            chat=chat_serialized
+        ).send(str(partner.uuid))
+        
+        return Response(serialized_message, status=200)
+    
+    @extend_schema(request=SendDataMessageSerializer)
+    @action(detail=False, methods=['post'])
+    def send_data_message(self, request, chat_uuid=None):
+        if not chat_uuid:
+            return Response({'error': 'chat_uuid is required'}, status=400)
+
+        chat = Chat.objects.filter(uuid=chat_uuid)
+        if not chat.exists():
+            return self.resp_chat_403
+        chat = chat.first()
+        if not chat.is_participant(request.user):       
+            return self.resp_chat_403
+
+        serializer = SendDataMessageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        data_message = DataMessage.objects.create(
+            chat=chat,
+            data=serializer.data['data'],
+            hide_message=serializer.data['hide_message'],
+            data_type=serializer.data['data_type']
+        )
+
+        partner = chat.get_partner(request.user) 
+        message = Message.objects.create(
+            chat=chat,
+            sender=request.user,
+            recipient=partner,
+            text=serializer.data['text'],
+            data_message=data_message
+        )
+        
+        # fiannly update the data message message reference
+        data_message.message = message
+        data_message.save()
         
         serialized_message = self.serializer_class(message).data
         
