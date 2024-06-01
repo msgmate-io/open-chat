@@ -5,7 +5,7 @@ from conf.utils import CoolerJson
 from dataclasses import dataclass
 from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async, async_to_sync
-from chat.models import Message, MessageSerializer, Chat, ChatSerializer
+from chat.models import Message, MessageSerializer, Chat, ChatSerializer, DataMessage
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
@@ -200,6 +200,7 @@ class InSendMessage(IncomingMessageBase):
     recipient_id: str
     text: str
     type: str = "send_message"
+    data_message: Optional[dict] = None # check chat.models.DataMessage for more details
     
     @database_sync_to_async
     def perform_action(self, user):
@@ -213,20 +214,37 @@ class InSendMessage(IncomingMessageBase):
         if not chats.exists():
             return {"status": "error", "data": "Chat not found"}
         chat = chats.first()
-        
         partner = chat.get_partner(user) 
-        message = Message.objects.create(
-            chat=chat,
-            sender=user,
-            recipient=partner,
-            text=self.text
-        )
+        
+        if self.data_message:
+            print("Data message", self.data_message, flush=True)
+            data_message = DataMessage.objects.create(
+                **self.data_message
+            )
+            message = Message.objects.create(
+                chat=chat,
+                sender=user,
+                recipient=partner,
+                text=self.text,
+                data_message=data_message
+            )
+            data_message.message = message
+            data_message.save()
+        else:
+            message = Message.objects.create(
+                chat=chat,
+                sender=user,
+                recipient=partner,
+                text=self.text
+            )
         
         serialized_message = MessageSerializer(message).data
         
         chat_serialized = ChatSerializer(chat, context={
             "user": user
         }).data
+        
+        print(f"Serialized message: {serialized_message}", flush=True)
         
         NewMessage(
             sender_id=str(user.uuid),

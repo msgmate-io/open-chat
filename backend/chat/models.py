@@ -152,11 +152,12 @@ class DataMessage(models.Model):
     
     hide_message = models.BooleanField(default=False)
 
-    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="data_message_message")
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="data_message_message", null=True, blank=True)
 
     class DataMessageTypes(models.TextChoices):
         CUSTOM = "custom"
         AUDIO_B64 = "audio_b64"
+        SIGNAL = "signal"
     
     data_type = models.CharField(max_length=255, choices=DataMessageTypes.choices, default=DataMessageTypes.CUSTOM)
     
