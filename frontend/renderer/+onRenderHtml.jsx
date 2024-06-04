@@ -6,7 +6,6 @@ import favicon from '#open-chat-ui/assets/logo.png';
 import { OpenChatContextProvider } from "#open-chat-ui/atoms/OpenChatContextProvider";
 import React from "react";
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
-import { BASE_PAGE_TITLE } from "./constants";
 
 import "./index.css";
 
@@ -38,7 +37,7 @@ async function onRenderHtml(pageContext) {
   }
 
   const { documentProps } = pageContext.exports;
-  const title = (documentProps && documentProps.title) || BASE_PAGE_TITLE;
+  const title = (documentProps && documentProps.title) || "Open Chat";
   const desc =
     (documentProps && documentProps.description) || "Opensource Chat Interface, Backend & API";
 

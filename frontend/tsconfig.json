@@ -33,5 +33,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
-  }
+  },
+  "exclude": [
+    "components/node_modules",
+  ]
 }

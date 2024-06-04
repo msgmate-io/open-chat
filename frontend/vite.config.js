@@ -27,8 +27,18 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [...builtinModules, /^node:/],
+      external: [
+        ...builtinModules,
+        /^node:/,
+      ],
     },
   },
-  server: {},
+  server: {
+    fs: {
+      exclude: [
+        // Excluding the components/node_modules folder
+        path.resolve(__dirname, 'components/node_modules')
+      ]
+    },
+  },
 });
