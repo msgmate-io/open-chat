@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM ghcr.io/tbscode/tims-packages/alpine-django-python:latest as backend
 
 WORKDIR /backend
 
