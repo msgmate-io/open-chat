@@ -15,10 +15,13 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import express from "express";
 import { renderPage } from "vike/server";
-import { root } from "./root.js";
 
-const isProduction = true;//process.env.NODE_ENV === "production";
+const root = process.cwd();
+
+const isProduction = process.env.NODE_ENV === "production";
+const clientRoot = process.env.CLIENT_ROOT || `${root}/dist/client`;
 console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('CLIENT_ROOT:', clientRoot);
 
 startServer();
 
@@ -34,7 +37,7 @@ async function startServer() {
     // In production, we need to serve our static assets ourselves.
     // (In dev, Vite's middleware serves our static assets.)
     const sirv = (await import("sirv")).default;
-    app.use(sirv(`${root}/dist/client`));
+    app.use(sirv(clientRoot));
   } else {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
@@ -42,7 +45,7 @@ async function startServer() {
     const vite = await import("vite");
     const viteDevMiddleware = (
       await vite.createServer({
-        root,
+        root: clientRoot,
         server: { middlewareMode: true },
       })
     ).middlewares;

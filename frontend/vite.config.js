@@ -6,22 +6,25 @@ import tailwindcss from "tailwindcss";
 import vike from "vike/plugin";
 import { defineConfig } from "vite";
 
-
 export default defineConfig({
   base: "/",
-  plugins: [react(), vike({
-    prerender: true,
-    hydrationCanBeAborted: true,
-  }), mdx(), tailwindcss()],
+  plugins: [
+    react(),
+    vike({
+      prerender: true,
+      hydrationCanBeAborted: true,
+    }),
+    mdx(),
+    tailwindcss(),
+    /**vavite({
+      handlerEntry: './server/index.js',
+    }),**/
+  ],
   resolve: {
     alias: {
       "#open-chat-ui": path.resolve(__dirname + "/components/src"),
       "#open-chat-api": path.resolve(__dirname + "/_api"),
       "#assets": path.resolve(__dirname + "/assets"),
-    },
-  },
-  alias: {
-    resolve: {
       "./runtimeConfig": "./runtimeConfig.browser",
     },
   },
@@ -36,7 +39,6 @@ export default defineConfig({
   server: {
     fs: {
       exclude: [
-        // Excluding the components/node_modules folder
         path.resolve(__dirname, 'components/node_modules')
       ]
     },
