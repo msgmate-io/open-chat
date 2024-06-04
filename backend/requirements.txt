@@ -23,4 +23,11 @@ django-prometheus
 bs4
 ddrr
 django-revproxy
+requests-oauthlib
+python3-saml
 psycopg2-binary
+PyJWT
+python3-saml
+django-allauth
+python3-openid
+cryptography
