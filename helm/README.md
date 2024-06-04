@@ -97,15 +97,6 @@ frontend:
     authRequired: false
     secretName: dockerconfigjson-github-com
   env:
-    INTERNAL_BACKEND_ROUTE: "http://backend-service.default.svc.cluster.local:8000"
-    PUBLIC_ENV__GUEST_LOGIN_ALLOWED: "true"
-    PUBLIC_ENV__GUEST_USERNAME: "testUser1"
-    PUBLIC_ENV__GUEST_PASSWORD: "Test123!"
-    PUBLIC_ENV__FRONTNED_BACKEND_ROUTE: "http://localhost"
-    PUBLIC_ENV__WEBSOCKET_PROTOCOLL: "ws://"
-    PUBLIC_ENV__WEBSOCKET_HOST: "localhost"
-    PUBLIC_ENV__WEBSOCKET_PATH: "/api/core/ws"
-    PUBLIC_ENV__STATIC_EXPORT: "false"
     PUBLIC_ENV__ROUTE_PREFIX: ""
     DB_ENGINE: "postgresql_psycopg2"
     DB_NAME: "openchat"

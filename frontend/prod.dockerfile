@@ -1,14 +1,20 @@
-FROM node:20-alpine
+FROM node:20-alpine AS build-stage
 
 WORKDIR /frontend
-COPY ./package.json .
+COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-ENV NODE_ENV=production
+
 RUN rm -rf android ios
-# first build is just to make sure it works ( a second build is run before startup as only then the ENV is available )
+
 RUN npm run build
 RUN node buildServer.js
-RUN rm -rf node_modules
+
+FROM node:20-alpine AS production-stage
+
+WORKDIR /frontend
+
+COPY --from=build-stage /frontend/dist ./dist
+COPY --from=build-stage /frontend/server-entry.cjs ./
 
 ENTRYPOINT ["node", "server-entry.cjs"]
