@@ -20,9 +20,6 @@
       "@open-chat/open-chat-ui": [
         "./components/src"
       ],
-      "#/*": [
-        "./*"
-      ],
     },
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,

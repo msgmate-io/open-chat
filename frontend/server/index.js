@@ -20,8 +20,6 @@ const root = process.cwd();
 
 const isProduction = process.env.NODE_ENV === "production";
 const clientRoot = process.env.CLIENT_ROOT || `${root}/dist/client`;
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('CLIENT_ROOT:', clientRoot);
 
 startServer();
 
@@ -42,10 +40,11 @@ async function startServer() {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
     // would unnecessarily bloat our production server.)
+    console.info("Starting Vite dev server...");
     const vite = await import("vite");
     const viteDevMiddleware = (
       await vite.createServer({
-        root: clientRoot,
+        root: root,
         server: { middlewareMode: true },
       })
     ).middlewares;
@@ -59,6 +58,7 @@ async function startServer() {
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.all("*", async (req, res, next) => {
+    //console.info("REQUEST", req.originalUrl);
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       requestBody: req.body,
@@ -88,5 +88,6 @@ async function startServer() {
 
   const port = process.env.PORT || 3000;
   app.listen(port);
+  console.info(`DUDE`)
   console.info(`Server running at http://localhost:${port}`);
 }

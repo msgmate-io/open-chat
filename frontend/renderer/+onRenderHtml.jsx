@@ -3,7 +3,7 @@ export default onRenderHtml;
 import { renderToString } from "react-dom/server";
 
 import favicon from '#/assets/logo.png';
-import { Context } from "@open-chat/open-chat-ui";
+import { ServerContextProvider } from "@open-chat/open-chat-ui";
 import React from "react";
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
 
@@ -21,7 +21,7 @@ async function onRenderHtml(pageContext) {
   } else {
     pageHtml = renderToString(
       <React.StrictMode>
-        <Context.ServerContextProvider
+        <ServerContextProvider
           theme={theme}
           sessionIdExists={sessionIdExists}
           xcsrfToken={pageContext.xcsrfToken}
@@ -31,7 +31,7 @@ async function onRenderHtml(pageContext) {
           location="server"
         >
           <Page {...pageProps} />
-        </Context.ServerContextProvider>
+        </ServerContextProvider>
       </React.StrictMode >
     );
   }

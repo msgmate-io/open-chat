@@ -16,13 +16,9 @@ export default defineConfig({
     }),
     mdx(),
     tailwindcss(),
-    /**vavite({
-      handlerEntry: './server/index.js',
-    }),**/
   ],
   resolve: {
     alias: {
-      "#/": path.resolve(__dirname + "/"),
       "#/assets": path.resolve(__dirname + "/assets"),
       "@open-chat/open-chat-ui": path.resolve(__dirname + "/components/src"),
       "./runtimeConfig": "./runtimeConfig.browser",
@@ -37,10 +33,8 @@ export default defineConfig({
     },
   },
   server: {
-    fs: {
-      exclude: [
-        //path.resolve(__dirname, 'components/node_modules')
-      ]
+    watch: {
+      usePolling: true,
     },
   },
 });

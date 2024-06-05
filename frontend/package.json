@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "vite build --config vite.config.js && npm run server:dev",
+    "dev": "npm run build && npm run server:dev",
     "prod": "npm run build && npm run server:prod",
-    "build": "vite build --config vite.config.js",
+    "build": "vite build --config vite.config.js --mode development",
     "build:prod": "vite build --config vite.config.js --mode production",
     "server:dev": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server",
@@ -27,6 +27,7 @@
     "@radix-ui/react-menubar": "^1.0.4",
     "@radix-ui/react-navigation-menu": "^1.1.4",
     "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@reduxjs/toolkit": "^1.9.7",
@@ -76,7 +77,8 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "vike": "^0.4.171",
-    "vike-react": "^0.4.4"
+    "vike-react": "^0.4.4",
+    "zod": "^3.23.8"
   },
   "type": "module",
   "devDependencies": {
