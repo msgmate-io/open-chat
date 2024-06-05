@@ -1,8 +1,8 @@
-import cubeLeg from "#assets/logo.png";
+import logo from "#/assets/logo.png";
 
 const logoTitle = "Msgmate.io";
 const githubLink = "https://github.com/tbscode/django-vike-chat";
-const heroImage = cubeLeg;
+const heroImage = logo;
 
 const sectionFeatureId = "features";
 const sectionBetaId = "beta";

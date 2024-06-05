@@ -1,10 +1,10 @@
-import { LoginSection } from "#open-chat-ui/sections/LoginHero";
+import { Sections } from "@open-chat/open-chat-ui";
 import { servicesList } from "../LoginPageStyleConfig";
 import { HomeNavbar } from "../Navigation";
 
 export function Page() {
   return <>
     <HomeNavbar />
-    <LoginSection servicesList={servicesList} />
+    <Sections.LoginSection servicesList={servicesList} />
   </>;
 }

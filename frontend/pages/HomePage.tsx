@@ -1,10 +1,11 @@
-import { BetaBanner } from "#open-chat-ui/landing_page/BetaBanner";
-import { FAQ } from "#open-chat-ui/landing_page/FAQ";
-import { Features } from "#open-chat-ui/landing_page/Features";
-import { Footer } from "#open-chat-ui/landing_page/Footer";
-import { Hero } from "#open-chat-ui/landing_page/Hero";
-import { ALanguageModels } from "#open-chat-ui/landing_page/LanguageModels";
-import { ScrollToTop } from "#open-chat-ui/landing_page/ScrollToTop";
+import {
+    BetaBanner,
+    FAQ,
+    Features,
+    Footer, Hero,
+    LanguageModelsSection,
+    ScrollToTop
+} from "@open-chat/open-chat-ui";
 import { HomeNavbar } from "./Navigation";
 
 import {
@@ -38,7 +39,7 @@ export function HomePage() {
                 <Hero
                     cinematicTitle={cinematicTitle}
                     subtitle={heroSubtitle}
-                    logoImage={heroImage}
+                    logoUrl={heroImage}
                 />
             </div>
             <Features
@@ -53,7 +54,7 @@ export function HomePage() {
                 githubLink={githubLink}
                 becomeTesterBtnText={becomeTesterBtnText}
             />
-            <ALanguageModels
+            <LanguageModelsSection
                 id={sectionModelsId}
                 title={languageModelsTitle}
                 subtitle={languageModelSubtitle}

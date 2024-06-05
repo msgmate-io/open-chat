@@ -1,5 +1,5 @@
 export default render;
-import { OpenChatContextProvider } from "#open-chat-ui/atoms/OpenChatContextProvider";
+import { Context } from "@open-chat/open-chat-ui";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -11,13 +11,13 @@ async function render(pageContext) {
 
   const page = (
     <React.StrictMode>
-      <OpenChatContextProvider
+      <Context.ServerContextProvider
         routeParams={pageContext.routeParams}
         searchParams={pageContext.urlParsed.search}
         location="client"
       >
         <Page {...pageProps} />
-      </OpenChatContextProvider>
+      </Context.ServerContextProvider>
     </React.StrictMode>
   );
   const container = document.getElementById("react-root");

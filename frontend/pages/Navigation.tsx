@@ -1,4 +1,4 @@
-import { Navbar } from "#open-chat-ui/landing_page/Navbar";
+import { Navbar } from "@open-chat/open-chat-ui";
 import {
     githubLink,
     heroImage,

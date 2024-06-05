@@ -22,9 +22,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "#open-chat-ui": path.resolve(__dirname + "/components/src"),
-      "#open-chat-api": path.resolve(__dirname + "/_api"),
-      "#assets": path.resolve(__dirname + "/assets"),
+      "#/": path.resolve(__dirname + "/"),
+      "#/assets": path.resolve(__dirname + "/assets"),
+      "@open-chat/open-chat-ui": path.resolve(__dirname + "/components/src"),
       "./runtimeConfig": "./runtimeConfig.browser",
     },
   },
@@ -39,7 +39,7 @@ export default defineConfig({
   server: {
     fs: {
       exclude: [
-        path.resolve(__dirname, 'components/node_modules')
+        //path.resolve(__dirname, 'components/node_modules')
       ]
     },
   },

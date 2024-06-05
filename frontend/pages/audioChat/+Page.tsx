@@ -1,4 +1,4 @@
-import { AudioChat } from "#open-chat-ui/audio_chat/AudioChat";
+import { AudioChat } from "@open-chat/open-chat-ui";
 
 export function Page() {
     return <AudioChat />

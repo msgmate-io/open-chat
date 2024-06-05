@@ -2,8 +2,8 @@ export default onRenderHtml;
 // See https://vike.dev/data-fetching
 import { renderToString } from "react-dom/server";
 
-import favicon from '#open-chat-ui/assets/logo.png';
-import { OpenChatContextProvider } from "#open-chat-ui/atoms/OpenChatContextProvider";
+import favicon from '#/assets/logo.png';
+import { Context } from "@open-chat/open-chat-ui";
 import React from "react";
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
 
@@ -21,7 +21,7 @@ async function onRenderHtml(pageContext) {
   } else {
     pageHtml = renderToString(
       <React.StrictMode>
-        <OpenChatContextProvider
+        <Context.ServerContextProvider
           theme={theme}
           sessionIdExists={sessionIdExists}
           xcsrfToken={pageContext.xcsrfToken}
@@ -31,7 +31,7 @@ async function onRenderHtml(pageContext) {
           location="server"
         >
           <Page {...pageProps} />
-        </OpenChatContextProvider>
+        </Context.ServerContextProvider>
       </React.StrictMode >
     );
   }

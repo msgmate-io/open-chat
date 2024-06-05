@@ -14,14 +14,16 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
+      "#/assets/*": [
+        "./assets/*"
+      ],
+      "@open-chat/open-chat-ui": [
+        "./components/src"
+      ],
+      "#/*": [
         "./*"
       ],
-      "#open-chat-ui/*": [
-        "./components/src/*"
-      ]
     },
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
@@ -34,7 +36,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": [
-    "components/node_modules",
-  ]
+  "exclude": []
 }
