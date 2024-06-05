@@ -25,6 +25,13 @@ export default defineConfig({
     },
   },
   build: {
+    build: {
+      terserOptions: {
+        compress: {
+          drop_console: false, // TODO: do in prod
+        },
+      },
+    },
     rollupOptions: {
       external: [
         ...builtinModules,
