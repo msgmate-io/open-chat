@@ -4,6 +4,8 @@ import { renderToString } from "react-dom/server";
 
 import favicon from '#/assets/logo.png';
 import { ServerContextProvider } from "@open-chat/open-chat-ui";
+import { navigateSearch } from "./navigateSearch.js";
+
 import React from "react";
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
 
@@ -29,6 +31,10 @@ async function onRenderHtml(pageContext) {
           routeParams={pageContext.routeParams}
           searchParams={pageContext.urlParsed.search}
           location="server"
+          globalContext={{
+            logoUrl: "https://avatars.githubusercontent.com/u/163599389",
+            navigate: navigateSearch
+          }}
         >
           <Page {...pageProps} />
         </ServerContextProvider>
