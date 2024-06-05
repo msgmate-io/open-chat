@@ -63,8 +63,10 @@ async function onRenderHtml(pageContext) {
 
   return {
     documentHtml,
-    pageContext: {/** 
-      initalReduxState,
-  */},
+    pageContext: {
+      passDown: {
+        sessionIdExists
+      },
+    },
   };
 }

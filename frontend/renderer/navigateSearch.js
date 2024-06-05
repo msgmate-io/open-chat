@@ -1,6 +1,6 @@
 import { navigate as navigateVike } from 'vike/client/router';
 
-export function navigateSearch(search, resetAll = true, pathName = null) {
+export function navigateSearch(pathName, search = {}, resetAll = true) {
     let searchParams = new URLSearchParams(window.location.search);
     if (resetAll) {
         searchParams.forEach((_, key) => {
@@ -18,6 +18,8 @@ export function navigateSearch(search, resetAll = true, pathName = null) {
             searchParams.set(key, search[key])
         }
     });
-    var newRelativePathQuery = (pathName ? pathName : window.location.pathname) + '?' + searchParams.toString();
+    let searchString = searchParams.toString();
+    console.log("searchString", searchString);
+    var newRelativePathQuery = (pathName ? pathName : window.location.pathname) + (searchString === '' ? '' : '?' + searchString);
     navigateVike(newRelativePathQuery);
 }

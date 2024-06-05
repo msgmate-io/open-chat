@@ -9,7 +9,8 @@ import { navigateSearch } from "./navigateSearch.js";
 let root;
 
 async function render(pageContext) {
-  const { Page, pageProps } = pageContext;
+  const { Page, pageProps, passDown } = pageContext;
+  console.log("PC", JSON.stringify(passDown))
 
   const page = (
     <React.StrictMode>
@@ -17,6 +18,7 @@ async function render(pageContext) {
         routeParams={pageContext.routeParams}
         searchParams={pageContext.urlParsed.search}
         location="client"
+        sessionIdExists={passDown?.sessionIdExists || false}
         theme={Cookies.get("theme") || "light"}
         globalContext={{
           logoUrl: "https://avatars.githubusercontent.com/u/163599389",

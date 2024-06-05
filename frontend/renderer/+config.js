@@ -4,6 +4,7 @@ export default {
     "pageProps",
     "routeParams",
     "initalReduxState",
+    "passDown",
     "search"
   ],
   clientRouting: true,
