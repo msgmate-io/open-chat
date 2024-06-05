@@ -18,4 +18,5 @@ urlpatterns = [
     path("", include("core.urls")),
 
     path("", include("chat.urls")),
+    *[path("", include(f"{app}.urls")) for app in settings.EXTRA_APPS],
 ]

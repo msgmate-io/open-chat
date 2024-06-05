@@ -12,6 +12,7 @@ IGNORABLE_404_URLS = [r'^favicon\.ico$']
 ROOT_URLCONF = 'conf.urls'
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+EXTRA_APPS = os.getenv("EXTRA_APPS").split(",") if os.getenv("EXTRA_APPS", False) else []
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
