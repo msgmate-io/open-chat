@@ -8,13 +8,16 @@ COPY . .
 RUN rm -rf android ios
 
 RUN npm run build
-RUN node buildServer.js
+# RUN node buildServer.js
 
 FROM node:20-alpine AS production-stage
 
 WORKDIR /frontend
-
+COPY --from=build-stage /frontend/server-package.json ./package.json
 COPY --from=build-stage /frontend/dist ./dist
-COPY --from=build-stage /frontend/server-entry.cjs ./
+COPY --from=build-stage /frontend/server ./server
+RUN npm install --production
 
-ENTRYPOINT ["node", "server-entry.cjs"]
+ENV NODE_ENV=production
+
+ENTRYPOINT ["node", "./server"]

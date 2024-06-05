@@ -65,7 +65,8 @@ async function onRenderHtml(pageContext) {
     documentHtml,
     pageContext: {
       passDown: {
-        sessionIdExists
+        sessionIdExists,
+        theme
       },
     },
   };

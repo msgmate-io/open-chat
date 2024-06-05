@@ -1,6 +1,5 @@
 export default render;
 import { ServerContextProvider } from "@open-chat/open-chat-ui";
-import Cookies from "js-cookie";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -19,7 +18,7 @@ async function render(pageContext) {
         searchParams={pageContext.urlParsed.search}
         location="client"
         sessionIdExists={passDown?.sessionIdExists || false}
-        theme={Cookies.get("theme") || "light"}
+        theme={passDown?.theme || "light"}
         globalContext={{
           logoUrl: "https://avatars.githubusercontent.com/u/163599389",
           navigate: navigateSearch

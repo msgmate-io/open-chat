@@ -20,6 +20,8 @@ const root = process.cwd();
 
 const isProduction = process.env.NODE_ENV === "production";
 const clientRoot = process.env.CLIENT_ROOT || `${root}/dist/client`;
+console.log("CLIENT ROOT", clientRoot)
+console.log("IS PRODUCTION", isProduction)
 
 startServer();
 
@@ -70,7 +72,7 @@ async function startServer() {
       sessionId: req.cookies["sessionid"] || null,
     };
 
-    console.log("COOKIES", JSON.stringify(req.cookies))
+    // console.log("COOKIES", JSON.stringify(req.cookies))
 
     const pageContext = await renderPage(pageContextInit);
     const { httpResponse } = pageContext;
