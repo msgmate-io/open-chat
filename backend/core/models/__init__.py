@@ -1,3 +1,3 @@
-from . import user, profile, settings, history, bots
+from . import user, profile, settings, history, bots, contact
 
-__all__ = ["user", "profile", "settings", "history", "bots"]
+__all__ = ["user", "profile", "settings", "history", "bots", "contact"]

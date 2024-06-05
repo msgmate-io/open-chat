@@ -73,8 +73,6 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
             }).data)
         return Response({"status": "error", "data": "Invalid reveal secret"}, status=400)
 
-        
-
     @extend_schema(
         parameters=[
             OpenApiParameter(name="reveal_secret", type=str, required=False, location=OpenApiParameter.QUERY, description="The secret to reveal the user profile")
@@ -102,7 +100,6 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
             'request': request,
         }).data)
     
-    
     @extend_schema(
         request=SendMessageSerializer,
         parameters=[
@@ -121,7 +118,6 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
     def create_chat(self, request, user_uuid=None):
 
         user = get_user_model().objects.get(uuid=user_uuid)
-        
         
         reveal_secret = request.query_params.get("reveal_secret", None)
         require_previous_chat = True
