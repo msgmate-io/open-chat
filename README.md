@@ -1,32 +1,48 @@
-# Msgmate-io Open Chat Fork / Stack
+# Open-Chat by Msgmate.io
 
-This just maintains the seperate frontend pages for msgmate.io.
-All chat related features are a 1:1 for of the open chat repo and will allways be maintained and updated there.
-So the same MIT license applies to this repo as well.
+Continuation of Open-Chat as an effort to kick-start further open-source development [without any open-source related funding](#about).
 
-Only difference is that the `frontend/pages` are maintained in a private sub-repo.
+Open-Chat will be built openly, while the more advanced bots and model connectors will be developed closed source until mature enough for release.
 
-## TL;DR ( all in one development )
+The plan for [msgmate.io V2 beta](https://beta.msgmate.io) is to host a fully usable version of Open-Chat and provide a wide range of model connectors and bots for experimentation. 
+
+Usage of these features will incur costs, which will be covered by token purchases. Token tracking and usage-related code will also remain closed source, but Open-Chat will always function seamlessly without them.
+
+We are eager to get the infrastructure out there and used. A YouTube introduction series is planned to present the interface and its deployment.
+
+If you have collaboration ideas, want a demo of Msgmate, or seek early user access, please email me at `tim@msgmate.io`.
+
+## Local Usage
+
+```bash
+git submodule update --init --recursive
+docker compose -f docker-compose.pro.yaml build
+docker compose -f docker-compose.pro.yaml up
+```
+
+And you're ready to go at `localhost`.
+
+## Development
 
 Submodules:
 
-- `./frontend/pages` is a private repo with the frontend pages for msgmate.io
-- `./frontend/components` the opensource components [open-chat-ui](https://github.com/msgmate-io/open-chat-ui)
+- `./frontend/components`: The open-source components [open-chat-ui](https://github.com/msgmate-io/open-chat-ui)
+- (WIP) `./backend/hal9007`: The 7th, yet unreleased, now-multimodal version of Tim's Hal-9000 series LLM bot
+- (Prop) `./backend/msgmate`: Non-required proprietary Msgmate related Django code (Google auth, token usage, etc.)
 
 ```bash
 git submodule update --init --recursive
 docker compose up --build
 ```
-> changes in subrepos muste be pushed to their respective repos and then the updated submodule hash must be commited to this repo.
 
 Services:
 
 - `backend`: Django backend with chat and user management features
 - `frontend`: Vike.dev frontend with chat and user management features
 - `redis`: Redis for caching and chat
-- `ingress`: Nginx ingress for routing, routes all traffice trough `localhost:80` in development
+- `ingress`: Nginx ingress for routing, routes all traffic through `localhost:80` in development
 
-### Frontend only development ( no backend required pages will work )
+## Frontend Only
 
 ```bash
 cd frontend
@@ -35,23 +51,10 @@ npm run build
 npm run dev
 ```
 
-## Documentation & Preview
-
-> You can log in with `test+msgmate2@msgmate.io` any number between 1-20, and the password `Test123!`.
-> Log in with two users and send some messages! The staging server is reset on every package update...
-
-- [The staging chat server](https://staging-open-chat.msgmate.io/)
-- [The documentation](https://staging-open-chat.msgmate.io/docs)
-- [The API](https://staging-open-chat.msgmate.io/api/schema/redoc/)
-
 ### About
 
-This project was initiated and built by @tbscode, with the intention of becoming an open, self-hostable AI chat interface. It offers several Django packages that can be integrated into a Django app for chat and user management features.
+This project is built and maintained by [@tbscode](https://github.com/tbscode) and was initiated to offer a truly decentralized Chat GPT alternative, including user management, deployment, bots, voice chat, and more.
 
-The app and interface will also provide a way to integrate with AI-bots/agents or other applications. You will be able to either run the Chat locally and [run the included bots](todo) with some API keys, or you can self-host models with them using means like [`localai.io`](https://localai.io) and connect them using Bots or Agents. Alternatively, you can enter AI-Chat service API keys to your bots or use the bots and interfaces of services such as [`msgmate.io`](https://msgmate.io).
+As I work full-time as CTO of the non-profit [Little World](https://home.little-world.com), I will use the limited time I have to extend and manage this project. However, to truly advance this stack to where it needs to be for widespread adoption, it requires many more development hours and must remain open-source and applicable for small businesses or individuals to build and experiment with.
 
-There is copyrighted static content present in this repo at: `./frontend/assets`. This includes, for example, the msgmate.io logo, other external logos ( `./frontend/assets/_external_logos` ) and other landing page assets (please replace/delete them if you intend to publish/fork).
-
-There is also a fork/port of [shadcn-landing-page](https://github.com/leoMirandaa/shadcn-landing-page/tree/main) included at `./frontend/components/landing_page`.
-
-The rest of the repo is licensed under MIT: [Check LICENSE.md](./LICENSE.md)
+Efforts to secure development funding are ongoing but have so far been unsuccessful. I hope to find and encourage people to help with this project and am willing to invest in its open-source development.
