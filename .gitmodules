@@ -1,6 +1,3 @@
 [submodule "frontend/components"]
 	path = frontend/components
 	url = https://github.com/msgmate-io/open-chat-ui
-[submodule "bots/hal9003"]
-	path = bots/hal9003
-	url = https://github.com/msgmate-io/msgmate-io-oc-hal9003-bot
