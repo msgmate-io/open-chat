@@ -6,6 +6,6 @@ if [ $CREATE_TEST_USERS = "true" ]; then
     python3 manage.py shell --command 'from core.default_user_setup import create_or_reset_test_users; create_or_reset_test_users(4)'
 fi
 
-SINGLE_BEAT_REDIS_SERVER="$REDIS_URL" single-beat celery -A back beat --loglevel=info &
+SINGLE_BEAT_REDIS_SERVER="$REDIS_URL" single-beat celery -A conf beat --loglevel=info &
 
 uvicorn conf.asgi:application --reload --port 8000 --host 0.0.0.0
