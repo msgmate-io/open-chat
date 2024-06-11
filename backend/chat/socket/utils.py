@@ -3,11 +3,21 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from conf.utils import CoolerJson
 from chat.socket.enums import OutMessageTypes
+from django.contrib.auth import get_user_model
+import importlib
 import json
 
 def send_message(user_id, type: OutMessageTypes, data):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(user_id, data)
+
+    if get_user_model().objects.filter(uuid=user_id, automated=True, profile__is_bot=True).exists():
+        # user.automated = True -> A bot build into the backend
+        celery_task = "msgmate.tasks.text_chat_reponse_hal9008"
+        celery_task = celery_task.split(".")
+        module = importlib.import_module(".".join(celery_task[:-1]))
+        task = getattr(module, celery_task[-1])
+        task.delay()
 
 @dataclass
 class OutMessageBase:

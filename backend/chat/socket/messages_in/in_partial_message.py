@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from chat.socket.utils import InMessageBase
-from chat.socket.messages_out import NewPartialMessage
+from chat.socket.messages_out import OutNewPartialMessage
 from typing import Optional
 
 @dataclass
@@ -48,7 +48,7 @@ class InPartialMessage(InMessageBase):
             "user": user
         }).data
         
-        NewPartialMessage(
+        OutNewPartialMessage(
             sender_id=str(user.uuid),
             message=tmp_message,
             chat=chat_serialized

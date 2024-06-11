@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from chat.socket.utils import InMessageBase
-from chat.socket.messages_out import NewMessage
+from chat.socket.messages_out import OutNewMessage
 from typing import Optional
 
 @dataclass
@@ -60,7 +60,7 @@ class InSendMessage(InMessageBase):
         
         print(f"Serialized message: {serialized_message}", flush=True)
         
-        NewMessage(
+        OutNewMessage(
             sender_id=str(user.uuid),
             message=serialized_message,
             chat=chat_serialized

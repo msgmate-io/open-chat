@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from chat.models import Chat, ChatSerializer, MessageSerializer, Message
 from django.db.models import Q
 from chat.socket.utils import InMessageBase
-from chat.socket.messages_out import NewMessage
+from chat.socket.messages_out import OutNewMessage
 
 @dataclass
 class InSendMessageChatTitle(InMessageBase):
@@ -38,7 +38,7 @@ class InSendMessageChatTitle(InMessageBase):
 
         serialized_message = MessageSerializer(message).data
 
-        NewMessage(
+        OutNewMessage(
             sender_id=str(user.uuid),
             message=serialized_message,
             chat=chat_serialized
