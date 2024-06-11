@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_celery_beat',
+    'django_celery_results',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -34,8 +36,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'core',
     'chat',
-    #'ddrr',
-    'django_prometheus'
+    'django_prometheus',
+    *EXTRA_APPS
 ]
 MIDDLEWARE = [
     "ddrr.middleware.DebugRequestsResponses",
@@ -330,6 +332,8 @@ JAZZMIN_SETTINGS = {
     "use_google_fonts_cdn": True,  # TODO: we don't want his
     "show_ui_builder": False,
 }
+
+CELERY_RESULT_BACKEND = 'django-db'
 
 JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": True,
