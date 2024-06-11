@@ -1,13 +1,13 @@
 from .messages import (
-    NewMessage,
-    NewPartialMessage,
-    UserWentOffline,
-    UserWentOnline 
+    OutNewMessage,
+    OutNewPartialMessage,
+    OutUserWentOffline,
+    OutUserWentOnline 
 )
 
 __all__ = [
-    "NewMessage",
-    "NewPartialMessage",
-    "UserWentOffline",
-    "UserWentOnline"
+    "OutNewMessage",
+    "OutNewPartialMessage",
+    "OutUserWentOffline",
+    "OutUserWentOnline"
 ]

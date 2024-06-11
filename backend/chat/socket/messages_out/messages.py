@@ -3,7 +3,7 @@ from chat.socket.enums import OutMessageTypes
 from dataclasses import dataclass
 
 @dataclass
-class UserWentOnline(OutMessageBase):
+class OutUserWentOnline(OutMessageBase):
     sender_id: str
     type: str = OutMessageTypes.user_went_online.value
     
@@ -16,7 +16,7 @@ class UserWentOnline(OutMessageBase):
         )
     
 @dataclass
-class UserWentOffline(OutMessageBase):
+class OutUserWentOffline(OutMessageBase):
     sender_id: str
     type: str = OutMessageTypes.user_went_offline.value
 
@@ -29,7 +29,7 @@ class UserWentOffline(OutMessageBase):
         )
         
 @dataclass
-class NewMessage(OutMessageBase):
+class OutNewMessage(OutMessageBase):
     sender_id: str
     message: dict
     chat: dict
@@ -46,7 +46,7 @@ class NewMessage(OutMessageBase):
         )
         
 @dataclass
-class NewPartialMessage(OutMessageBase):
+class OutNewPartialMessage(OutMessageBase):
     sender_id: str
     message: dict
     chat: dict

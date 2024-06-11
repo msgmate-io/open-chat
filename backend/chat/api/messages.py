@@ -7,7 +7,7 @@ from chat.api.viewsets import UserStaffRestricedModelViewsetMixin, DetailedPagin
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, inline_serializer
 from django.db.models import Q
-from chat.consumers.messages import NewMessage
+from chat.socket.messages_out import OutNewMessage
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
@@ -93,7 +93,7 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
             "user": request.user
         }).data
         
-        NewMessage(
+        OutNewMessage(
             sender_id=str(request.user.uuid),
             message=serialized_message,
             chat=chat_serialized
@@ -143,7 +143,7 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
             "user": request.user
         }).data
         
-        NewMessage(
+        OutNewMessage(
             sender_id=str(request.user.uuid),
             message=serialized_message,
             chat=chat_serialized

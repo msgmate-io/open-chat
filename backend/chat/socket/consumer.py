@@ -9,10 +9,10 @@ from chat.socket.messages_in import (
     InMarkMessageRead
 )
 from chat.socket.messages_out import (
-    NewMessage,
-    NewPartialMessage,
-    UserWentOffline,
-    UserWentOnline
+    OutNewMessage,
+    OutNewPartialMessage,
+    OutUserWentOffline,
+    OutUserWentOnline
 )
 from chat.socket.enums import OutMessageTypes, InMessageTypes
 
@@ -69,7 +69,7 @@ Every user that connects joins:
             for user_id in user_ids:
                 if user_id != self.group_name:
                     await self.channel_layer.group_send(
-                        user_id, UserWentOnline(sender_id=self.group_name).dict())
+                        user_id, OutUserWentOnline(sender_id=self.group_name).dict())
                     
     async def disconnect(self, close_code):
         if (close_code != UNAUTH_REJECT_CODE) and (getattr(self, 'user', None) is not None):
@@ -86,7 +86,7 @@ Every user that connects joins:
                 for user_id in user_ids:
                     if user_id != self.group_name:
                         await self.channel_layer.group_send(
-                            user_id, UserWentOffline(sender_id=self.group_name).dict())
+                            user_id, OutUserWentOffline(sender_id=self.group_name).dict())
 
                 # a user has disconnected, we can safly discard that users group ( stored in self.group_name )
                 await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -116,19 +116,19 @@ Every user that connects joins:
                 
     async def new_partial_message(self, event):
         assert event['type'] == OutMessageTypes.new_partial_message.value
-        await self.send(text_data=NewPartialMessage(**event).action_json())
+        await self.send(text_data=OutNewPartialMessage(**event).action_json())
                     
     async def user_went_online(self, event):
         assert event['type'] == OutMessageTypes.user_went_online.value
-        await self.send(text_data=UserWentOnline(**event).action_json())
+        await self.send(text_data=OutUserWentOnline(**event).action_json())
         
     async def new_message(self, event):
         assert event['type'] == OutMessageTypes.new_message.value
-        new_message_action = NewMessage(**event).action_json()
+        new_message_action = OutNewMessage(**event).action_json()
         await self.send(text_data=new_message_action)
         # TODO: Check if a bot task should be triggered
         print(f"New message sent: {new_message_action}", flush=True)
         
     async def user_went_offline(self, event):
         assert event['type'] == OutMessageTypes.user_went_offline.value
-        await self.send(text_data=UserWentOffline(**event).action_json())
+        await self.send(text_data=OutUserWentOffline(**event).action_json())

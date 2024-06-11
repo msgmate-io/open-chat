@@ -14,8 +14,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.db.models import Q
 from chat.api.messages import SendMessageSerializer
-from chat.models import Chat, Message, ChatSerializer
-from chat.consumers.messages import NewMessage, MessageSerializer
+from chat.models import Chat, Message, ChatSerializer, MessageSerializer
+from chat.socket.messages_out import OutNewMessage
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -151,7 +151,7 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
             "request": request
         }).data
         
-        NewMessage(
+        OutNewMessage(
             sender_id=str(request.user.uuid),
             message=serialized_message,
             chat=chat_serialized
