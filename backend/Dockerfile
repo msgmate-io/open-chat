@@ -11,5 +11,6 @@ RUN pip cache purge
 COPY . .
 
 EXPOSE 8000
+EXPOSE 5555
 
 CMD ["sh", "spinup.sh"]

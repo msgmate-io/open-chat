@@ -334,6 +334,7 @@ JAZZMIN_SETTINGS = {
 }
 
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TRACK_STARTED = True
 
 JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": True,

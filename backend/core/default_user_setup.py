@@ -113,6 +113,9 @@ def create_bot_user(bot_info):
         email=bot_info["email"],
         password=bot_info["password"]
     )
+    if 'automated' in bot_info and bot_info['automated']:
+        bot.automated = True
+        bot.save()
     bot_user_permission_group.user_set.add(bot)
     print(f"Got bot user: {bot}, profile {bot.profile}")
     
@@ -133,6 +136,14 @@ def create_bot_user(bot_info):
             title=f"{bot_info['username']}-debug-chat"
         )
         
+        # Send an inital message indicating this is the debug chat
+        Message.objects.create(
+            chat=chat,
+            sender=bot,
+            recipient=admin,
+            text="This is the debug chat, please use it to test your bot"
+        )
+        
     transaction.on_commit(setup_debug_chat)
     
 def create_or_reset_base_bot_users():
@@ -146,6 +157,7 @@ def create_or_reset_base_bot_users():
             "username": f"hal9003",
             "email": f"hal9003+dev@msgmate.io",
             "password": "Test123!",
+            "automated": True,
             "profile": {
                 "first_name": "HAL",
                 "second_name": "9003",

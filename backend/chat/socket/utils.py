@@ -10,14 +10,17 @@ import json
 def send_message(user_id, type: OutMessageTypes, data):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(user_id, data)
+    
+    print(f"Sent message to {user_id} with type {type} and data", flush=True)
 
-    if get_user_model().objects.filter(uuid=user_id, automated=True, profile__is_bot=True).exists():
-        # user.automated = True -> A bot build into the backend
-        celery_task = "msgmate.tasks.text_chat_reponse_hal9008"
-        celery_task = celery_task.split(".")
-        module = importlib.import_module(".".join(celery_task[:-1]))
-        task = getattr(module, celery_task[-1])
-        task.delay()
+    if type == "new_message":
+        if get_user_model().objects.filter(uuid=user_id, automated=True, profile__is_bot=True).exists():
+            # user.automated = True -> A bot build into the backend
+            function_lookup = "msgmate.automatic_response.coordinate_response"
+            function_lookup = function_lookup.split(".")
+            module = importlib.import_module(".".join(function_lookup[:-1]))
+            task = getattr(module, function_lookup[-1])
+            task(user_id, data)
 
 @dataclass
 class OutMessageBase:
