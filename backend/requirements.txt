@@ -4,7 +4,7 @@ channels-redis==4.0.0 # For using channels with redis
 django-cors-headers
 markdown
 django-filter
-celery==5.2.7
+celery==5.3
 single-beat
 django-celery-results
 django-celery-beat
