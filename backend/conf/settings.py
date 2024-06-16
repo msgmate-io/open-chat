@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_nextjs.apps.DjangoNextJSConfig',
     'drf_spectacular',
+    'revproxy',
     'drf_spectacular_sidecar',
     'rest_framework.authtoken',
     'corsheaders',

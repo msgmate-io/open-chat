@@ -48,5 +48,5 @@ urlpatterns = [
     path("api/user/self", user_api_user),
     path("api/user/register", register.register_user),
     path("api/user/logout", login.logout_user),
-    path("api/user/login", login.login_user),
+    path("api/user/login", login.login_user)
 ]
