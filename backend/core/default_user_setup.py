@@ -149,10 +149,6 @@ def create_bot_user(bot_info):
     
 def create_or_reset_base_bot_users():
     
-    #BOTS_B64 = os.environ.get("BOTS_B64", None)
-    #BOTS = json.loads(base64.b64decode(BOTS_B64.encode("utf-8"))) if BOTS_B64 else []
-    print(f"Creating bots: {BOTS}")
-    
     BOTS = [{
         "username": f"hal",
         "email": f"hal@msgmate.io",
