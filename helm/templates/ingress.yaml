@@ -37,6 +37,20 @@ spec:
                 name: backend-service
                 port:
                   number: 8000
+          - path: /accounts
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 8000
+          - path: /flowers
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 8000
           - path: /static
             pathType: Prefix
             backend:
