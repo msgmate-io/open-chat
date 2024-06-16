@@ -109,8 +109,9 @@ def create_or_reset_admin_user():
     
 def create_bot_user(bot_info):
     bot_user_permission_group = Group.objects.get(name=Groups.bot_user) 
-    bot, _ = get_or_create_ffuser(
+    bot, _ = get_or_create_user(
         email=bot_info["email"],
+        username=bot_info["username"],
         password=bot_info["password"]
     )
     if 'automated' in bot_info and bot_info['automated']:
@@ -148,26 +149,25 @@ def create_bot_user(bot_info):
     
 def create_or_reset_base_bot_users():
     
-    BOTS_B64 = os.environ.get("BOTS_B64", None)
-    BOTS = json.loads(base64.b64decode(BOTS_B64.encode("utf-8"))) if BOTS_B64 else []
+    #BOTS_B64 = os.environ.get("BOTS_B64", None)
+    #BOTS = json.loads(base64.b64decode(BOTS_B64.encode("utf-8"))) if BOTS_B64 else []
     print(f"Creating bots: {BOTS}")
     
-    if settings.DEBUG and len(BOTS) == 0:
-        BOTS = [{
-            "username": f"hal9003",
-            "email": f"hal9003+dev@msgmate.io",
-            "password": "Test123!",
-            "automated": True,
-            "profile": {
-                "first_name": "HAL",
-                "second_name": "9003",
-                "public": True,
-                "contact_secret": None,
-                "is_bot": True,
-                "description_title": "About Bot:",
-                "description": "General Purpose Hal9003 Bot checkout my source at: https://github.com/msgmate-io/msgmate-io-oc-hal9003-bot",
-            },
-        }]
+    BOTS = [{
+        "username": f"hal",
+        "email": f"hal@msgmate.io",
+        "password": os.environ.get("HAL_PASSWORD", "Test123!"),
+        "automated": True,
+        "profile": {
+            "first_name": "HAL",
+            "second_name": "9003",
+            "public": True,
+            "contact_secret": None,
+            "is_bot": True,
+            "description_title": "About Bot:",
+            "description": "General Purpose Hal9003 Bot checkout my source at: https://github.com/msgmate-io/msgmate-io-oc-hal9003-bot",
+        },
+    }]
 
     for bot_info in BOTS:
         create_bot_user(bot_info)

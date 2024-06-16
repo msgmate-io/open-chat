@@ -20,6 +20,10 @@ public_profiles_get = profile.PublicProfilesViewset.as_view({
     'get': 'get_by_uuid',
 })
 
+public_profiles_username_get = profile.PublicProfilesViewset.as_view({
+    'get': 'get_by_username',
+})
+
 reveal_profile_get = profile.PublicProfilesViewset.as_view({
     'get': 'reveal_profile',
 })
@@ -42,6 +46,7 @@ urlpatterns = [
 
     path("api/profile/reveal/", reveal_profile_get),
     path("api/profile/<str:user_uuid>/", public_profiles_get),
+    path("api/profile/name/<str:username>/", public_profiles_username_get),
     path("api/profile/<str:user_uuid>/create_chat", public_profiles_create_chat),
     path("api/profile/self", profile_api_user),
 

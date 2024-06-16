@@ -14,9 +14,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.db.models import Q
 from chat.api.messages import SendMessageSerializer
-from chat.models import Chat, Message, ChatSerializer, MessageSerializer
+from chat.models import Chat, Message, ChatSerializer, MessageSerializer, ChatSettings
 from chat.socket.messages_out import OutNewMessage
 
+
+class CreateChatSerializer(serializers.Serializer):
+    text = serializers.CharField()
+    chat_settings = serializers.JSONField(required=False)
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 5
@@ -82,7 +86,6 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_by_uuid(self, request, user_uuid=None):
         # A profile can only be fetched if either a chat with that user exists or the user is public
-        from chat.models import Chat
         user = get_user_model().objects.get(uuid=user_uuid)
         reveal_secret = request.query_params.get("reveal_secret", None)
         if reveal_secret and (user.profile.reveal_secret == reveal_secret):
@@ -99,9 +102,36 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
         return Response(UserProfileSerializer(user.profile, context={
             'request': request,
         }).data)
+        
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name="reveal_secret", type=str, required=False, location=OpenApiParameter.QUERY, description="The secret to reveal the user profile")
+        ],
+        responses={200: UserProfileSerializer(many=False)}
+    )
+    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'])
+    def get_by_username(self, request, username=None):
+        user = get_user_model().objects.get(username=username)
+
+        reveal_secret = request.query_params.get("reveal_secret", None)
+        if reveal_secret and (user.profile.reveal_secret == reveal_secret):
+            return Response(UserProfileSerializer(user.profile, context={
+                'request': request,
+            }).data)
+
+        chat = Chat.objects.filter(
+            Q(u1=self.request.user, u2=user) | Q(u1=user, u2=self.request.user)
+        )
+        if not chat.exists() and not user.profile.public:
+            return Response({"status": "error", "data": "User not found"}, status=404)
+
+        return Response(UserProfileSerializer(user.profile, context={
+            'request': request,
+        }).data)
     
     @extend_schema(
-        request=SendMessageSerializer,
+        request=CreateChatSerializer,
         parameters=[
             OpenApiParameter(name="reveal_secret", type=str, required=False, location=OpenApiParameter.QUERY, description="The secret to reveal the user profile"),
             OpenApiParameter(name="contact_secret", type=str, required=False, location=OpenApiParameter.QUERY, description="The secret to reveal the user profile")
@@ -118,6 +148,8 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
     def create_chat(self, request, user_uuid=None):
 
         user = get_user_model().objects.get(uuid=user_uuid)
+        
+        chat_settings = request.data.get("chat_settings", None)
         
         reveal_secret = request.query_params.get("reveal_secret", None)
         require_previous_chat = True
@@ -137,6 +169,22 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
         
         # 1 - create the NEW chat
         chat = Chat.objects.create(u1=self.request.user, u2=user)
+        
+        # (optionally) set the chat settings
+        if chat_settings:
+            # This options is only allowed for 'public' bots!
+            bot = chat.get_partner(self.request.user)
+            
+            if not bot.profile.public and bot.profile.is_bot:    
+                return Response({"status": "error", "data": "Not Bot or not public, setting chat settings not permitted"}, status=401)
+
+            ChatSettings.objects.create(
+                user=bot,
+                chat=chat,
+                title="Automated Chat Settings",
+                config=chat_settings
+            )
+        
         
         # 2 - send the first message
         message = Message.objects.create(
