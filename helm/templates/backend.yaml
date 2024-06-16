@@ -41,6 +41,23 @@ data:
   {{ $key }}: {{ $value | b64enc }}
 {{- end }}
 ---
+{{- if .Values.backend.useFlower }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5555
+      targetPort: 5555
+  selector:
+    app: backend
+{{- end }}
+---
 apiVersion: v1
 kind: Service
 metadata:

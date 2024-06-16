@@ -44,7 +44,7 @@ spec:
                 name: backend-service
                 port:
                   number: 8000
-          - path: /flowers
+          - path: /flower
             pathType: Prefix
             backend:
               service:
