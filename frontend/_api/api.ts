@@ -42,6 +42,18 @@ export interface AugmentedBotUser {
   uuid: string;
 }
 
+export interface BotsControl {
+  /** @format uuid */
+  uuid: string;
+}
+
+export interface BotsListListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+  /** Number of results to return per page. */
+  page_size?: number;
+}
+
 export interface Chat {
   /** @format uuid */
   u1: string;
@@ -101,6 +113,26 @@ export interface ChatsWithListParams {
   userUuid: string;
 }
 
+export interface CreateChat {
+  chat_settings?: any;
+  text: string;
+}
+
+/**
+ * * `custom` - Custom
+ * * `audio_b64` - Audio B64
+ * * `signal` - Signal
+ */
+export enum DataTypeEnum {
+  Custom = "custom",
+  AudioB64 = "audio_b64",
+  Signal = "signal",
+}
+
+export interface GetChatByTitleRequest {
+  title: string;
+}
+
 export interface LoginInfo {
   password: string;
   username: string;
@@ -123,6 +155,46 @@ export interface MessagesListParams {
   page?: number;
   /** Number of results to return per page. */
   page_size?: number;
+}
+
+export interface PaginatedBotsControlList {
+  /**
+   * The first page number
+   * @format int32
+   * @example "1"
+   */
+  first_page?: number;
+  /**
+   * The total number of items
+   * @format int32
+   * @example "1"
+   */
+  items_total?: number;
+  /**
+   * The next page number
+   * @format int32
+   * @example "2"
+   */
+  next_page?: number;
+  /**
+   * The number of items per page
+   * @format int32
+   * @example "40"
+   */
+  page_size?: number;
+  /**
+   * The total number of pages
+   * @format int32
+   * @example "1"
+   */
+  pages_total?: number;
+  /**
+   * The previous page number
+   * @format int32
+   * @example "1"
+   */
+  previous_page?: number;
+  results?: BotsControl[];
 }
 
 export interface PaginatedChatResultList {
@@ -280,6 +352,12 @@ export interface ProfileCreateChatCreateParams {
   userUuid: string;
 }
 
+export interface ProfileNameRetrieveParams {
+  /** The secret to reveal the user profile */
+  reveal_secret?: string;
+  username: string;
+}
+
 export interface ProfileRetrieveParams {
   /** The secret to reveal the user profile */
   reveal_secret?: string;
@@ -323,6 +401,18 @@ export interface RegisterBot {
 export interface RegisterResponseSuccess {
   message: string;
   user_hash: string;
+}
+
+export interface SendDataMessage {
+  data: any;
+  /**
+   * * `custom` - Custom
+   * * `audio_b64` - Audio B64
+   * * `signal` - Signal
+   */
+  data_type: DataTypeEnum;
+  hide_message: boolean;
+  text: string;
 }
 
 export interface SendMessage {
@@ -493,8 +583,8 @@ export class HttpClient<SecurityDataType = unknown> {
           property instanceof Blob
             ? property
             : typeof property === "object" && property !== null
-            ? JSON.stringify(property)
-            : `${property}`,
+              ? JSON.stringify(property)
+              : `${property}`,
         );
         return formData;
       }, new FormData()),
@@ -567,7 +657,7 @@ export class HttpClient<SecurityDataType = unknown> {
       signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
       body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
     }).then(async (response) => {
-      const r = response as HttpResponse<T, E>;
+      const r = response.clone() as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
 
@@ -598,10 +688,10 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title API docs
+ * @title Open Chat API
  * @version 1.0.0
  *
- * API docs
+ * Msgmate / Open Chat API
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
@@ -646,14 +736,51 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags bots
+     * @name BotsListList
+     * @request GET:/api/bots/list
+     * @secure
+     */
+    botsListList: (query: BotsListListParams, params: RequestParams = {}) =>
+      this.request<PaginatedBotsControlList, any>({
+        path: `/api/bots/list`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Simple Viewset for modifying user profiles
+     *
+     * @tags chats
+     * @name ChatsByTitleCreate
+     * @request POST:/api/chats/by_title/
+     * @secure
+     */
+    chatsByTitleCreate: (data: GetChatByTitleRequest, params: RequestParams = {}) =>
+      this.request<ChatResult, any>({
+        path: `/api/chats/by_title/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags chats
      * @name ChatsContactsList
-     * @request GET:/api/chats/contacts
+     * @request GET:/api/chats/contacts/
      * @secure
      */
     chatsContactsList: (query: ChatsContactsListParams, params: RequestParams = {}) =>
       this.request<PaginatedUserProfileList, any>({
-        path: `/api/chats/contacts`,
+        path: `/api/chats/contacts/`,
         method: "GET",
         query: query,
         secure: true,
@@ -839,6 +966,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Simple Viewset messages CREATE, LIST, UPDATE, DELETE
+     *
+     * @tags messages
+     * @name MessagesSendDataCreate
+     * @request POST:/api/messages/{chat_uuid}/send_data/
+     * @secure
+     */
+    messagesSendDataCreate: (chatUuid: string, data: SendDataMessage, params: RequestParams = {}) =>
+      this.request<Message, any>({
+        path: `/api/messages/${chatUuid}/send_data/`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @tags profile
@@ -848,7 +994,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     profileCreateChatCreate: (
       { userUuid, ...query }: ProfileCreateChatCreateParams,
-      data: SendMessage,
+      data: CreateChat,
       params: RequestParams = {},
     ) =>
       this.request<ChatCreationResponse, any>({
@@ -858,6 +1004,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileNameRetrieve
+     * @request GET:/api/profile/name/{username}/
+     * @secure
+     */
+    profileNameRetrieve: ({ username, ...query }: ProfileNameRetrieveParams, params: RequestParams = {}) =>
+      this.request<UserProfile, any>({
+        path: `/api/profile/name/${username}/`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
