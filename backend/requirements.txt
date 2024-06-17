@@ -31,9 +31,10 @@ python3-saml
 django-allauth
 python3-openid
 cryptography
+flower
 # tmp requirements hal9008 developmens ( will be seperated later )
 open-chat-api-client @ https://github.com/tbscode/open-chat-api-client/tarball/master
 autobahn
 openai
 jsonschema
-flower
+pydub
