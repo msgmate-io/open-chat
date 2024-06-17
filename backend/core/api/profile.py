@@ -13,14 +13,18 @@ from chat.api.viewsets import DetailedPaginationMixin
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.db.models import Q
-from chat.api.messages import SendMessageSerializer
-from chat.models import Chat, Message, ChatSerializer, MessageSerializer, ChatSettings
+from chat.models import Chat, Message, ChatSerializer, MessageSerializer, ChatSettings, DataMessage
 from chat.socket.messages_out import OutNewMessage
 
+class DataMessageExtraSerializer(serializers.Serializer):
+    hide_message = serializers.BooleanField()
+    data = serializers.JSONField()
+    data_type = serializers.ChoiceField(choices=DataMessage.DataMessageTypes.choices)
 
 class CreateChatSerializer(serializers.Serializer):
     text = serializers.CharField()
     chat_settings = serializers.JSONField(required=False)
+    data_message = DataMessageExtraSerializer(required=False)
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 5
@@ -193,6 +197,21 @@ class PublicProfilesViewset(viewsets.ModelViewSet):
             recipient=user,
             text=request.data["text"]
         )
+        
+        # 3 - check if a 'data_message' is present
+        
+        data_message = request.data.get("data_message", None)
+        if data_message:
+            dm = DataMessage.objects.create(
+                message=message,
+                data_type=data_message["data_type"],
+                data=data_message["data"],
+                hide_message=data_message["hide_message"]
+            )
+            
+            message.data_message = dm
+            message.save()
+
         serialized_message = MessageSerializer(message).data
 
         chat_serialized = ChatSerializer(chat, context={
