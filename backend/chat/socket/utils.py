@@ -14,6 +14,7 @@ def send_message(user_id, type: OutMessageTypes, data):
     print(f"Sent message to {user_id} with type {type} and data", flush=True)
 
     if type == "new_message":
+        # TODO: in the future add webhook that can be consumed from here!
         if get_user_model().objects.filter(uuid=user_id, automated=True, profile__is_bot=True).exists():
             # user.automated = True -> A bot build into the backend
             function_lookup = "msgmate.automatic_response.coordinate_response"

@@ -119,12 +119,6 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
         serializer = SendDataMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        data_message = DataMessage.objects.create(
-            chat=chat,
-            data=serializer.data['data'],
-            hide_message=serializer.data['hide_message'],
-            data_type=serializer.data['data_type']
-        )
 
         partner = chat.get_partner(request.user) 
         message = Message.objects.create(
@@ -132,12 +126,19 @@ class MessagesModelViewSet(UserStaffRestricedModelViewsetMixin, viewsets.ModelVi
             sender=request.user,
             recipient=partner,
             text=serializer.data['text'],
-            data_message=data_message
+            data_message=None
+        )
+
+        data_message = DataMessage.objects.create(
+            message=message,
+            data=serializer.data['data'],
+            hide_message=serializer.data['hide_message'],
+            data_type=serializer.data['data_type']
         )
         
         # fiannly update the data message message reference
-        data_message.message = message
-        data_message.save()
+        message.data_message = data_message
+        message.save()
         
         serialized_message = self.serializer_class(message).data
         
