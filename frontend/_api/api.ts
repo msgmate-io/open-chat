@@ -115,7 +115,19 @@ export interface ChatsWithListParams {
 
 export interface CreateChat {
   chat_settings?: any;
+  data_message?: DataMessageExtra;
   text: string;
+}
+
+export interface DataMessageExtra {
+  data: any;
+  /**
+   * * `custom` - Custom
+   * * `audio_b64` - Audio B64
+   * * `signal` - Signal
+   */
+  data_type: DataTypeEnum;
+  hide_message: boolean;
 }
 
 /**
