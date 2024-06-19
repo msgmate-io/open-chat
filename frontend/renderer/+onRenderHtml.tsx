@@ -1,6 +1,8 @@
 export default onRenderHtml;
 // See https://vike.dev/data-fetching
+import logo from "#/assets/logo.png";
 import { renderToString } from "react-dom/server";
+
 
 import favicon from '#/assets/logo.png';
 import { ServerContextProvider } from "@open-chat/open-chat-ui";
@@ -32,7 +34,7 @@ async function onRenderHtml(pageContext) {
           searchParams={pageContext.urlParsed.search}
           location="server"
           globalContext={{
-            logoUrl: "https://avatars.githubusercontent.com/u/163599389",
+            logoUrl: logo,
             navigate: navigateSearch
           }}
         >

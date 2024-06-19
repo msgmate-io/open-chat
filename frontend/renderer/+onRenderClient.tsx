@@ -1,4 +1,5 @@
 export default render;
+import logo from "#/assets/logo.png";
 import { ServerContextProvider } from "@open-chat/open-chat-ui";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -20,7 +21,7 @@ async function render(pageContext) {
         sessionIdExists={passDown?.sessionIdExists || false}
         theme={passDown?.theme || "light"}
         globalContext={{
-          logoUrl: "https://avatars.githubusercontent.com/u/163599389",
+          logoUrl: logo,
           navigate: navigateSearch
         }}
       >
