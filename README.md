@@ -1,5 +1,6 @@
 # Open-Chat by Msgmate.io
 
+
 Continuation of Open-Chat as an effort to kick-start further open-source development [without any open-source related funding](#about).
 
 Open-Chat will be built openly, while the more advanced bots and model connectors will be developed closed source until mature enough for release.
@@ -11,6 +12,10 @@ Usage of these features will incur costs, which will be covered by token purchas
 We are eager to get the infrastructure out there and used. A YouTube introduction series is planned to present the interface and its deployment.
 
 If you have collaboration ideas, want a demo of Msgmate, or seek early user access, please email me at `tim@msgmate.io`.
+
+## beta.msgmate.io launched!
+
+[![Open Chat Beta Launch](https://img.youtube.com/vi/OqT_kIhz8Dc/0.jpg)](https://www.youtube.com/watch?v=OqT_kIhz8Dc)
 
 ## Local Usage
 
@@ -58,3 +63,24 @@ This project is built and maintained by [@tbscode](https://github.com/tbscode) a
 As I work full-time as CTO of the non-profit [Little World](https://home.little-world.com), I will use the limited time I have to extend and manage this project. However, to truly advance this stack to where it needs to be for widespread adoption, it requires many more development hours and must remain open-source and applicable for small businesses or individuals to build and experiment with.
 
 Efforts to secure development funding are ongoing but have so far been unsuccessful. I hope to find and encourage people to help with this project and am willing to invest in its open-source development.
+
+
+
+
+
+##### 
+
+Hey everybody, got another Update from Open-Chat.
+Frontend completely using vike.dev (finally using it a-lot clearner too) now also, 
+migrated the project over to: https://github.com/msgmate-io/open-chat/
+
+Tailwind + Shadcnui + Daisyui (mainly for colors) + redux => The new chat Interface.
+
+Fully containerized ( also the vike prod app ist in a 'mininmal' container with the server entry bundeled! ).
+
+I'm launching the official BETA for Open-Chat today ( over on https://beta.msgmate.io ).
+I've created this video to give a fist impression, preview and also scope / vision for this project: https://youtu.be/OqT_kIhz8Dc?si=yoCwIjU_x3_uFDUp
+
+Would love some feedback or comments, as this is the vike channel ofc let me know if you want some details on the vike setup or have question about the repo!
+
+I's been quite the journey using vike, but I don't regret any-bit of it, still runs sooth, fast and I have all the configuration flexibility I ever wanted!
