@@ -7,7 +7,7 @@ class FlowerProxyView(UserPassesTestMixin, ProxyView):
     # `flower` is Docker container, you can use `localhost` instead
     SERVER_HOST = os.getenv("FLOWER_SERVICE_HOST", "backend")
     upstream = 'http://{}:{}'.format(SERVER_HOST, 5555)
-    url_prefix = 'flower'
+    url_prefix = 'hal/flower'
     rewrite = (
         (r'^/{}$'.format(url_prefix), r'/{}/'.format(url_prefix)),
      )

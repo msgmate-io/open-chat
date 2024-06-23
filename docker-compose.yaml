@@ -18,7 +18,6 @@ services:
       CREATE_TEST_USERS: 'true'
     ports:
       - "8000:8000"
-      - "5555:5555"
     volumes:
       - ./backend:/backend
   hal:
@@ -42,6 +41,9 @@ services:
       GROQ_API_KEY: ${GROQ_API_KEY-}
       DEEPINFRA_API_KEY: ${DEEPINFRA_API_KEY-}
       OPENAI_API_KEY: ${OPENAI_API_KEY-}
+    ports:
+      - "8001:8000"
+      - "5555:5555"
     volumes:
       - ./hal:/hal
   frontend:

@@ -11,7 +11,7 @@ SINGLE_BEAT_REDIS_SERVER="$REDIS_URL" single-beat celery -A conf beat --loglevel
 
 function start_flower() {
     sleep 5
-    celery -A conf flower --url_prefix=/flower --loglevel=info
+    celery -A conf flower --url_prefix=hal/flower --loglevel=info
 }
 
 
