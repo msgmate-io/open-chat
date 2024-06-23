@@ -24,7 +24,7 @@ services:
   hal:
     image: "hal"
     build:
-      context: ./backend
+      context: ./hal
       dockerfile: ./Dockerfile
     environment:
       DJANGO_DEBUG: 'true'
@@ -42,6 +42,8 @@ services:
       GROQ_API_KEY: ${GROQ_API_KEY-}
       DEEPINFRA_API_KEY: ${DEEPINFRA_API_KEY-}
       OPENAI_API_KEY: ${OPENAI_API_KEY-}
+    volumes:
+      - ./hal:/hal
   frontend:
     build:
       context: ./frontend

@@ -80,6 +80,7 @@ docker compose up backend frontend redis ingress
 *Hal Bot only*
 
 ```bash
+docker compose build hal redis-hal
 docker compose up hal redis-hal
 ```
 
