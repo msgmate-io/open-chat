@@ -27,6 +27,27 @@ services:
     ports:
       - "3000:3000"
       - "24678:24678"
+  hal:
+    image: "${IMAGE_PREFIX-}hal:${IMAGE_TAG}"
+    build:
+      context: ./hal
+      dockerfile: ./Dockerfile
+    environment:
+      DJANGO_DEBUG: 'true'
+      PRODUCTION: 'true'
+      ROOT_URL: 'http://localhost'
+      ROOT_HOST: 't1m.me'
+      EXTRA_TRUSTED_ORIGINS: 'http://localhost:8000'
+      DJANGO_SECRET_KEY: 'SomeSecret'
+      DJANGO_ALLOWED_HOSTS: '*'
+      REDIS_URL: 'redis://redis-hal:6379'
+      EXTRA_APPS: ${EXTRA_APPS-}
+      BASE_ADMIN_USERNAME: 'admin'
+      BASE_ADMIN_USER_PASSWORD: 'password'
+      HAL_PASSWORD: "Test123!"
+      GROQ_API_KEY: ${GROQ_API_KEY-}
+      DEEPINFRA_API_KEY: ${DEEPINFRA_API_KEY-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY-}
   redis:
     image: redis:5
   ingress:
