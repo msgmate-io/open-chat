@@ -16,11 +16,6 @@ services:
       BASE_ADMIN_USERNAME: 'admin'
       BASE_ADMIN_USER_PASSWORD: 'password'
       CREATE_TEST_USERS: 'true'
-      EXTRA_APPS: ${EXTRA_APPS-}
-      HAL_PASSWORD: "Test123!"
-      GROQ_API_KEY: ${GROQ_API_KEY-}
-      DEEPINFRA_API_KEY: ${DEEPINFRA_API_KEY-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY-}
     ports:
       - "8000:8000"
       - "5555:5555"
