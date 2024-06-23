@@ -4,6 +4,7 @@ from channels.layers import get_channel_layer
 from conf.utils import CoolerJson
 from chat.socket.enums import OutMessageTypes
 from django.contrib.auth import get_user_model
+import os
 import importlib
 import json
 import requests
@@ -18,7 +19,9 @@ def send_message(user_id, type: OutMessageTypes, data):
         # TODO: This will be depricated in-favor of a websocket channle in the future
         if get_user_model().objects.filter(uuid=user_id, automated=True, profile__is_bot=True).exists():
             
-            requests.post("http://hal:8000/api/webhook/", json={
+            BOT_HOST = os.environ.get("HAL_BOT_HOST", "hal")    
+            
+            requests.post(f"http://{BOT_HOST}:8000/api/webhook/", json={
                 "user_id": user_id,
                 "data": data
             })
