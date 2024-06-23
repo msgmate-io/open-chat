@@ -6,6 +6,7 @@ from chat.socket.enums import OutMessageTypes
 from django.contrib.auth import get_user_model
 import importlib
 import json
+import requests
 
 def send_message(user_id, type: OutMessageTypes, data):
     channel_layer = get_channel_layer()
@@ -14,14 +15,13 @@ def send_message(user_id, type: OutMessageTypes, data):
     print(f"Sent message to {user_id} with type {type} and data", flush=True)
 
     if type == "new_message":
-        # TODO: in the future add webhook that can be consumed from here!
+        # TODO: This will be depricated in-favor of a websocket channle in the future
         if get_user_model().objects.filter(uuid=user_id, automated=True, profile__is_bot=True).exists():
-            # user.automated = True -> A bot build into the backend
-            function_lookup = "msgmate.automatic_response.coordinate_response"
-            function_lookup = function_lookup.split(".")
-            module = importlib.import_module(".".join(function_lookup[:-1]))
-            task = getattr(module, function_lookup[-1])
-            task(user_id, data)
+            
+            requests.post("http://hal:8000/api/webhook/", json={
+                "user_id": user_id,
+                "data": data
+            })
 
 @dataclass
 class OutMessageBase:
