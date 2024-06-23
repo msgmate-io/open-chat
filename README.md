@@ -19,13 +19,36 @@ If you have collaboration ideas, want a demo of Msgmate, or seek early user acce
 
 ## Local Usage
 
+You can use open-chat for local LLM completions today by following these steps:
+
+First clone the repository & initalize the submodules ( `hal/msgmate` is not open-source yet but fully optional! )
+
 ```bash
+git clone https://github.com/msgmate-io/open-chat
 git submodule update --init --recursive
+```
+
+Setup `.env` with your backends of choice e.g.:
+
+```bash
+GROQ_API_KEY="<API key for https://groq.com/>"
+DEEPINFRA_API_KEY="<API key for https://deepinfra.com>"
+OPENAI_API_KEY="<API key for https://api.openai.com/>"
+```
+
+Then build and run all services:
+
+```bash
 docker compose -f docker-compose.pro.yaml build
 docker compose -f docker-compose.pro.yaml up
 ```
 
 And you're ready to go at `localhost`.
+
+> Future todos are to:
+> - provide pre-build docker images
+> - provide pre-build clients
+> - provide setup instruction to local bot connectors to e.g.: https://localai.io
 
 ## Development
 

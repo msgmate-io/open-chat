@@ -1,9 +1,12 @@
 This LICENSE explicitly excludes files in:
 
 - `frontend/components/landing_page/`
+- `frontend/components/sections/`
 - `frontend/assets/`
+- `hal/msgmate/`: In development non-released msgmate bots-subrepo (can be used completly without this extra django app!)
 
 all files in these directories are copyrighted or provide additional / separate licenses.
+As I refactor msgmate I'll properly seperate these files so the licence can be applies to the whole project.
 
 For all other files:
 
