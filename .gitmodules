@@ -1,3 +1,6 @@
 [submodule "frontend/components"]
 	path = frontend/components
 	url = https://github.com/msgmate-io/open-chat-ui
+[submodule "hal/msgmate"]
+	path = hal/msgmate
+	url = https://github.com/msgmate-io/django-msgmate-core.git
