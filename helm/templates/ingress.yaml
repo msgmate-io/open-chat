@@ -17,9 +17,24 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ingress.host }}
+        {{- if .Values.hal.use }}
+        - {{ .Values.ingress.halHost }}
+        {{- end }}
       secretName: chat-ingress-tls
   {{- end }}
   rules:
+    {{- if .Values.hal.use }}
+    - host: {{ .Values.ingress.halHost }}
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: hal-service
+              port:
+                number: 8000
+    {{- end }}
     - host: {{ .Values.ingress.host }}
       http:
         paths:
