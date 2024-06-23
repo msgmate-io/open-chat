@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hal
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: hal
+spec:
+  replicas: {{ .Values.hal.replicas }}
+  selector:
+    matchLabels:
+      app: hal
+  template:
+    metadata:
+      labels:
+        app: hal
+    spec:
+      containers:
+        - name: hal
+          image: {{ .Values.hal.imageURL }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: hal-secret
+      {{- if .Values.hal.registry.authRequired }}
+      imagePullSecrets:
+        - name: {{ .Values.hal.registry.secretName }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hal-secret
+  namespace: {{ .Values.namespace }}
+type: Opaque
+data:
+{{- range $key, $value := .Values.hal.env }}
+  {{ $key }}: {{ $value | b64enc }}
+{{- end }}
+---
+{{- if .Values.hal.useFlower }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: hal
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5555
+      targetPort: 5555
+  selector:
+    app: hal
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hal-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: hal
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: hal
