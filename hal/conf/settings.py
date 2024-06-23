@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'rest_framework',
     'drf_spectacular',
+    'core',
     'revproxy',
     'drf_spectacular_sidecar',
     'rest_framework.authtoken',

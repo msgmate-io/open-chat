@@ -4,8 +4,8 @@ from conf.celery import app
 import json
 import importlib
 from django.core.serializers.json import DjangoJSONEncoder
-from msgmate.models import ActiveTask
 from dataclasses import dataclass
+from core.models import ActiveTask
 
 def custom_event(action, payload):
     return {
@@ -81,7 +81,7 @@ def coordinate_response(
             app.control.revoke(active_task.task_id, terminate=True)
             active_task.delete()
     
-    function_lookup = "msgmate.tasks.chat_bot_task"
+    function_lookup = "core.tasks.chat_bot_task"
     function_lookup = function_lookup.split(".")
     module = importlib.import_module(".".join(function_lookup[:-1]))
     celery_task = getattr(module, function_lookup[-1])
