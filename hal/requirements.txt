@@ -1,0 +1,40 @@
+Django==5.0.2
+channels==4.0.0
+channels-redis==4.0.0 # For using channels with redis
+django-cors-headers
+markdown
+django-filter
+celery==5.3
+single-beat
+django-celery-results
+django-celery-beat
+djangorestframework==3.14.0
+djangorestframework-dataclasses
+drf-spectacular[sidecar]
+django_nextjs
+ipython
+django-jazzmin
+uvicorn[standard]
+whitenoise
+jinja2
+django-model-utils
+requests
+django-prometheus
+bs4
+ddrr
+django-revproxy
+requests-oauthlib
+python3-saml
+psycopg2-binary
+PyJWT
+python3-saml
+django-allauth
+python3-openid
+cryptography
+flower
+# tmp requirements hal9008 developmens ( will be seperated later )
+open-chat-api-client @ https://github.com/tbscode/open-chat-api-client/tarball/master
+autobahn
+openai
+jsonschema
+pydub
