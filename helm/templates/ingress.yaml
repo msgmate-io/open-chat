@@ -51,6 +51,15 @@ spec:
                 name: backend-service
                 port:
                   number: 8000
+          {{- if .Values.hal.use }}
+          - path: /hal
+            pathType: Prefix
+            backend:
+              service:
+                name: hal-service
+                port:
+                  number: 8000
+          {{- end }}
           - path: /static
             pathType: Prefix
             backend:
