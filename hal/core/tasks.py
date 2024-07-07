@@ -1,4 +1,5 @@
 from celery import shared_task
+import os
 from celery.signals import task_failure, task_success, task_revoked
 from django.db import IntegrityError
 from celery import Task
@@ -83,6 +84,18 @@ def chat_bot_task(*args, **kwargs):
     task_type = kwargs.get('task_type', ActiveTask.TaskTypes.AUDIO_CHAT)
 
     if task_type == ActiveTask.TaskTypes.TEXT_CHAT:
+        if os.environ.get('USE_MSGMATE_BOTS', 'false') == 'true':
+            from msgmate.bots import start_hal9010_bot
+            start_hal9010_bot(
+                chat_id=chat_id,
+                recipient_id=recipient_id
+            )
+        else:
+            from core.bots import start_bot
+            start_bot(
+                chat_id=str(chat_id),
+                recipient_id=str(recipient_id)
+            )
         from core.bots import start_bot
         start_bot(
             chat_id=str(chat_id),
