@@ -6,7 +6,8 @@ from chat.socket.messages_in import (
     InPartialMessage, 
     InSendMessage, 
     InSendMessageChatTitle, 
-    InMarkMessageRead
+    InMarkMessageRead,
+    InSendMessageAsUser
 )
 from chat.socket.messages_out import (
     OutNewMessage,
@@ -111,6 +112,8 @@ Every user that connects joins:
                 await InPartialMessage(**message_payload).perform_action(self.user)
             elif message_action == InMessageTypes.send_message_chat_title.value:
                 await InSendMessageChatTitle(**message_payload).perform_action(self.user)
+            elif message_action == InMessageTypes.send_message_as_user.value:
+                await InSendMessageAsUser(**message_payload).perform_action(self.user)
         elif message_type == "bot":
             pass
                 

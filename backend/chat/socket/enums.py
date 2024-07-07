@@ -10,5 +10,6 @@ class OutMessageTypes(Enum):
 class InMessageTypes(Enum):
     mark_chat_message_read = "mark_chat_message_read"
     send_message = "send_message"
+    send_message_as_user = "send_message_as_user"
     partial_message = "partial_message"
     send_message_chat_title = "send_message_chat_title"
