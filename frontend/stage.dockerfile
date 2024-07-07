@@ -6,6 +6,7 @@ RUN npm install
 COPY . .
 
 ENV PUBLIC_ENV__DEBUG=false
+ENV PUBLIC_ENV__DOCS_AT_INDEX="true"
 
 RUN rm -rf android ios
 

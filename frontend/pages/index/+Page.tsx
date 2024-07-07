@@ -1,7 +1,9 @@
 export { Page };
-import { LandingHero } from "@open-chat/open-chat-ui/sections";
+import { LandingForwardHero, LandingHero } from "@open-chat/open-chat-ui/sections";
+import { DOCS_AT_INDEX } from "../../renderer/constants";
 
 function Page() {
+  const hero = DOCS_AT_INDEX ? "forward" : "default";
 
-  return <LandingHero />
+  return hero == "forward" ? <LandingForwardHero /> : <LandingHero />
 }
