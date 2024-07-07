@@ -221,24 +221,88 @@
   }
 }
 
-/* ShinyText.css */
+
 .shiny-text {
-  position: relative;
-  display: inline-block;
-  color: #000;
-  background: linear-gradient(0deg, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.7) 100%);
-  background-clip: text;
+  background: #222;
+  background: -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
+  background: -webkit-linear-gradient(left, #222, #fff 50%, #222);
+  background: -moz-linear-gradient(left, #222, #fff 50%, #222);
+  background: -ms-linear-gradient(left, #222, #fff 50%, #222);
+  background: -o-linear-gradient(left, #222, #fff 50%, #222);
+  background: linear-gradient(to right, #222, #fff 50%, #222);
+  background-size: 150px;
+  color: rgba(255, 255, 255, 0.3);
   -webkit-background-clip: text;
-  color: transparent;
-  animation: shine 1s infinite;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-animation-name: shine;
+  -moz-animation-name: shine;
+  animation-name: shine;
+  -webkit-animation-duration: 5s;
+  -moz-animation-duration: 5s;
+  animation-duration: 5s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);
 }
 
-@keyframes shine {
-  0% {
-    left: -100%;
+@-webkit-keyframes shine {
+
+  0%,
+  10% {
+    background-position: -1000px;
+  }
+
+  20% {
+    background-position: top left;
+  }
+
+  90% {
+    background-position: top right;
   }
 
   100% {
-    left: 150%;
+    background-position: 1000px;
+  }
+}
+
+@-moz-keyframes shine {
+
+  0%,
+  10% {
+    background-position: -1000px;
+  }
+
+  20% {
+    background-position: top left;
+  }
+
+  90% {
+    background-position: top right;
+  }
+
+  100% {
+    background-position: 1000px;
+  }
+}
+
+@keyframes shine {
+
+  0%,
+  10% {
+    background-position: -1000px;
+  }
+
+  20% {
+    background-position: top left;
+  }
+
+  90% {
+    background-position: top right;
+  }
+
+  100% {
+    background-position: 1000px;
   }
 }
