@@ -55,6 +55,8 @@ services:
     ports:
       - "3000:3000"
       - "24678:24678"
+    environment:
+      PUBLIC_ENV__DOCS_AT_INDEX: 'false'
     volumes:
       - ./frontend/:/frontend/
     command: sh -c "npm install && npm run dev"
