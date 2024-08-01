@@ -1,6 +1,6 @@
-import { CapacitorConfig } from '@capacitor/cli';
+// import { CapacitorConfig } from '@capacitor/cli';
 
-const config: CapacitorConfig = {
+const config = {
   appId: 'com.timschupp.msgmate',
   appName: 'OpenChat',
   webDir: 'dist/client',
@@ -19,7 +19,7 @@ const config: CapacitorConfig = {
     CapacitorCookies: {
       enabled: true
     }
-  }
+  },
 };
 
 export default config;
