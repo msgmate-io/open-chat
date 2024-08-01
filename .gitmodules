@@ -4,3 +4,6 @@
 [submodule "hal/msgmate"]
 	path = hal/msgmate
 	url = https://github.com/msgmate-io/django-msgmate-core.git
+[submodule "frontend/electron"]
+	path = frontend/electron
+	url = https://github.com/msgmate-io/open-chat-electron
