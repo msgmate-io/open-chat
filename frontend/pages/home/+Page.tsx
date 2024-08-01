@@ -1,11 +1,12 @@
-import { UserLoader } from "@open-chat/open-chat-ui";
+import { useUser } from "@open-chat/open-chat-ui";
 import { HomePage } from "../HomePage";
 
 export { Page };
 
 function Page() {
+  const { } = useUser();
+
   return <>
-    <UserLoader />
     <HomePage />
   </>;
 }

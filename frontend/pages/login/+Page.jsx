@@ -1,10 +1,8 @@
-import { LoginSection } from "@open-chat/open-chat-ui";
-import { servicesList } from "../LoginPageStyleConfig";
-import { HomeNavbar } from "../Navigation";
+import { LandingHero } from "@open-chat/open-chat-ui";
+
 
 export function Page() {
   return <>
-    <HomeNavbar />
-    <LoginSection servicesList={servicesList} />
+    <LandingHero defaultTab="login" />
   </>;
 }

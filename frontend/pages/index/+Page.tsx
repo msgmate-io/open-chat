@@ -1,5 +1,5 @@
 export { Page };
-import { LandingForwardHero, LandingHero } from "@open-chat/open-chat-ui/sections";
+import { LandingForwardHero, LandingHero } from "@open-chat/open-chat-ui";
 import { DOCS_AT_INDEX } from "../../renderer/constants";
 
 function Page() {

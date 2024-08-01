@@ -11,6 +11,7 @@ export default defineConfig({
   plugins: [
     react(),
     vike({
+      prerender: true,
       // prerender: true,
       hydrationCanBeAborted: true,
     }),
