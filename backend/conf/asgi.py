@@ -23,9 +23,33 @@ def get_urls_patterns():
     return websocket_routers
 
 
+class PrintHeadersMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        print(scope)
+        return await self.app(scope, receive, send)
+    
+class QueryAuthMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        session_id = scope["query_string"].decode()
+
+        scope['headers'] += [
+            (b'cookie', f'sessionid={session_id}'.encode())
+        ]
+        
+        return await self.app(scope, receive, send)
+
+
 application = ProtocolTypeRouter(
     {
         "http": URLRouter(http_routes),
-        "websocket": AuthMiddlewareStack(URLRouter(get_urls_patterns())),
+        "websocket": QueryAuthMiddleware(PrintHeadersMiddleware(
+            AuthMiddlewareStack(URLRouter(get_urls_patterns()))
+        )),
     }
 )
