@@ -1,6 +1,6 @@
 Django==5.0.3
-channels==4.0.0
-channels-redis==4.0.0 # For using channels with redis
+channels==4.1.0
+channels-redis==4.1.0 # For using channels with redis
 django-cors-headers
 markdown
 django-filter
