@@ -9,7 +9,7 @@ services:
       PRODUCTION: 'true'
       ROOT_URL: 'http://localhost'
       ROOT_HOST: 't1m.me'
-      EXTRA_TRUSTED_ORIGINS: 'http://localhost:8000'
+      EXTRA_TRUSTED_ORIGINS: 'http://localhost:8000,http://10.0.2.2:8000,capacitor-electron://-'
       DJANGO_SECRET_KEY: 'SomeSecret'
       DJANGO_ALLOWED_HOSTS: '*'
       REDIS_URL: 'redis://redis:6379'
@@ -30,7 +30,7 @@ services:
       PRODUCTION: 'true'
       ROOT_URL: 'http://localhost'
       ROOT_HOST: 't1m.me'
-      EXTRA_TRUSTED_ORIGINS: 'http://localhost:8000'
+      EXTRA_TRUSTED_ORIGINS: 'http://localhost:8000,http://10.0.2.2:8000,capacitor-electron://-'
       DJANGO_SECRET_KEY: 'SomeSecret'
       DJANGO_ALLOWED_HOSTS: '*'
       REDIS_URL: 'redis://redis-hal:6379'
@@ -42,6 +42,8 @@ services:
       DEEPINFRA_API_KEY: ${DEEPINFRA_API_KEY-}
       OPENAI_API_KEY: ${OPENAI_API_KEY-}
       USE_MSGMATE_BOTS: 'false'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8001:8000"
       - "5555:5555"
@@ -59,7 +61,6 @@ services:
       PUBLIC_ENV__DOCS_AT_INDEX: 'false'
     volumes:
       - ./frontend/:/frontend/
-    command: sh -c "npm install && npm run dev"
   redis:
     image: redis:5
     ports:
