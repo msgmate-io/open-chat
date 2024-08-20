@@ -106,6 +106,10 @@ class ChatSerializer(serializers.ModelSerializer):
             
             chat_settings = ChatSettings.objects.filter(user=user, chat=instance)
             representation['settings'] = ChatSettingsSerializer(chat_settings.first()).data if chat_settings.exists() else None
+            
+            if partner.profile.is_bot:
+                chat_settings_bot = ChatSettings.objects.filter(user=partner, chat=instance)
+                representation['bot_settings'] = ChatSettingsSerializer(chat_settings_bot.first()).data if chat_settings_bot.exists() else None
 
             representation['unread_count'] = instance.get_unread_count(user)
             representation['newest_message'] = MessageSerializer(instance.get_newest_message()).data

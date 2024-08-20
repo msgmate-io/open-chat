@@ -61,7 +61,6 @@ class ChatsModelViewSet(viewsets.ModelViewSet):
             'request': request,
         }).data)
         
-        
     @extend_schema(
         request=inline_serializer(
             name='GetChatByTitleRequest',
@@ -137,6 +136,42 @@ class ChatsModelViewSet(viewsets.ModelViewSet):
     class SetChatTitleRequestSerializer(serializers.Serializer):
         title = serializers.CharField(required=False)
         config = serializers.JSONField(required=False)
+        
+    @extend_schema(
+        request=SetChatTitleRequestSerializer(many=False),
+        responses={200: ChatSettingsSerializer(many=False, required=False)}
+    )
+    @action(detail=False, methods=['post', 'get'])
+    def update_bot_chat_settings(self, request, chat_uuid=None):
+        if not chat_uuid:
+            return Response({'error': 'chat_uuid is required'}, status=400)
+        
+        chat = self.get_queryset().filter(uuid=chat_uuid).first()
+        partner = chat.get_partner(request.user)
+        
+        if not partner.profile.is_bot:
+            return Response({'error': 'You can\'t update settings for chats with other users!'}, status=403)
+        
+        if request.user.profile.is_bot:
+            return Response({'error': 'Bots can\'t change settings for other bots!'}, status=403)
+        
+        if request.method.lower() == 'get':
+            settings = ChatSettings.objects.filter(chat=chat, user=partner)
+            return Response(ChatSettingsSerializer(
+                settings.first() 
+            ).data if settings.exists() else None)
+        else:
+            serializer = self.SetChatTitleRequestSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            data = serializer.data
+            
+            settings = ChatSettings.objects.filter(chat=chat, user=partner)
+            if settings.exists():
+                settings.update(**data)
+                settings = settings.first()
+            else:
+                settings = ChatSettings.objects.create(chat=chat, user=partner, **data)
+        return Response(ChatSettingsSerializer(settings).data)
 
     @extend_schema(
         request=SetChatTitleRequestSerializer(many=False),
