@@ -70,3 +70,15 @@ class InSendMessageAsUser(InMessageBase):
         ).send(str(partner.uuid)) # send to self so it appreas in the chat for the sender ( as if send by the sender )
         
         return {"status": "ok", "data": MessageSerializer(message).data}
+
+@dataclass
+class SendParitalMessageAsUser(InSendMessageAsUser):
+    chat_id: str
+    recipient_id: str
+    text: str
+    type: str = "send_partial_message_as_user"
+    data_message: Optional[dict] = None # check chat.models.DataMessage for more details
+    
+    @database_sync_to_async
+    def perform_action(self, user):
+        pass

@@ -15,6 +15,7 @@ class InPartialMessage(InMessageBase):
     text: str
     tmp_id: str = "tmp"
     type: str = "partial_message"
+    send_as_user: bool = False
     data_message: Optional[dict] = None # check chat.models.DataMessage for more details
     
     @database_sync_to_async
@@ -29,7 +30,12 @@ class InPartialMessage(InMessageBase):
             return {"status": "error", "data": "Chat not found"}
         chat = chats.first()
         
-        partner = chat.get_partner(user) 
+        if self.send_as_user:
+            if not sender.profile.is_bot:
+                return {"status": "error", "data": "Only bots can send messages as a user"}
+            sender = recipient
+        
+        partner = chat.get_partner(sender) 
         tmp_message = {
             "chat": chat.uuid,
             "created": timezone.now().isoformat(),
@@ -45,13 +51,13 @@ class InPartialMessage(InMessageBase):
                 tmp_message["hidden"] = True
 
         chat_serialized = ChatSerializer(chat, context={
-            "user": user
+            "user": sender
         }).data
         
         OutNewPartialMessage(
-            sender_id=str(user.uuid),
+            sender_id=str(sender.uuid),
             message=tmp_message,
             chat=chat_serialized
-        ).send(str(partner.uuid))
+        ).send(str(partner.uuid) if not self.send_as_user else str(sender.uuid))
         
         return {"status": "ok", "data": tmp_message}
