@@ -82,29 +82,37 @@ def chat_bot_task(*args, **kwargs):
     chat_id  = kwargs.get('chat_id')
     recipient_id = kwargs.get('recipient_id')
     task_type = kwargs.get('task_type', ActiveTask.TaskTypes.AUDIO_CHAT)
-
-    if task_type == ActiveTask.TaskTypes.TEXT_CHAT:
-        if os.environ.get('USE_MSGMATE_BOTS', 'false') == 'true':
-            from msgmate.bots import start_hal9010_bot
-            start_hal9010_bot(
-                chat_id=chat_id,
-                recipient_id=recipient_id
-            )
-        else:
+    
+    if True:
+        from msgmate.bots import start_hal9013_multimodal
+        start_hal9013_multimodal(
+            chat_id=chat_id,
+            recipient_id=recipient_id
+        )
+    else:
+        # Depricated to have two seperate bots for audio / texts, the hal9013 is multimodal now!
+        if task_type == ActiveTask.TaskTypes.TEXT_CHAT:
+            if os.environ.get('USE_MSGMATE_BOTS', 'false') == 'true':
+                from msgmate.bots import start_hal9010_bot
+                start_hal9010_bot(
+                    chat_id=chat_id,
+                    recipient_id=recipient_id
+                )
+            else:
+                from core.bots import start_bot
+                start_bot(
+                    chat_id=str(chat_id),
+                    recipient_id=str(recipient_id)
+                )
             from core.bots import start_bot
             start_bot(
                 chat_id=str(chat_id),
                 recipient_id=str(recipient_id)
             )
-        from core.bots import start_bot
-        start_bot(
-            chat_id=str(chat_id),
-            recipient_id=str(recipient_id)
-        )
-    elif task_type == ActiveTask.TaskTypes.AUDIO_CHAT:
-        # Feature atm only availabe on beta.msgmate.io!
-        from msgmate.bots import start_audio_bot
-        start_audio_bot(
-            chat_id=str(chat_id),
-            recipient_id=str(recipient_id)
-        )
+        elif task_type == ActiveTask.TaskTypes.AUDIO_CHAT:
+            # Feature atm only availabe on beta.msgmate.io!
+            from msgmate.bots import start_audio_bot
+            start_audio_bot(
+                chat_id=str(chat_id),
+                recipient_id=str(recipient_id)
+            )
