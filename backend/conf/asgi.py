@@ -18,7 +18,7 @@ def get_urls_patterns():
     from chat.socket.consumer import CoreConsumer
 
     websocket_routers.insert(1, re_path(
-        rf'^api/core/ws$', CoreConsumer.as_asgi()))
+        rf'^api/core/ws/$', CoreConsumer.as_asgi()))
 
     return websocket_routers
 

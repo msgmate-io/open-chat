@@ -58,7 +58,7 @@ def start_bot(
 
     CustomFactory = get_message_responder_factory()
     factory = CustomFactory(
-        url=f"ws://{SERVER_HOST}:8000/api/core/ws",
+        url=f"ws://{SERVER_HOST}:8000/api/core/ws/",
         chat_id=chat_id,
         recipient_id=recipient_id,
         event_loop=loop,
