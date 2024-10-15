@@ -587,9 +587,9 @@ export class HttpClient<SecurityDataType = unknown> {
     [ContentType.Json]: (input: any) =>
       input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
     [ContentType.Text]: (input: any) => (input !== null && typeof input !== "string" ? JSON.stringify(input) : input),
-    [ContentType.FormData]: (input: any) =>
-      Object.keys(input || {}).reduce((formData, key) => {
-        const property = input[key];
+    [ContentType.FormData]: (input: FormData) =>
+      (Array.from(input.keys()) || []).reduce((formData, key) => {
+        const property = input.get(key);
         formData.append(
           key,
           property instanceof Blob
@@ -712,12 +712,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags bot
      * @name BotLoginCreate
-     * @request POST:/api/bot/login
+     * @request POST:/api/bot/login/
      * @secure
      */
     botLoginCreate: (data: LoginInfo, params: RequestParams = {}) =>
       this.request<AugmentedBotUser, any>({
-        path: `/api/bot/login`,
+        path: `/api/bot/login/`,
         method: "POST",
         body: data,
         secure: true,
@@ -731,12 +731,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags bot
      * @name BotRegisterCreate
-     * @request POST:/api/bot/register
+     * @request POST:/api/bot/register/
      * @secure
      */
     botRegisterCreate: (data: RegisterBot, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/bot/register`,
+        path: `/api/bot/register/`,
         method: "POST",
         body: data,
         secure: true,
@@ -750,12 +750,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags bots
      * @name BotsListList
-     * @request GET:/api/bots/list
+     * @request GET:/api/bots/list/
      * @secure
      */
     botsListList: (query: BotsListListParams, params: RequestParams = {}) =>
       this.request<PaginatedBotsControlList, any>({
-        path: `/api/bots/list`,
+        path: `/api/bots/list/`,
         method: "GET",
         query: query,
         secure: true,
@@ -1001,7 +1001,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags profile
      * @name ProfileCreateChatCreate
-     * @request POST:/api/profile/{user_uuid}/create_chat
+     * @request POST:/api/profile/{user_uuid}/create_chat/
      * @secure
      */
     profileCreateChatCreate: (
@@ -1010,7 +1010,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       params: RequestParams = {},
     ) =>
       this.request<ChatCreationResponse, any>({
-        path: `/api/profile/${userUuid}/create_chat`,
+        path: `/api/profile/${userUuid}/create_chat/`,
         method: "POST",
         query: query,
         body: data,
@@ -1079,12 +1079,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags profile
      * @name ProfileSelfPartialUpdate
-     * @request PATCH:/api/profile/self
+     * @request PATCH:/api/profile/self/
      * @secure
      */
     profileSelfPartialUpdate: (data: PatchedUserProfile, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/profile/self`,
+        path: `/api/profile/self/`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -1098,12 +1098,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags profile
      * @name ProfileSelfRetrieve
-     * @request GET:/api/profile/self
+     * @request GET:/api/profile/self/
      * @secure
      */
     profileSelfRetrieve: (params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/profile/self`,
+        path: `/api/profile/self/`,
         method: "GET",
         secure: true,
         format: "json",
@@ -1115,12 +1115,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags profile
      * @name ProfileSelfUpdate
-     * @request PUT:/api/profile/self
+     * @request PUT:/api/profile/self/
      * @secure
      */
     profileSelfUpdate: (data: UserProfile, params: RequestParams = {}) =>
       this.request<UserProfile, any>({
-        path: `/api/profile/self`,
+        path: `/api/profile/self/`,
         method: "PUT",
         body: data,
         secure: true,
@@ -1134,12 +1134,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags public
      * @name PublicProfilesList
-     * @request GET:/api/public/profiles
+     * @request GET:/api/public/profiles/
      * @secure
      */
     publicProfilesList: (query: PublicProfilesListParams, params: RequestParams = {}) =>
       this.request<PaginatedUserProfileList, any>({
-        path: `/api/public/profiles`,
+        path: `/api/public/profiles/`,
         method: "GET",
         query: query,
         secure: true,
@@ -1152,12 +1152,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags user
      * @name UserLoginCreate
-     * @request POST:/api/user/login
+     * @request POST:/api/user/login/
      * @secure
      */
     userLoginCreate: (data: LoginInfo, params: RequestParams = {}) =>
       this.request<UserSelf, any>({
-        path: `/api/user/login`,
+        path: `/api/user/login/`,
         method: "POST",
         body: data,
         secure: true,
@@ -1171,12 +1171,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags user
      * @name UserLogoutRetrieve
-     * @request GET:/api/user/logout
+     * @request GET:/api/user/logout/
      * @secure
      */
     userLogoutRetrieve: (params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/api/user/logout`,
+        path: `/api/user/logout/`,
         method: "GET",
         secure: true,
         ...params,
@@ -1187,12 +1187,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags user
      * @name UserRegisterCreate
-     * @request POST:/api/user/register
+     * @request POST:/api/user/register/
      * @secure
      */
     userRegisterCreate: (data: Person, params: RequestParams = {}) =>
       this.request<RegisterResponseSuccess, any>({
-        path: `/api/user/register`,
+        path: `/api/user/register/`,
         method: "POST",
         body: data,
         secure: true,
@@ -1206,12 +1206,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags user
      * @name UserSelfRetrieve
-     * @request GET:/api/user/self
+     * @request GET:/api/user/self/
      * @secure
      */
     userSelfRetrieve: (params: RequestParams = {}) =>
       this.request<UserSelf, any>({
-        path: `/api/user/self`,
+        path: `/api/user/self/`,
         method: "GET",
         secure: true,
         format: "json",
