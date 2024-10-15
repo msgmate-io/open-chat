@@ -6,6 +6,7 @@ RUN npm install
 COPY . .
 
 ENV PUBLIC_ENV__DEBUG=false
+ENV PUBLIC_ENV__ROOT_URL=https://beta.msgmate.io
 
 RUN rm -rf android ios
 
