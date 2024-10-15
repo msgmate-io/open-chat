@@ -38,20 +38,20 @@ list_user_bots = bots.BotsControlViewset.as_view({
 
 
 urlpatterns = [
-    path("api/bot/register", register.register_bot),
-    path("api/bot/login", login.bot_login),
-    path("api/bots/list", list_user_bots),
+    path("api/bot/register/", register.register_bot),
+    path("api/bot/login/", login.bot_login),
+    path("api/bots/list/", list_user_bots),
 
-    path("api/public/profiles", public_profiles_list),
+    path("api/public/profiles/", public_profiles_list),
 
     path("api/profile/reveal/", reveal_profile_get),
     path("api/profile/<str:user_uuid>/", public_profiles_get),
     path("api/profile/name/<str:username>/", public_profiles_username_get),
-    path("api/profile/<str:user_uuid>/create_chat", public_profiles_create_chat),
-    path("api/profile/self", profile_api_user),
+    path("api/profile/<str:user_uuid>/create_chat/", public_profiles_create_chat),
+    path("api/profile/self/", profile_api_user),
 
-    path("api/user/self", user_api_user),
-    path("api/user/register", register.register_user),
-    path("api/user/logout", login.logout_user),
-    path("api/user/login", login.login_user)
+    path("api/user/self/", user_api_user),
+    path("api/user/register/", register.register_user),
+    path("api/user/logout/", login.logout_user),
+    path("api/user/login/", login.login_user)
 ]
