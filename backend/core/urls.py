@@ -47,8 +47,8 @@ urlpatterns = [
     path("api/profile/reveal/", reveal_profile_get),
     path("api/profile/<str:user_uuid>/", public_profiles_get),
     path("api/profile/name/<str:username>/", public_profiles_username_get),
-    path("api/profile/<str:user_uuid>/create_chat/", public_profiles_create_chat),
     path("api/profile/self/", profile_api_user),
+    path("api/profile/<str:user_uuid>/create_chat/", public_profiles_create_chat),
 
     path("api/user/self/", user_api_user),
     path("api/user/register/", register.register_user),
