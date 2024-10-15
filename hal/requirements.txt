@@ -1,4 +1,4 @@
-Django==5.0.3
+Django==5.0.8
 channels==4.0.0
 channels-redis==4.0.0 # For using channels with redis
 django-cors-headers
