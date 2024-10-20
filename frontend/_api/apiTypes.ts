@@ -1,1 +1,0 @@
-export type ErrorResult = null | { [key: string]: string }
