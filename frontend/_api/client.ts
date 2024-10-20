@@ -1,4 +1,4 @@
-import { Api } from "./api";
+import { Api } from "@msgmate-io/open-chat-typescript-client";
 
 interface GetApiParamTypes {
   cookie: string;
