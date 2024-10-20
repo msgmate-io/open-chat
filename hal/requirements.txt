@@ -33,7 +33,7 @@ python3-openid
 cryptography
 flower
 # tmp requirements hal9008 developmens ( will be seperated later )
-open-chat-api-client @ https://github.com/tbscode/open-chat-api-client/tarball/master
+open-chat-api-client @ git+https://github.com/msgmate-io/open-chat-python-client@f3c06c1e356fc3fe14047c4a66298625ac0e33cd
 autobahn
 openai
 jsonschema
